@@ -34,6 +34,16 @@ export function createInterface(app, actions) {
   const canvas = get('game'); const dialog = get('menu');
   let shownMode = '';
   let lastNote = '';
+  let typingTimer;
+  const stopTyping = () => { clearInterval(typingTimer); typingTimer = undefined; };
+  const typeText = (element, text) => {
+    stopTyping(); element.textContent = '';
+    let index = 0;
+    typingTimer = setInterval(() => {
+      element.textContent = text.slice(0, ++index);
+      if (index >= text.length) stopTyping();
+    }, 18);
+  };
   get('pause').addEventListener('click', actions.pause);
   get('interact').addEventListener('click', actions.inspect);
   const toggleHelp = () => { get('help-panel').hidden = !get('help-panel').hidden; };
@@ -65,6 +75,7 @@ export function createInterface(app, actions) {
     if (shownMode === state.mode) return;
     shownMode = state.mode;
     if (state.mode === 'playing') {
+      stopTyping();
       dialog.close(); canvas.focus({ preventScroll: true }); return;
     }
     if (state.mode === 'title') {
@@ -72,10 +83,10 @@ export function createInterface(app, actions) {
     } else if (state.mode === 'paused') {
       dialog.innerHTML = '<p class="eyebrow">EXPLORATION SUSPENDED</p><h2 id="dialog-heading">PAUSED</h2><p>Your position is held. Resume when you’re ready to continue the survey.</p><button class="primary-button" data-action="resume" autofocus>Resume exploration <span>→</span></button><button class="secondary-button" data-action="title">Return to title</button><p class="dialog-footnote">ESC TO RESUME · RETURNING TO TITLE RESETS THE SESSION</p>';
     } else if (state.mode === 'inspecting') {
-      dialog.innerHTML = '<p class="eyebrow">OBJECT INSPECTION / <span id="object-status"></span></p><h2 id="dialog-heading"></h2><p id="object-description"></p><div class="placeholder-label">PLACEHOLDER SYSTEM — INSPECTION ONLY</div><button class="primary-button" data-action="close" autofocus>Back to exploration <span>↵</span></button><p class="dialog-footnote">E OR ESC TO CLOSE</p>';
+      dialog.innerHTML = '<p class="eyebrow">OBJECT INSPECTION / <span id="object-status"></span></p><h2 id="dialog-heading"></h2><p id="object-description" class="typing-copy"></p><div class="placeholder-label">PLACEHOLDER SYSTEM — INSPECTION ONLY</div><button class="primary-button" data-action="close" autofocus>Back to exploration <span>↵</span></button><p class="dialog-footnote">E OR ESC TO CLOSE</p>';
       get('dialog-heading').textContent = state.inspection.name;
       get('object-status').textContent = state.inspection.status;
-      get('object-description').textContent = state.inspection.text;
+      typeText(get('object-description'), state.inspection.text);
     }
     if (!dialog.open) dialog.showModal();
     dialog.querySelector('[autofocus]')?.focus();
