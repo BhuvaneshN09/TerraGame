@@ -123,6 +123,13 @@ button:hover:not(:disabled) {
 .eject-notice { position: absolute; z-index: 8; left: 50%; top: 50%; transform: translate(-50%, -50%); padding: 14px 18px; border: 1px solid #d1e796; background: #122021e8; color: var(--accent); font: 11px var(--retro); letter-spacing: 1px; text-align: center; white-space: nowrap; }
 .eject-notice:not([hidden]) { animation: corner-fade 3s ease forwards; }
 @keyframes corner-fade { 0%, 65% { opacity: 1; } 100% { opacity: 0; } }
+
+/* Small stepped radius keeps the interface soft while preserving its pixel language. */
+.workspace, .viewport-heading, .sidebar > section, .mission-table, .help-panel,
+.menu-button, .help-button, .text-button, .interact-button, .primary-button,
+.secondary-button, dialog, .eject-notice, #minimap, #game {
+  border-radius: 2px;
+}
 @media (max-width: 700px) { .mission-table { width: 150px; } .eject-notice { max-width: calc(100vw - 24px); white-space: normal; } }
 
 .site-header {
