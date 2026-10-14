@@ -120,6 +120,8 @@ button:hover:not(:disabled) {
 .mission-row { display: grid; grid-template-columns: 12px 1fr auto; gap: 5px; align-items: center; padding: 6px 0; border-top: 1px solid #34463d; font-size: 8px; letter-spacing: .4px; }
 .mission-row > span:last-child { color: #7f9783; font-size: 7px; }
 .mission-row.active > span:last-child, .mission-mark { color: var(--accent); }
+.mission-timer { margin-top: 8px; padding-top: 8px; border-top: 1px solid #34463d; color: #7f9783; font-size: 7px; letter-spacing: 1px; }
+.mission-timer strong { float: right; color: var(--accent); font-size: 10px; }
 .eject-notice { position: absolute; z-index: 8; left: 50%; top: 50%; transform: translate(-50%, -50%); padding: 14px 18px; border: 1px solid #d1e796; background: #122021e8; color: var(--accent); font: 11px var(--retro); letter-spacing: 1px; text-align: center; white-space: nowrap; }
 .eject-notice:not([hidden]) { animation: corner-fade 3s ease forwards; }
 @keyframes corner-fade { 0%, 65% { opacity: 1; } 100% { opacity: 0; } }

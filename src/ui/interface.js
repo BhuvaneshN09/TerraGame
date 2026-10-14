@@ -15,7 +15,7 @@ export function createInterface(app, actions) {
       <aside class="sidebar" aria-label="Exploration information">
         <section class="briefing"><p class="eyebrow"><span class="accent">01</span> / RECONNAISSANCE</p><h2>Get your bearings.</h2><p>Explore the Meridian. Approach a highlighted object and inspect what remains.</p><div class="progress-heading"><span>OBJECTS INSPECTED</span><span id="inspection-count">0 / 7</span></div><div id="inspection-progress" class="progress-track" aria-hidden="true">${'<span></span>'.repeat(7)}</div><p class="scope-note">An exploration prototype.<br>Ship repairs are not available yet.</p></section>
         <section class="deck-map"><div class="section-heading"><h2>DECK SCHEMATIC</h2><span>01</span></div><canvas id="minimap" width="196" height="126" role="img" aria-label="Map of the ship: bridge north, crew west, engineering east, cargo south. Your location is the bright marker."></canvas><div class="map-legend"><span><i class="player-marker"></i>YOU</span><span><i class="object-marker"></i>OBJECT</span></div></section>
-        <section class="mission-table" aria-label="Mission table"><div class="section-heading"><h2>MISSION TABLE</h2><span>LIVE</span></div><div class="mission-row active"><span class="mission-mark">◆</span><span id="mission-primary">Talk to Morrow</span><span id="mission-primary-status">ACTIVE</span></div><div class="mission-row"><span class="mission-mark">◇</span><span>Inspect objects</span><span id="mission-inspect-status">0 / 7</span></div><div class="mission-row"><span class="mission-mark">◇</span><span>Restore the circuit</span><span>LOCKED</span></div></section>
+        <section class="mission-table" aria-label="Mission table"><div class="section-heading"><h2>MISSION TABLE</h2><span>LIVE</span></div><div class="mission-row active"><span class="mission-mark">◆</span><span id="mission-primary">Talk to Morrow</span><span id="mission-primary-status">ACTIVE</span></div><div class="mission-row"><span class="mission-mark">◇</span><span>Inspect objects</span><span id="mission-inspect-status">0 / 7</span></div><div class="mission-row"><span class="mission-mark">◇</span><span>Fix the junction issue</span><span id="mission-fix-status">LOCKED</span></div><div class="mission-timer">RUN TIME <strong id="run-timer">05:00</strong></div></section>
         <section class="field-notes"><div class="section-heading"><h2>FIELD NOTES</h2><span>↳</span></div><p id="field-note" aria-live="polite">No observations yet.<br>The junction console is nearby.</p><div class="signal"><span class="signal-bars" aria-hidden="true">▁▁▂▁▃▁▁▂▁▁▂▁▁▃▁▁</span><span>UPLINK UNAVAILABLE</span></div></section>
       </aside>
     </div>
@@ -101,12 +101,15 @@ export function createInterface(app, actions) {
     setText('position', `X ${Math.round(state.player.x).toString().padStart(3, '0')} / Y ${Math.round(state.player.y).toString().padStart(3, '0')}`);
     const seconds = Math.floor(state.elapsed);
     setText('session-time', `${Math.floor(seconds / 60).toString().padStart(2, '0')}:${(seconds % 60).toString().padStart(2, '0')}`);
+    const remaining = Math.ceil(state.runTimeLeft);
+    setText('run-timer', `${Math.floor(remaining / 60).toString().padStart(2, '0')}:${(remaining % 60).toString().padStart(2, '0')}`);
     setText('game-mode', { title: 'AWAITING INPUT', playing: 'EXPLORING', paused: 'PAUSED', inspecting: 'INSPECTING' }[state.mode]);
     setText('inspection-count', `${state.inspected.size} / ${state.objects.length}`);
     setText('help-progress', `Objects inspected: ${state.inspected.size} / ${state.objects.length}`);
     setText('mission-primary', state.talkedToAlien ? 'Find the broken circuit' : 'Talk to Morrow');
     setText('mission-primary-status', state.talkedToAlien ? 'COMPLETE' : 'ACTIVE');
     setText('mission-inspect-status', `${state.inspected.size} / ${state.objects.length}`);
+    setText('mission-fix-status', state.talkedToAlien ? 'READY' : 'LOCKED');
     const notice = get('eject-notice');
     if (state.notice) { notice.textContent = state.notice; notice.hidden = false; } else notice.hidden = true;
     get('pause').disabled = state.mode !== 'playing';

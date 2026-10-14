@@ -16,7 +16,7 @@ export function createGame() {
   const state = {
     mode: 'title', player: { ...SPAWN, facing: 'down', moving: false, walkTime: 0 },
     map: SHIP, objects: OBJECTS, camera: { x: 0, y: 0 },
-    nearby: null, inspection: null, inspected: new Set(), elapsed: 0,
+    nearby: null, inspection: null, inspected: new Set(), elapsed: 0, runTimeLeft: 300,
     ejectHold: 0, ejectCooldown: 0, cornerHold: 0, cornerCooldown: 0, notice: '', noticeTimer: 0,
     talkedToAlien: false,
     room: roomAt(SPAWN.x, SPAWN.y),
@@ -42,6 +42,7 @@ export function updateGame(state, input, dt) {
   else if (direction.y) state.player.facing = direction.y < 0 ? 'up' : 'down';
   if (state.player.moving) state.player.walkTime += dt;
   state.elapsed += dt;
+  state.runTimeLeft = Math.max(0, state.runTimeLeft - dt);
   state.ejectCooldown = Math.max(0, state.ejectCooldown - dt);
   state.cornerCooldown = Math.max(0, state.cornerCooldown - dt);
   state.noticeTimer = Math.max(0, state.noticeTimer - dt);
