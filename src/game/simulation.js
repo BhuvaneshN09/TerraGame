@@ -1,16 +1,16 @@
-import { SHIP, SPAWN, OBJECTS, VIEW, roomAt } from '../world/ship.js';
+import { SHIP, SPAWN, OBJECTS, VIEW, ROOMS, roomAt } from '../world/ship.js';
 import { isBlocked, moveWithCollision, normalizedDirection, playerBounds } from '../world/collision.js';
 import { followCamera } from './camera.js';
 import { nearbyObject } from './interactions.js';
 
 export const PLAYER_SPEED = 76;
 export const EJECT_ZONE = Object.freeze({ x: 41 * 16, y: 33 * 16, width: 3 * 16, height: 3 * 16 });
-export const CORNER_ZONES = Object.freeze([
-  { x: 5 * 16, y: 15 * 16 }, { x: 26 * 16, y: 15 * 16 },
-  { x: 21 * 16, y: 3 * 16 }, { x: 39 * 16, y: 3 * 16 },
-  { x: 34 * 16, y: 15 * 16 }, { x: 54 * 16, y: 15 * 16 },
-  { x: 18 * 16, y: 30 * 16 }, { x: 43 * 16, y: 30 * 16 },
-]);
+export const CORNER_ZONES = Object.freeze(ROOMS.flatMap(room => [
+  { x: (room.x + 1) * 16, y: (room.y + 1) * 16 },
+  { x: (room.x + room.width - 2) * 16, y: (room.y + 1) * 16 },
+  { x: (room.x + 1) * 16, y: (room.y + room.height - 2) * 16 },
+  { x: (room.x + room.width - 2) * 16, y: (room.y + room.height - 2) * 16 },
+]).filter(corner => !(corner.x >= EJECT_ZONE.x && corner.x <= EJECT_ZONE.x + EJECT_ZONE.width && corner.y >= EJECT_ZONE.y && corner.y <= EJECT_ZONE.y + EJECT_ZONE.height)));
 
 export function createGame() {
   const state = {
@@ -46,9 +46,10 @@ export function updateGame(state, input, dt) {
   state.cornerCooldown = Math.max(0, state.cornerCooldown - dt);
   state.noticeTimer = Math.max(0, state.noticeTimer - dt);
   if (state.noticeTimer === 0) state.notice = '';
+  const atCorner = CORNER_ZONES.some(corner => Math.hypot(state.player.x - corner.x, state.player.y - corner.y) <= 22);
   const insideEjectZone = state.player.x >= EJECT_ZONE.x && state.player.x <= EJECT_ZONE.x + EJECT_ZONE.width && state.player.y >= EJECT_ZONE.y && state.player.y <= EJECT_ZONE.y + EJECT_ZONE.height;
   state.ejectHold = insideEjectZone && !state.ejectCooldown ? state.ejectHold + dt : 0;
-  if (state.ejectHold >= 2 && state.ejectCooldown === 0) {
+  if (!atCorner && state.ejectHold >= 2 && state.ejectCooldown === 0) {
     state.player.x = SPAWN.x;
     state.player.y = SPAWN.y;
     state.player.moving = false;
@@ -57,7 +58,6 @@ export function updateGame(state, input, dt) {
     state.notice = 'UNAUTHORIZED DECK ACCESS // RETURNING TO MERIDIAN';
     state.noticeTimer = 2.5;
   }
-  const atCorner = CORNER_ZONES.some(corner => Math.hypot(state.player.x - corner.x, state.player.y - corner.y) <= 22);
   state.cornerHold = atCorner && !state.cornerCooldown ? state.cornerHold + dt : 0;
   if (state.cornerHold >= 2 && state.cornerCooldown === 0) {
     state.cornerHold = 0;

@@ -74,6 +74,7 @@ export function createInterface(app, actions) {
   function showMenu(state) {
     if (shownMode === state.mode) return;
     shownMode = state.mode;
+    dialog.dataset.mode = state.mode;
     if (state.mode === 'playing') {
       stopTyping();
       dialog.close(); canvas.focus({ preventScroll: true }); return;

@@ -17,6 +17,16 @@ dialog[open] {
   transform: none;
 }
 
+dialog[open][data-mode="title"],
+dialog[open][data-mode="paused"] {
+  inset: 50% auto auto 50%;
+  width: min(440px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  margin: 0;
+  padding: 34px;
+  transform: translate(-50%, -50%);
+}
+
 dialog[open] .typing-copy { max-width: 1100px; min-height: 42px; }
 dialog[open] h2 { margin: 5px 0 8px; font-size: 22px; }
 
