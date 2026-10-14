@@ -34,6 +34,10 @@ dialog::backdrop {
   background: #071013ba;
 }
 
+dialog[data-mode="inspecting"]::backdrop {
+  background: transparent;
+}
+
 dialog .eyebrow {
   color: #b7c899;
   font-size: 9px;
