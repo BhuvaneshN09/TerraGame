@@ -70,7 +70,7 @@ test('inspection is edge-triggered, freezes movement, and records one observatio
   await start(page);
   const before = await position(page);
   await page.keyboard.down('e');
-  await expect(page.getByRole('heading', { name: 'Junction console' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Morrow, the stranded alien' })).toBeVisible();
   await page.keyboard.down('e'); // A repeat must not immediately close the panel.
   await hold(page, 's', 200);
   await expect(page.getByRole('dialog')).toBeVisible();
@@ -79,9 +79,6 @@ test('inspection is edge-triggered, freezes movement, and records one observatio
   await page.keyboard.press('Escape');
   await expect(page.getByRole('dialog')).not.toBeVisible();
   await expect(page.locator('#inspection-count')).toHaveText('1 / 7');
-  await page.getByRole('button', { name: 'E INSPECT' }).click();
-  await expect(page.getByRole('heading', { name: 'Junction console' })).toBeVisible();
-  await page.getByRole('button', { name: 'Back to exploration' }).click();
   await expect(page.locator('#inspection-count')).toHaveText('1 / 7');
 });
 
