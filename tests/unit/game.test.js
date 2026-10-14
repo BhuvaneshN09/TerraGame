@@ -84,9 +84,9 @@ test('cargo edge easter egg ejects after two seconds without changing inspection
 test('every authored corner gives the three-second harmless easter egg notice', () => {
   for (const corner of CORNER_ZONES) {
     const state = createGame(); state.mode = 'playing';
-    state.player.x = corner.x; state.player.y = corner.y;
+    state.player.x = corner.x + 20; state.player.y = corner.y + 20;
     updateGame(state, { x: 0, y: 0 }, 2.01);
     assert.equal(state.notice, 'What are you doing in the corner? huh?');
-    assert.equal(state.player.x, corner.x);
+    assert.equal(state.player.x, corner.x + 20);
   }
 });

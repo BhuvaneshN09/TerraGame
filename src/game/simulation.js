@@ -6,11 +6,11 @@ import { nearbyObject } from './interactions.js';
 export const PLAYER_SPEED = 76;
 export const EJECT_ZONE = Object.freeze({ x: 41 * 16, y: 33 * 16, width: 3 * 16, height: 3 * 16 });
 export const CORNER_ZONES = Object.freeze(ROOMS.flatMap(room => [
-  { x: (room.x + 1) * 16, y: (room.y + 1) * 16 },
-  { x: (room.x + room.width - 2) * 16, y: (room.y + 1) * 16 },
-  { x: (room.x + 1) * 16, y: (room.y + room.height - 2) * 16 },
-  { x: (room.x + room.width - 2) * 16, y: (room.y + room.height - 2) * 16 },
-]).filter(corner => !(corner.x >= EJECT_ZONE.x && corner.x <= EJECT_ZONE.x + EJECT_ZONE.width && corner.y >= EJECT_ZONE.y && corner.y <= EJECT_ZONE.y + EJECT_ZONE.height)));
+  { x: room.x * 16, y: room.y * 16 },
+  { x: (room.x + room.width) * 16, y: room.y * 16 },
+  { x: room.x * 16, y: (room.y + room.height) * 16 },
+  { x: (room.x + room.width) * 16, y: (room.y + room.height) * 16 },
+]));
 
 export function createGame() {
   const state = {
@@ -46,7 +46,9 @@ export function updateGame(state, input, dt) {
   state.cornerCooldown = Math.max(0, state.cornerCooldown - dt);
   state.noticeTimer = Math.max(0, state.noticeTimer - dt);
   if (state.noticeTimer === 0) state.notice = '';
-  const atCorner = CORNER_ZONES.some(corner => Math.hypot(state.player.x - corner.x, state.player.y - corner.y) <= 22);
+  // The player cannot occupy the wall tile itself, so use a generous radius around
+  // each visible room corner rather than requiring an exact pixel position.
+  const atCorner = CORNER_ZONES.some(corner => Math.hypot(state.player.x - corner.x, state.player.y - corner.y) <= 42);
   const insideEjectZone = state.player.x >= EJECT_ZONE.x && state.player.x <= EJECT_ZONE.x + EJECT_ZONE.width && state.player.y >= EJECT_ZONE.y && state.player.y <= EJECT_ZONE.y + EJECT_ZONE.height;
   state.ejectHold = insideEjectZone && !state.ejectCooldown ? state.ejectHold + dt : 0;
   if (!atCorner && state.ejectHold >= 2 && state.ejectCooldown === 0) {
