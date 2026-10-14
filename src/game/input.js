@@ -1,5 +1,5 @@
 const MOVEMENT = new Set(['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight']);
-const ACTIONS = new Map([['KeyE', 'interact'], ['Escape', 'pause']]);
+const ACTIONS = new Map([['KeyE', 'interact'], ['Escape', 'pause'], ['KeyM', 'menu']]);
 
 /** State is independent of DOM listeners, including edge-triggered actions. */
 export class InputState {

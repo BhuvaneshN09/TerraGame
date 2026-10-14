@@ -26,3 +26,15 @@ test('actions fire once per physical press, and focus cleanup drops pending acti
   assert.equal(input.consume('pause'), false);
   assert.equal(input.press('KeyQ'), false);
 });
+
+test('M opens the menu action once per press', () => {
+  const input = new InputState();
+  assert.equal(input.press('KeyM'), true);
+  assert.equal(input.consume('menu'), true);
+  assert.equal(input.consume('menu'), false);
+  input.press('KeyM', true);
+  assert.equal(input.consume('menu'), false);
+  input.release('KeyM');
+  input.press('KeyM');
+  assert.equal(input.consume('menu'), true);
+});

@@ -36,8 +36,9 @@ export function createInterface(app, actions) {
   let lastNote = '';
   get('pause').addEventListener('click', actions.pause);
   get('interact').addEventListener('click', actions.inspect);
-  get('help').addEventListener('click', () => { get('help-panel').hidden = !get('help-panel').hidden; });
-  get('menu-button').addEventListener('click', () => { get('help-panel').hidden = !get('help-panel').hidden; });
+  const toggleHelp = () => { get('help-panel').hidden = !get('help-panel').hidden; };
+  get('help').addEventListener('click', toggleHelp);
+  get('menu-button').addEventListener('click', toggleHelp);
   get('help-close').addEventListener('click', () => { get('help-panel').hidden = true; });
   dialog.addEventListener('cancel', event => event.preventDefault()); // Escape goes through the single input action path.
   dialog.addEventListener('click', event => {
@@ -108,5 +109,5 @@ export function createInterface(app, actions) {
       setText('field-note', object ? `${object.name} — ${object.status.toLowerCase()}. Observation recorded.` : 'No observations yet. The junction console is nearby.');
     }
   }
-  return { canvas, minimap: get('minimap'), render, destroy: () => { resize.disconnect(); cancelAnimationFrame(resizeFrame); } };
+  return { canvas, minimap: get('minimap'), render, toggleHelp, destroy: () => { resize.disconnect(); cancelAnimationFrame(resizeFrame); } };
 }
