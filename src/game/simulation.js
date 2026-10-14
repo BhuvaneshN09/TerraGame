@@ -18,7 +18,7 @@ export function createGame() {
     map: SHIP, objects: OBJECTS, camera: { x: 0, y: 0 },
     nearby: null, inspection: null, inspected: new Set(), elapsed: 0, runTimeLeft: 300,
     ejectHold: 0, ejectCooldown: 0, cornerHold: 0, cornerCooldown: 0, notice: '', noticeTimer: 0,
-    talkedToAlien: false,
+    talkedToAlien: false, challengeSolved: false,
     room: roomAt(SPAWN.x, SPAWN.y),
   };
   if (isBlocked(playerBounds(state.player), state.map, state.objects)) throw new Error('Player spawn is blocked.');
@@ -84,4 +84,12 @@ export function closeInspection(state) {
   if (state.mode !== 'inspecting') return;
   state.inspection = null;
   state.mode = 'playing';
+}
+
+export function solveChallenge(state, code) {
+  if (state.mode !== 'inspecting' || state.inspection?.id !== 'junction') return false;
+  if (code.trim().toUpperCase() !== 'PATCH-7A') return false;
+  state.challengeSolved = true;
+  state.inspection = { ...state.inspection, status: 'RESTORED', text: 'PATCH ACCEPTED. The junction control bus is responding again.' };
+  return true;
 }

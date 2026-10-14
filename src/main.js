@@ -1,5 +1,5 @@
 import './style.css';
-import { createGame, updateGame, inspectNearby, closeInspection } from './game/simulation.js';
+import { createGame, updateGame, inspectNearby, closeInspection, solveChallenge } from './game/simulation.js';
 import { bindInput } from './game/input.js';
 import { startLoop } from './game/loop.js';
 import { createRenderer } from './render/renderer.js';
@@ -23,6 +23,7 @@ const actions = {
   title: () => transition(() => { state = createGame(); }),
   inspect: () => { if (state.mode === 'playing' && state.nearby) transition(() => inspectNearby(state)); },
   close: () => transition(() => closeInspection(state)),
+  solve: code => { if (solveChallenge(state, code)) ui.render(state); },
 };
 
 const ui = createInterface(app, actions);

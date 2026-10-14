@@ -53,7 +53,8 @@ export function createInterface(app, actions) {
   dialog.addEventListener('cancel', event => event.preventDefault()); // Escape goes through the single input action path.
   dialog.addEventListener('click', event => {
     const action = event.target.closest('button')?.dataset.action;
-    if (action) actions[action]?.();
+    if (action === 'solve') actions.solve(get('patch-code').value);
+    else if (action) actions[action]?.();
   });
 
   let resizeFrame;
@@ -84,7 +85,8 @@ export function createInterface(app, actions) {
     } else if (state.mode === 'paused') {
       dialog.innerHTML = '<p class="eyebrow">EXPLORATION SUSPENDED</p><h2 id="dialog-heading">PAUSED</h2><p>Your position is held. Resume when you’re ready to continue the survey.</p><button class="primary-button" data-action="resume" autofocus>Resume exploration <span>→</span></button><button class="secondary-button" data-action="title">Return to title</button><p class="dialog-footnote">ESC TO RESUME · RETURNING TO TITLE RESETS THE SESSION</p>';
     } else if (state.mode === 'inspecting') {
-      dialog.innerHTML = '<p class="eyebrow">OBJECT INSPECTION / <span id="object-status"></span></p><h2 id="dialog-heading"></h2><p id="object-description" class="typing-copy"></p><button class="primary-button" data-action="close" autofocus>Back to exploration <span>↵</span></button><p class="dialog-footnote">E OR ESC TO CLOSE</p>';
+      const challenge = state.inspection.id === 'junction' && !state.challengeSolved;
+      dialog.innerHTML = `<p class="eyebrow">OBJECT INSPECTION / <span id="object-status"></span></p><h2 id="dialog-heading"></h2><p id="object-description" class="typing-copy"></p>${challenge ? '<label class="code-label" for="patch-code">PATCH SEQUENCE</label><input id="patch-code" class="code-input" autocomplete="off" spellcheck="false" placeholder="ENTER CODE"><button class="primary-button" data-action="solve" autofocus>Submit patch <span>↵</span></button>' : '<button class="primary-button" data-action="close" autofocus>Back to exploration <span>↵</span></button>'}<p class="dialog-footnote">E OR ESC TO CLOSE</p>`;
       get('dialog-heading').textContent = state.inspection.name;
       get('object-status').textContent = state.inspection.status;
       typeText(get('object-description'), state.inspection.text);
