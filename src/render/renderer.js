@@ -1,0 +1,63 @@
+import { VIEW, ROOMS } from '../world/ship.js';
+import { paintEnvironment, COLORS } from './environment.js';
+import { paintObject, paintPlayer } from './sprites.js';
+
+export function createRenderer(canvas, map, minimap) {
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('Canvas 2D is unavailable in this browser.');
+  canvas.width = VIEW.width; canvas.height = VIEW.height;
+  ctx.imageSmoothingEnabled = false;
+  const environment = paintEnvironment(map);
+  const mini = minimap?.getContext('2d');
+
+  function drawMap(state) {
+    if (!mini) return;
+    mini.clearRect(0, 0, minimap.width, minimap.height);
+    const scale = 3;
+    const ox = 8; const oy = 3;
+    for (let y = 0; y < map.height; y++) for (let x = 0; x < map.width; x++) {
+      if (!'.D'.includes(map.rows[y][x])) continue;
+      mini.fillStyle = '#334a48'; mini.fillRect(ox + x * scale, oy + y * scale, scale, scale);
+    }
+    for (const room of ROOMS) {
+      if (room.name !== state.room) continue;
+      mini.fillStyle = '#526954';
+      mini.fillRect(ox + room.x * scale, oy + room.y * scale, room.width * scale, room.height * scale);
+    }
+    mini.fillStyle = COLORS.amber;
+    for (const object of state.objects) mini.fillRect(ox + object.x / 16 * scale, oy + object.y / 16 * scale, 2, 2);
+    mini.strokeStyle = '#9aaf8b'; mini.lineWidth = 1;
+    mini.strokeRect(Math.round(ox + state.camera.x / 16 * scale) + 0.5, Math.round(oy + state.camera.y / 16 * scale) + 0.5, VIEW.width / 16 * scale, VIEW.height / 16 * scale);
+    mini.fillStyle = '#e2f0a3';
+    mini.fillRect(Math.round(ox + state.player.x / 16 * scale) - 1, Math.round(oy + state.player.y / 16 * scale) - 1, 3, 3);
+  }
+
+  return function render(state) {
+    ctx.fillStyle = COLORS.void; ctx.fillRect(0, 0, VIEW.width, VIEW.height);
+    // Deterministic star field, independent of game state and frame rate.
+    for (let index = 0; index < 85; index++) {
+      const x = ((index * 137 + 53 - Math.round(state.camera.x * 0.12)) % 480 + 480) % 480;
+      const y = ((index * 71 + 29 - Math.round(state.camera.y * 0.12)) % 288 + 288) % 288;
+      ctx.fillStyle = index % 4 ? '#263b43' : '#5a7371'; ctx.fillRect(x, y, 1, 1);
+    }
+    ctx.save();
+    ctx.translate(-Math.round(state.camera.x), -Math.round(state.camera.y));
+    ctx.drawImage(environment, 0, 0);
+    // Feet order keeps player/object overlap consistent in a top-down view.
+    const drawables = [...state.objects.map(object => ({ depth: object.y + object.height, object })), { depth: state.player.y + 5, player: state.player }];
+    drawables.sort((a, b) => a.depth - b.depth);
+    for (const item of drawables) {
+      if (item.player) paintPlayer(ctx, item.player, state.elapsed);
+      else paintObject(ctx, item.object, state.elapsed);
+    }
+    if (state.nearby && state.mode === 'playing') {
+      const object = state.nearby;
+      ctx.strokeStyle = '#c5dc8b'; ctx.lineWidth = 1;
+      ctx.strokeRect(object.x - 2.5, object.y - 2.5, object.width + 5, object.height + 5);
+      ctx.fillStyle = '#c5dc8b'; ctx.fillRect(object.x + object.width / 2 - 3, object.y - 10, 7, 7);
+      ctx.fillStyle = '#172729'; ctx.font = '6px monospace'; ctx.fillText('E', object.x + object.width / 2 - 1, object.y - 4);
+    }
+    ctx.restore();
+    drawMap(state);
+  };
+}

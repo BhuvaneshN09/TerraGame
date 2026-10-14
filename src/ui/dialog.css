@@ -1,0 +1,99 @@
+dialog {
+  width: min(440px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 34px;
+  border: 1px solid #718363;
+  background: #172223;
+  color: #dfe4d6;
+  box-shadow: 0 24px 120px #0009;
+  font-family: "Courier New", "Lucida Console", monospace;
+}
+
+dialog::backdrop {
+  background: #071013ba;
+}
+
+dialog .eyebrow {
+  color: #b7c899;
+  font-size: 9px;
+  letter-spacing: 1.2px;
+}
+
+dialog h2 {
+  font-family: "Courier New", "Lucida Console", monospace;
+  font-size: 34px;
+  font-weight: 500;
+  letter-spacing: -1.2px;
+  line-height: 1.12;
+  margin: 23px 0 18px;
+}
+
+dialog > p:not(.eyebrow):not(.dialog-footnote) {
+  font-size: 12px;
+  line-height: 1.9;
+  color: #b3c1b4;
+  margin-bottom: 25px;
+}
+
+.dialog-symbol {
+  width: 38px;
+  height: 38px;
+  color: #d1e796;
+  margin-top: 28px;
+}
+
+.primary-button, .secondary-button {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #d1e796;
+  font-size: 11px;
+  padding: 15px;
+}
+
+.primary-button {
+  background: #d1e796;
+  color: #1a2926;
+  font-weight: 700;
+}
+
+.secondary-button {
+  border-color: #485e4f;
+  background: transparent;
+  color: #c1cfb8;
+  margin-top: 10px;
+  justify-content: center;
+}
+
+dialog .dialog-footnote {
+  margin: 18px 0 0;
+  font-size: 8px;
+  line-height: 1.8;
+  letter-spacing: .4px;
+  color: #96ab95;
+}
+
+.dialog-footnote span {
+  padding: 0 5px;
+}
+
+.placeholder-label {
+  border-left: 2px solid #b99c68;
+  color: #bcac8b;
+  font-size: 9px;
+  letter-spacing: .5px;
+  line-height: 1.6;
+  padding: 8px 12px;
+  background: #b99c6809;
+  margin-bottom: 25px;
+}
+
+@media (max-width: 450px) {
+  dialog {
+    padding: 26px;
+  }
+  dialog h2 {
+    font-size: 29px;
+  }
+}

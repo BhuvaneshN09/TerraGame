@@ -1,0 +1,9 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    { "label": "DEAD CIRCUIT: develop", "type": "npm", "script": "dev", "isBackground": true, "problemMatcher": [] },
+    { "label": "DEAD CIRCUIT: check", "type": "npm", "script": "check", "group": "test", "problemMatcher": [] },
+    { "label": "DEAD CIRCUIT: browser tests", "type": "npm", "script": "test:browser", "group": "test", "problemMatcher": [] },
+    { "label": "DEAD CIRCUIT: build", "type": "npm", "script": "build", "group": "build", "problemMatcher": [] }
+  ]
+}
