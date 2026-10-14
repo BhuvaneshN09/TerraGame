@@ -48,7 +48,7 @@ export function createInterface(app, actions) {
   get('interact').addEventListener('click', actions.inspect);
   const toggleHelp = () => { get('help-panel').hidden = !get('help-panel').hidden; };
   get('help').addEventListener('click', toggleHelp);
-  get('menu-button').addEventListener('click', toggleHelp);
+  get('menu-button').addEventListener('click', actions.pause);
   get('help-close').addEventListener('click', () => { get('help-panel').hidden = true; });
   dialog.addEventListener('cancel', event => event.preventDefault()); // Escape goes through the single input action path.
   dialog.addEventListener('click', event => {
@@ -105,14 +105,18 @@ export function createInterface(app, actions) {
     setText('inspection-count', `${state.inspected.size} / ${state.objects.length}`);
     setText('help-progress', `Objects inspected: ${state.inspected.size} / ${state.objects.length}`);
     setText('mission-primary', state.talkedToAlien ? 'Find the broken circuit' : 'Talk to Morrow');
-    setText('mission-primary-status', state.talkedToAlien ? 'READY' : 'ACTIVE');
+    setText('mission-primary-status', state.talkedToAlien ? 'COMPLETE' : 'ACTIVE');
     setText('mission-inspect-status', `${state.inspected.size} / ${state.objects.length}`);
     const notice = get('eject-notice');
     if (state.notice) { notice.textContent = state.notice; notice.hidden = false; } else notice.hidden = true;
     get('pause').disabled = state.mode !== 'playing';
     const canInspect = state.mode === 'playing' && state.nearby;
     get('interact').hidden = !canInspect;
-    setText('interaction-text', canInspect ? state.nearby.name : 'Explore the ship. Look for objects.');
+    const greeting = 'Hello there traveler, talk to Morrow.';
+    const openingText = state.mode === 'playing' && !state.talkedToAlien && state.elapsed < 4
+      ? greeting.slice(0, Math.max(1, Math.floor(state.elapsed * 32)))
+      : 'Explore the ship. Look for objects.';
+    setText('interaction-text', canInspect ? state.nearby.name : openingText);
     [...get('inspection-progress').children].forEach((segment, i) => segment.classList.toggle('filled', i < state.inspected.size));
     const note = [...state.inspected].at(-1);
     if (note !== lastNote) {

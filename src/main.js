@@ -36,7 +36,7 @@ loop = startLoop(dt => {
     else if (state.mode === 'paused') actions.resume();
     else if (state.mode === 'inspecting') actions.close();
   }
-  if (input.consume('menu')) ui.toggleHelp();
+  if (input.consume('menu')) actions.pause();
   if (input.consume('interact')) {
     if (state.mode === 'inspecting') actions.close();
     else actions.inspect();
