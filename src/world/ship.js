@@ -46,7 +46,7 @@ export const OBJECTS = [
   { id: 'zombie-alien', name: 'Morrow, the stranded alien', kind: 'zombie', x: 31 * 16, y: 20 * 16, width: 18, height: 28,
     status: 'AWAKE', text: 'Morrow turns slowly, one cloudy eye catching the emergency light. “The Meridian is a dead ship carrying a living signal. Find the broken circuit, learn its language, and decide what deserves to wake up.” He points toward the transit spine. “That is all the story you need for now.”' },
   { id: 'junction', name: 'Junction console', kind: 'console', x: 29 * 16, y: 20 * 16, width: 32, height: 16,
-    status: 'STANDBY', text: 'ISSUE FOUND: the junction control bus is silent. Your five-minute repair run has started. Later in the challenge, enter the correct patch sequence to restore the circuit.' },
+    status: 'STANDBY', text: 'ISSUE FOUND: the junction control bus is silent. Your five-minute repair run has started. Inspect this console to log the issue; the code-entry repair step is the next challenge milestone.' },
   { id: 'medkit', name: 'Medical locker', kind: 'locker', x: 7 * 16, y: 17 * 16, width: 24, height: 32,
     status: 'SEALED', text: 'Emergency supplies sit behind a sealed panel. The inventory manifest has faded. This locker is an inspection placeholder; items cannot be collected yet.' },
   { id: 'bunks', name: 'Crew bunk', kind: 'bunk', x: 19 * 16, y: 17 * 16, width: 32, height: 48,
@@ -54,7 +54,7 @@ export const OBJECTS = [
   { id: 'reactor', name: 'Auxiliary drive', kind: 'reactor', x: 44 * 16, y: 19 * 16, width: 48, height: 48,
     status: 'OFFLINE', text: 'The auxiliary drive is cold. A maintenance socket waits below the housing. This is a placeholder system; there is no repair mechanic or simulated power network yet.' },
   { id: 'relay', name: 'Navigation relay', kind: 'console', x: 29 * 16, y: 5 * 16, width: 48, height: 24,
-    status: 'NO SIGNAL', text: 'The navigation relay displays a frozen star chart. Its last coordinates are unreadable. The programming system and campaign are outside this foundation milestone.' },
+    status: 'NO SIGNAL', text: 'The navigation relay displays a frozen star chart. Its last coordinates are unreadable. The relay is only an observation point for this run.' },
   { id: 'freight', name: 'Cargo container', kind: 'crate', x: 23 * 16, y: 32 * 16, width: 32, height: 32,
     status: 'SECURED', text: 'A strapped-down container marked MERIDIAN / FLIGHT SPARES. It remains secured to the deck. This inspection does not unlock inventory or progression.' },
 ];
