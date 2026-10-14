@@ -43,7 +43,7 @@ export const SHIP = authorShip();
 export const SPAWN = Object.freeze({ x: 30.5 * TILE_SIZE, y: 22.5 * TILE_SIZE });
 
 export const OBJECTS = [
-  { id: 'zombie-alien', name: 'Morrow, the stranded alien', kind: 'zombie', x: 11 * 16, y: 22 * 16, width: 18, height: 28,
+  { id: 'zombie-alien', name: 'Morrow, the stranded alien', kind: 'zombie', x: 30 * 16, y: 24 * 16, width: 18, height: 28,
     status: 'AWAKE', text: 'Morrow turns slowly, one cloudy eye catching the emergency light. “The Meridian is a dead ship carrying a living signal. Find the broken circuit, learn its language, and decide what deserves to wake up.” He points toward the transit spine. “That is all the story you need for now.”' },
   { id: 'junction', name: 'Junction console', kind: 'console', x: 29 * 16, y: 20 * 16, width: 32, height: 16,
     status: 'STANDBY', text: 'A small diagnostic light is still blinking. The terminal has power, but its control bus is silent. This is a placeholder inspection; programming and repairs arrive in a later milestone.' },

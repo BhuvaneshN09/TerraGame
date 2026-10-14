@@ -15,6 +15,12 @@ test('ship spawn and every placeholder sit on valid floors', () => {
   for (const object of OBJECTS) assert.equal(isBlocked(object, SHIP), false, object.id);
 });
 
+test('Morrow waits beside the player spawn for the opening mission', () => {
+  const morrow = OBJECTS.find(object => object.id === 'zombie-alien');
+  assert.ok(morrow);
+  assert.ok(nearbyObject(SPAWN, [morrow], SHIP));
+});
+
 test('all walkable ship tiles form one connected environment', () => {
   const start = [Math.floor(SPAWN.x / 16), Math.floor(SPAWN.y / 16)];
   const seen = new Set([start.join(',')]);
