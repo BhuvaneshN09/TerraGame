@@ -1,80 +1,36 @@
 # FALLSHIP
 
-A local browser game foundation: explore the derelict USS Meridian as an engineer, meet Morrow the stranded zombie alien, and inspect six placeholder systems. This milestone includes movement, collisions, camera, pixel rendering, menus, mission HUD, and harmless corner/ejection easter eggs. It does **not** include programming, a virtual CPU, campaign, repair simulation, inventory, audio, or saved progress.
+FALLSHIP is a small browser game about waking up on the derelict USS Meridian. You play as an engineer moving through a quiet ship, meeting Morrow, a stranded zombie alien, and figuring out what still has power. The current build focuses on exploration: pixel-art rooms, collision, a following camera, readable menus, a minimap, simple objects to inspect, and a five-minute repair run at the junction console. There is also a small corner easter egg and an ejection gag hidden in the ship.
 
-## Run in the existing VS Code workspace
+This is an early foundation rather than the finished game. The virtual machine, campaign, inventory, audio, saves, and larger repair system are still planned work. The first repair challenge is intentionally simple: find the junction console, correct the broken `lights_on()` Python function, and run the patch before the timer runs out.
 
-Requirements: Node.js 22.12 or newer and npm. This workspace was verified with Node 24.21.0 and npm 11.19.0.
+## Running it
+
+Use Node.js 22.12 or newer. From the project directory, install the packages and start Vite:
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Open the printed local address (normally `http://127.0.0.1:5173`). VS Code's **Terminal → Run Task** also exposes develop, check, browser test, and build tasks from `.vscode/tasks.json`. Development stays in this directory. No environment variables, account, backend, or external assets are required.
+Open the local address Vite prints, usually `http://127.0.0.1:5173`. The same commands are available through the tasks in `.vscode/tasks.json`. `npm run build` creates the production bundle, `npm run preview` serves that bundle locally, and `npm run check` runs the syntax checks, unit tests, and build together.
 
-```sh
-npm run check                 # Syntax checks, 17 unit tests, production build
-npm run test:browser:install  # One-time Chromium download inside node_modules
-npm run test:browser          # Build, then 5 Chromium tests against the production output
-npm run preview              # Serve the built dist/ directory locally
-```
+The browser tests use Playwright and Chromium. Run `npm run test:browser:install` once if the browser binary is not present, then use `npm run test:browser` to build the game and exercise it in a real browser.
 
-The browser suite owns port 4173 and stops its preview server when finished. Close any other process on that port before running it. Vite development runs separately on port 5173 by default. Browser binaries are stored inside this project at `node_modules/.cache/ms-playwright`; no system browser installation is required. A host still needs the usual Chromium system libraries.
+## Playing
 
-## Controls
+Move with WASD or the arrow keys. Press E when a highlighted object is close enough to inspect it. Escape pauses the run or closes an inspection, while the MENU button opens the pause menu and the question-mark button opens the field guide. A new run begins with Morrow near the spawn and a five-minute timer. After speaking with him, find the junction console and repair the function shown in its editor. The first failed patch asks you to try again; a later failure provides a hint. A successful repair confirms `RESTORED`, shows a level-passed screen, and awards stars based on the time remaining.
 
-| Action | Input |
-| --- | --- |
-| Move | WASD or arrow keys; diagonal movement is normalized |
-| Inspect highlighted nearby object | E or the Inspect button |
-| Close inspection | E, Escape, or Back to exploration |
-| Pause / resume | Escape, or the pause/resume buttons |
-| Start and navigate menus | Tab / Shift+Tab and Enter, or mouse |
-| Reset session | Pause → Return to title → Begin exploration |
+## How the code is arranged
 
-Focus loss or a hidden page pauses active exploration and clears input. Start/resume returns focus to the canvas. Native modal dialogs contain menu focus. No key should remain held after a transition. Session time, position, location, inspected-object count, and the minimap come from current game state. Ship status descriptions are placeholders.
+The browser entry point is `index.html`, with `src/main.js` connecting the game state, input, renderer, and interface. The authored ship, rooms, objects, and spawn live in `src/world/ship.js`. Collision and movement rules are kept in `src/world/collision.js`, while `src/game/simulation.js` owns the run timer, player updates, inspections, easter eggs, and repair challenge. `src/game/input.js` translates keyboard events into held movement and one-shot actions.
 
-## Structure and extension points
+Rendering is split between the procedural environment, pixel sprites, camera, and minimap under `src/render/`. The HTML menus, HUD, dialogue editor, and responsive layout are under `src/ui/`. Unit tests cover the pure movement, collision, map, input, timer, and interaction rules. The Playwright suite in `tests/browser/` checks the important browser journeys against the production build.
 
-| Files | Responsibility |
-| --- | --- |
-| `index.html`, `src/main.js` | HTML entry and composition of simulation, input, rendering, and UI |
-| `src/world/ship.js` | Validated authored map, room names, spawn, Morrow, and six placeholder objects |
-| `src/world/collision.js` | Player bounds, tile/object collision, normalization, substepped sliding |
-| `src/game/simulation.js` | Game state, movement update, inspection transitions |
-| `src/game/input.js` | Held keys, edge-triggered actions, DOM listeners and focus cleanup |
-| `src/game/loop.js` | Fixed 60 Hz simulation, capped catch-up and lifecycle |
-| `src/game/camera.js`, `src/game/interactions.js` | Camera clamping and reachable-object selection |
-| `src/render/environment.js` | Cached, original procedural pixel tile art and floor markings |
-| `src/render/sprites.js` | Player and placeholder object pixel sprites |
-| `src/render/renderer.js` | Camera transform, depth ordering, interaction indicator and minimap |
-| `src/ui/interface.js`, `src/ui/dialog.css`, `src/style.css` | Accessible HTML menus, HUD and responsive layout |
-| `tests/unit/game.test.js`, `input.test.js`, `world.test.js` | Pure game and input regressions |
-| `tests/browser/foundation.spec.js`, `playwright.config.js` | Production-browser journey and rendering checks |
-| `scripts/check.mjs`, `scripts/browser.mjs` | Local verification and project-local browser cache |
-| `package.json`, `package-lock.json`, `.gitignore`, `.vscode/tasks.json` | Reproducible tooling and VS Code tasks |
-| `docs/PLAN.md`, `docs/DEVELOPMENT_LOG.md`, `docs/VERIFICATION.md` | 120-hour plan, development record and evidence |
-| `docs/screenshots/` | Captures from browser visual inspection |
+The game uses a 480×288 logical canvas, 16-pixel map tiles, and a fixed 60 Hz simulation behind `requestAnimationFrame`. The browser scales that canvas to the available screen. Collision geometry is kept separate from the artwork so the pixel sprites can change without changing movement behavior.
 
-There are **no runtime dependencies**. Vite provides development and production builds. Playwright provides browser testing; Node's built-in test runner handles pure logic. No external art or fonts are downloaded at runtime. `dist/`, test artifacts, browser binaries, and dependencies are generated and ignored.
+## Current status
 
-## Architecture contracts
+The current foundation has been tested with the Node test runner, a Vite production build, and Chromium browser tests. It is designed to stay easy to extend: new rooms and objects are authored in the ship data, new interactions live in the simulation, and future repair systems can be added without putting game rules inside the renderer.
 
-- Map tiles are 16 world pixels. `.` is floor, `D` is a passable threshold, `#` is hull, and space is solid void. Out-of-bounds space is solid.
-- Player coordinates represent the center of a 10×10 collision footprint. Sprites extend upward from that footprint. Physics retains subpixel precision; rendering rounds both camera and sprite coordinates.
-- The logical viewport is 480×288. Display scaling uses whole multiples when possible, with downscaling for smaller screens and letterboxing between integer sizes.
-- Rendering uses `requestAnimationFrame`; simulation advances in fixed 1/60-second steps. At most eight steps run after a delayed frame. Hidden-page time is discarded rather than simulated on resume.
-- Map/background drawing is cached. Sprites are sorted by their feet/bottom edge. Graphics never determine collision geometry.
-- `title`, `playing`, `paused`, and `inspecting` are explicit modes. Only `playing` advances movement and session time.
-- An object is selectable within 30 pixels of its bounds, with a clear tile line of sight. Ties resolve in authored object order. `inspected` is an in-memory set for HUD observations only.
-- To add a room, edit authored rectangles and thresholds in `ship.js`; run map and collision-aware reachability tests. To add an object, add its bounds/text and sprite kind, then validate spawn and reachable interaction. If the number of objects changes, also update the HUD's six progress segments.
-- Keep future interpreter/repair modules separate from the renderer and input adapter. Do not add those systems until their milestone is explicitly started.
-
-## Verification and current limits
-
-The production build, 17 unit tests, and five Chromium browser tests passed on 2026-10-14. See [the verification record](docs/VERIFICATION.md) for the exact scope and screenshots, and [the development log](docs/DEVELOPMENT_LOG.md) for issues fixed.
-
-Keyboard and mouse are supported; touch and gamepad controls are not implemented. Layout is responsive, but mobile exploration still requires a keyboard. Only Chromium was browser-tested; Firefox and Safari compatibility is unverified. The canvas game is visual; text menus and HUD improve access but do not constitute a fully screen-reader-playable game. There is no persistent save data. No Git repository existed in the supplied directory, and this work did not create commits.
-
-The foundation milestone ends here. The recommended next task is a short user playtest of navigation, collision feel, camera readability, and interaction feedback, followed by a small programming-interaction design specification. The [12-week plan](docs/PLAN.md) reserves later implementation separately.
+The longer development plan, decisions, and verification notes are in `docs/PLAN.md`, `docs/DEVELOPMENT_LOG.md`, and `docs/VERIFICATION.md`.
