@@ -14,11 +14,14 @@ export const CORNER_ZONES = Object.freeze(ROOMS.flatMap(room => [
 
 export function createGame() {
   const state = {
-    mode: 'title', player: { ...SPAWN, facing: 'down', moving: false, walkTime: 0 },
+    mode: 'title',
+    player: { ...SPAWN, facing: 'down', moving: false, walkTime: 0 },
     map: SHIP, objects: OBJECTS, camera: { x: 0, y: 0 },
     nearby: null, inspection: null, inspected: new Set(), elapsed: 0, runTimeLeft: 300,
-    ejectHold: 0, ejectCooldown: 0, cornerHold: 0, cornerCooldown: 0, notice: '', noticeTimer: 0,
-    talkedToAlien: false, challengeSolved: false, levelPassed: false, stars: 0, challengeAttempts: 0,
+    ejectHold: 0, ejectCooldown: 0, cornerHold: 0, cornerCooldown: 0,
+    notice: '', noticeTimer: 0,
+    talkedToAlien: false, challengeSolved: false, levelPassed: false,
+    stars: 0, challengeAttempts: 0,
     room: roomAt(SPAWN.x, SPAWN.y),
   };
   if (isBlocked(playerBounds(state.player), state.map, state.objects)) throw new Error('Player spawn is blocked.');
@@ -47,8 +50,7 @@ export function updateGame(state, input, dt) {
   state.cornerCooldown = Math.max(0, state.cornerCooldown - dt);
   state.noticeTimer = Math.max(0, state.noticeTimer - dt);
   if (state.noticeTimer === 0) state.notice = '';
-  // The player cannot occupy the wall tile itself, so use a generous radius around
-  // each visible room corner rather than requiring an exact pixel position.
+  // Check a radius around each room corner because walls block exact corner pixels.
   const atCorner = CORNER_ZONES.some(corner => Math.hypot(state.player.x - corner.x, state.player.y - corner.y) <= 42);
   const insideEjectZone = state.player.x >= EJECT_ZONE.x && state.player.x <= EJECT_ZONE.x + EJECT_ZONE.width && state.player.y >= EJECT_ZONE.y && state.player.y <= EJECT_ZONE.y + EJECT_ZONE.height;
   state.ejectHold = insideEjectZone && !state.ejectCooldown ? state.ejectHold + dt : 0;
