@@ -2,8 +2,6 @@
 
 FALLSHIP is a small browser game about waking up on the derelict USS Meridian. You play as an engineer moving through a quiet ship, meeting Morrow, a stranded zombie alien, and figuring out what still has power. The current build focuses on exploration: pixel-art rooms, collision, a following camera, readable menus, a minimap, simple objects to inspect, and a five-minute repair run at the junction console. There is also a small corner easter egg and an ejection gag hidden in the ship.
 
-This is an early foundation rather than the finished game. The virtual machine, campaign, inventory, audio, saves, and larger repair system are still planned work. The first repair challenge is intentionally simple: find the junction console, correct the broken `lights_on()` Python function, and run the patch before the timer runs out.
-
 ## Running it
 
 Use Node.js 22.12 or newer. From the project directory, install the packages and start Vite:
