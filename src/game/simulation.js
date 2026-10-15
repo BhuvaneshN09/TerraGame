@@ -88,7 +88,8 @@ export function closeInspection(state) {
 
 export function solveChallenge(state, code) {
   if (state.mode !== 'inspecting' || state.inspection?.id !== 'junction') return false;
-  if (code.trim().toUpperCase() !== 'PATCH-7A') return false;
+  const normalized = code.trim().replace(/\r/g, '').replace(/[ \t]+$/gm, '');
+  if (normalized !== 'def restore_bus():\n    return "PATCH-7A"') return false;
   state.challengeSolved = true;
   state.inspection = { ...state.inspection, status: 'RESTORED', text: 'PATCH ACCEPTED. The junction control bus is responding again.' };
   return true;
