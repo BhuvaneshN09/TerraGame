@@ -89,8 +89,8 @@ export function closeInspection(state) {
 export function solveChallenge(state, code) {
   if (state.mode !== 'inspecting' || state.inspection?.id !== 'junction') return false;
   const normalized = code.trim().replace(/\r/g, '').replace(/[ \t]+$/gm, '');
-  if (normalized !== 'def restore_bus():\n    return "PATCH-7A"') return false;
+  if (normalized !== 'def lights_on():\n    return "LIGHTS_ON"') return false;
   state.challengeSolved = true;
-  state.inspection = { ...state.inspection, status: 'RESTORED', text: 'PATCH ACCEPTED. The junction control bus is responding again.' };
+  state.inspection = { ...state.inspection, status: 'RESTORED', text: 'PATCH ACCEPTED. lights_on() now returns LIGHTS_ON and the junction control bus is responding again.' };
   return true;
 }
