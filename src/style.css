@@ -124,6 +124,7 @@ button:hover:not(:disabled) {
 .mission-timer strong { float: right; color: var(--accent); font-size: 10px; }
 .code-label { display:block; margin:10px 0 5px; color:#9caf7c; font-size:8px; letter-spacing:1px; }
 .code-input { width:min(520px, 100%); border:1px solid #718363; background:#0d1718; color:#d1e796; padding:10px; font:12px var(--retro); line-height:1.45; border-radius:2px; margin-bottom:10px; resize:vertical; }
+.level-result { color: var(--accent); line-height: 1.8; letter-spacing: 1px; }
 .eject-notice { position: absolute; z-index: 8; left: 50%; top: 50%; transform: translate(-50%, -50%); padding: 14px 18px; border: 1px solid #d1e796; background: #122021e8; color: var(--accent); font: 11px var(--retro); letter-spacing: 1px; text-align: center; white-space: nowrap; }
 .eject-notice:not([hidden]) { animation: corner-fade 3s ease forwards; }
 @keyframes corner-fade { 0%, 65% { opacity: 1; } 100% { opacity: 0; } }

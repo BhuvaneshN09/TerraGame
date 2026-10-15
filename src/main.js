@@ -23,7 +23,7 @@ const actions = {
   title: () => transition(() => { state = createGame(); }),
   inspect: () => { if (state.mode === 'playing' && state.nearby) transition(() => inspectNearby(state)); },
   close: () => transition(() => closeInspection(state)),
-  solve: code => { if (solveChallenge(state, code)) ui.render(state); },
+  solve: code => { if (solveChallenge(state, code)) ui.refresh(state); },
 };
 
 const ui = createInterface(app, actions);

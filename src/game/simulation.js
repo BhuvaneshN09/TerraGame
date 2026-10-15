@@ -18,7 +18,7 @@ export function createGame() {
     map: SHIP, objects: OBJECTS, camera: { x: 0, y: 0 },
     nearby: null, inspection: null, inspected: new Set(), elapsed: 0, runTimeLeft: 300,
     ejectHold: 0, ejectCooldown: 0, cornerHold: 0, cornerCooldown: 0, notice: '', noticeTimer: 0,
-    talkedToAlien: false, challengeSolved: false,
+    talkedToAlien: false, challengeSolved: false, levelPassed: false, stars: 0,
     room: roomAt(SPAWN.x, SPAWN.y),
   };
   if (isBlocked(playerBounds(state.player), state.map, state.objects)) throw new Error('Player spawn is blocked.');
@@ -91,6 +91,8 @@ export function solveChallenge(state, code) {
   const normalized = code.trim().replace(/\r/g, '').replace(/[ \t]+$/gm, '');
   if (normalized !== 'def lights_on():\n    return "LIGHTS_ON"') return false;
   state.challengeSolved = true;
+  state.levelPassed = true;
+  state.stars = state.runTimeLeft >= 240 ? 3 : state.runTimeLeft >= 120 ? 2 : 1;
   state.inspection = { ...state.inspection, status: 'RESTORED', text: 'PATCH ACCEPTED. lights_on() now returns LIGHTS_ON and the junction control bus is responding again.' };
   return true;
 }

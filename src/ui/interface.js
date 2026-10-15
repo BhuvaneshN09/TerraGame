@@ -86,10 +86,15 @@ export function createInterface(app, actions) {
       dialog.innerHTML = '<p class="eyebrow">EXPLORATION SUSPENDED</p><h2 id="dialog-heading">PAUSED</h2><p>Your position is held. Resume when you’re ready to continue the survey.</p><button class="primary-button" data-action="resume" autofocus>Resume exploration <span>→</span></button><button class="secondary-button" data-action="title">Return to title</button><p class="dialog-footnote">ESC TO RESUME · RETURNING TO TITLE RESETS THE SESSION</p>';
     } else if (state.mode === 'inspecting') {
       const challenge = state.inspection.id === 'junction' && !state.challengeSolved;
-      dialog.innerHTML = `<p class="eyebrow">OBJECT INSPECTION / <span id="object-status"></span></p><h2 id="dialog-heading"></h2><p id="object-description" class="typing-copy"></p>${challenge ? '<label class="code-label" for="patch-code">PYTHON PATCH / RESTORE CONTROL BUS</label><textarea id="patch-code" class="code-input" rows="3" spellcheck="false">def lights_on():\n    return "LIGTHS_ON"</textarea><button class="primary-button" data-action="solve" autofocus>Run patch <span>↵</span></button>' : '<button class="primary-button" data-action="close" autofocus>Back to exploration <span>↵</span></button>'}<p class="dialog-footnote">E OR ESC TO CLOSE</p>`;
-      get('dialog-heading').textContent = state.inspection.name;
-      get('object-status').textContent = state.inspection.status;
-      typeText(get('object-description'), state.inspection.text);
+      const result = state.challengeSolved && state.levelPassed;
+      dialog.innerHTML = `<p class="eyebrow">${result ? 'LEVEL PASSED / REPAIR CONFIRMED' : 'OBJECT INSPECTION / <span id="object-status"></span>'}</p><h2 id="dialog-heading">${result ? 'RESTORED' : ''}</h2><p id="object-description" class="typing-copy"></p>${challenge ? '<label class="code-label" for="patch-code">PYTHON PATCH / RESTORE CONTROL BUS</label><textarea id="patch-code" class="code-input" rows="3" spellcheck="false">def lights_on():\n    return "LIGTHS_ON"</textarea><button class="primary-button" data-action="solve" autofocus>Run patch <span>↵</span></button>' : result ? `<p class="level-result">LEVEL PASSED<br>${'★'.repeat(state.stars)}${'☆'.repeat(3 - state.stars)}<br>Run time ${Math.ceil(state.runTimeLeft)} seconds remaining.</p><button class="primary-button" data-action="close" autofocus>Continue exploration <span>↵</span></button>` : '<button class="primary-button" data-action="close" autofocus>Back to exploration <span>↵</span></button>'}<p class="dialog-footnote">E OR ESC TO CLOSE</p>`;
+      if (!result) {
+        get('dialog-heading').textContent = state.inspection.name;
+        get('object-status').textContent = state.inspection.status;
+        typeText(get('object-description'), state.inspection.text);
+      } else {
+        typeText(get('object-description'), state.inspection.text);
+      }
     }
     if (!dialog.open) dialog.showModal();
     dialog.querySelector('[autofocus]')?.focus();
@@ -130,5 +135,5 @@ export function createInterface(app, actions) {
       setText('field-note', object ? `${object.name} — ${object.status.toLowerCase()}. Observation recorded.` : 'No observations yet. The junction console is nearby.');
     }
   }
-  return { canvas, minimap: get('minimap'), render, toggleHelp, destroy: () => { resize.disconnect(); cancelAnimationFrame(resizeFrame); } };
+  return { canvas, minimap: get('minimap'), render, refresh: state => { shownMode = ''; render(state); }, toggleHelp, destroy: () => { resize.disconnect(); cancelAnimationFrame(resizeFrame); } };
 }
