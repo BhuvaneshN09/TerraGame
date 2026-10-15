@@ -1,4 +1,4 @@
-# DEAD CIRCUIT
+# FALLSHIP
 
 A local browser game foundation: explore the derelict USS Meridian as an engineer, meet Morrow the stranded zombie alien, and inspect six placeholder systems. This milestone includes movement, collisions, camera, pixel rendering, menus, mission HUD, and harmless corner/ejection easter eggs. It does **not** include programming, a virtual CPU, campaign, repair simulation, inventory, audio, or saved progress.
 

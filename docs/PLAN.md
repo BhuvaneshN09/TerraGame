@@ -1,4 +1,4 @@
-# DEAD CIRCUIT — 120-hour development plan
+# FALLSHIP — 120-hour development plan
 
 Twelve weeks at ten hours per week. These are planning allocations, not a claim of hours already worked. Advance only after the previous checkpoint passes. Reallocate later scope rather than skipping validation.
 

@@ -4,9 +4,9 @@ export function createInterface(app, actions) {
   app.innerHTML = `
     <div class="workspace">
       <section class="game-panel" aria-label="Game">
-        <div class="viewport-heading"><div class="wordmark">${circuit}<span>DEAD CIRCUIT</span></div><div class="top-actions"><span id="room" aria-live="polite">Transit spine</span><button id="menu-button" class="menu-button" aria-label="Open menu">MENU</button><button id="help" class="help-button" aria-label="Show controls and mission information">?</button><button id="pause" class="text-button" aria-label="Pause game">Ⅱ</button></div></div>
+        <div class="viewport-heading"><div class="wordmark">${circuit}<span>FALLSHIP</span></div><div class="top-actions"><span id="room" aria-live="polite">Transit spine</span><button id="menu-button" class="menu-button" aria-label="Open menu">MENU</button><button id="help" class="help-button" aria-label="Show controls and mission information">?</button><button id="pause" class="text-button" aria-label="Pause game">Ⅱ</button></div></div>
         <div id="viewport" class="viewport">
-          <canvas id="game" tabindex="0" aria-label="Spaceship exploration. Use W A S D or arrow keys to move, E to inspect, and Escape to pause." aria-describedby="keyboard-help">DEAD CIRCUIT uses a Canvas 2D viewport. Controls and inspection details are also available as text.</canvas>
+          <canvas id="game" tabindex="0" aria-label="Spaceship exploration. Use W A S D or arrow keys to move, E to inspect, and Escape to pause." aria-describedby="keyboard-help">FALLSHIP uses a Canvas 2D viewport. Controls and inspection details are also available as text.</canvas>
           <span class="viewport-corner corner-a" aria-hidden="true"></span><span class="viewport-corner corner-b" aria-hidden="true"></span>
         </div>
         <div class="game-status"><span><span class="status-dot"></span><span id="game-mode">AWAITING INPUT</span></span><span id="position" aria-label="Player coordinates">X 488 / Y 360</span><span id="session-time" aria-label="Session time">00:00</span></div>
@@ -22,7 +22,7 @@ export function createInterface(app, actions) {
     <div id="eject-notice" class="eject-notice" hidden></div>
     <section id="help-panel" class="help-panel" hidden aria-label="Controls and mission information">
       <button id="help-close" class="help-close" aria-label="Close information">×</button>
-      <p class="eyebrow">DEAD CIRCUIT / FIELD GUIDE</p><h2>Explore the ship.</h2>
+      <p class="eyebrow">FALLSHIP / FIELD GUIDE</p><h2>Explore the ship.</h2>
       <p>Look for highlighted objects and press <kbd>E</kbd> to inspect them.</p>
       <p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrow keys move. <kbd>ESC</kbd> pauses.</p>
       <p id="help-progress">Objects inspected: 0 / 7</p>
@@ -81,7 +81,7 @@ export function createInterface(app, actions) {
       dialog.close(); canvas.focus({ preventScroll: true }); return;
     }
     if (state.mode === 'title') {
-      dialog.innerHTML = `<p class="eyebrow">DEAD CIRCUIT / EXPLORATION BUILD</p><div class="dialog-symbol">${circuit}</div><h2 id="dialog-heading">The ship is silent.<br>You’re still here.</h2><p>Step aboard the Meridian. Explore its empty corridors and inspect the systems left behind.</p><button class="primary-button" data-action="start" autofocus>Begin exploration <span>→</span></button><p class="dialog-footnote">WASD / ARROWS TO MOVE <span>·</span> E TO INSPECT</p>`;
+      dialog.innerHTML = `<p class="eyebrow">FALLSHIP / EXPLORATION BUILD</p><div class="dialog-symbol">${circuit}</div><h2 id="dialog-heading">The ship is silent.<br>You’re still here.</h2><p>Step aboard the Meridian. Explore its empty corridors and inspect the systems left behind.</p><button class="primary-button" data-action="start" autofocus>Begin exploration <span>→</span></button><p class="dialog-footnote">WASD / ARROWS TO MOVE <span>·</span> E TO INSPECT</p>`;
     } else if (state.mode === 'paused') {
       dialog.innerHTML = '<p class="eyebrow">EXPLORATION SUSPENDED</p><h2 id="dialog-heading">PAUSED</h2><p>Your position is held. Resume when you’re ready to continue the survey.</p><button class="primary-button" data-action="resume" autofocus>Resume exploration <span>→</span></button><button class="secondary-button" data-action="title">Return to title</button><p class="dialog-footnote">ESC TO RESUME · RETURNING TO TITLE RESETS THE SESSION</p>';
     } else if (state.mode === 'inspecting') {
