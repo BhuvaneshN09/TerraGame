@@ -27,6 +27,14 @@ dialog[open][data-mode="paused"] {
   transform: translate(-50%, -50%);
 }
 
+dialog[open][data-result="passed"] {
+  inset: 50% auto auto 50%;
+  width: min(520px, calc(100vw - 32px));
+  margin: 0;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
 dialog[open] .typing-copy { max-width: 1100px; min-height: 42px; }
 dialog[open] h2 { margin: 5px 0 8px; font-size: 22px; }
 

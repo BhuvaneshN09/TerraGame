@@ -46,7 +46,7 @@ export const OBJECTS = [
   { id: 'zombie-alien', name: 'Morrow, the stranded alien', kind: 'zombie', x: 31 * 16, y: 20 * 16, width: 18, height: 28,
     status: 'AWAKE', text: 'Morrow turns slowly, one cloudy eye catching the emergency light. “The Meridian is a dead ship carrying a living signal. Find the broken circuit, learn its language, and decide what deserves to wake up.” He points toward the transit spine. “That is all the story you need for now.”' },
   { id: 'junction', name: 'Junction console', kind: 'console', x: 29 * 16, y: 20 * 16, width: 32, height: 16,
-    status: 'STANDBY', text: 'ISSUE FOUND: the junction control bus is silent. The existing lights_on() patch has an invalid return value: LIGTHS_ON. Correct the spelling to LIGHTS_ON, then run the patch.' },
+    status: 'STANDBY', text: 'ISSUE FOUND: the junction control bus is silent. The existing lights_on() patch fails validation. Run the corrected function to restore the lights.' },
   { id: 'medkit', name: 'Medical locker', kind: 'locker', x: 7 * 16, y: 17 * 16, width: 24, height: 32,
     status: 'SEALED', text: 'Emergency supplies sit behind a sealed panel. The inventory manifest has faded.' },
   { id: 'bunks', name: 'Crew bunk', kind: 'bunk', x: 19 * 16, y: 17 * 16, width: 32, height: 48,
