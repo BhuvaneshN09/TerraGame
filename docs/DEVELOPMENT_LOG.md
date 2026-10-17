@@ -79,6 +79,11 @@ Approximate total active session effort: 37 minutes, including review and verifi
 - Added a title-only shooting-star spawner that fires one streak every two seconds with random position, direction, distance, and flight time. Each streak cleans itself up, and the timer stops when the menu closes.
 - Validation: syntax checks, 24 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
 
+## Checkpoint 24 — populated shooting-star field (complete; ~5 minutes)
+
+- Expanded title shooting stars to randomized bursts of twelve streaks, with overlapping flights so more than ten remain visible across the menu at once.
+- Validation: syntax checks, 24 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
+
 ## Checkpoint 20 — gravity title motion (complete; ~5 minutes)
 
 - Replaced the scripted corner loop with a small title-only physics loop. The player has horizontal velocity, gravity, wall and ceiling collisions, floor rebounds, and impact damping, so it bounces freely inside the menu.

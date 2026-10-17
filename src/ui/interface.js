@@ -60,11 +60,14 @@ export function createInterface(app, actions) {
       star.style.top = `${Math.random() * 100}%`;
       star.style.setProperty('--angle', `${angle}deg`);
       star.style.setProperty('--distance', `${distance}px`);
-      star.style.setProperty('--flight', `${700 + Math.random() * 700}ms`);
+      star.style.setProperty('--flight', `${1800 + Math.random() * 1400}ms`);
       star.addEventListener('animationend', () => star.remove(), { once: true });
       field.append(star);
     };
-    shootingStarTimer = setInterval(spawn, 2000);
+    for (let count = 0; count < 12; count++) spawn();
+    shootingStarTimer = setInterval(() => {
+      for (let count = 0; count < 12; count++) spawn();
+    }, 2000);
   };
   get('pause').addEventListener('click', actions.pause);
   get('interact').addEventListener('click', actions.inspect);
