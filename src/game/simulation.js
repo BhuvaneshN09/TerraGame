@@ -123,7 +123,7 @@ export function solveChallenge(state, code) {
   const normalized = code.trim().replace(/\r/g, '').replace(/[ \t]+$/gm, '');
   if (normalized !== state.currentChallenge.fixed) {
     state.challengeAttempts += 1;
-    state.inspection = { ...state.inspection, text: state.challengeAttempts >= 2 ? 'TRY AGAIN. Check the return value spelling: the console expects LIGHTS_ON.' : 'TRY AGAIN. The patch did not pass validation.' };
+    state.inspection = { ...state.inspection, text: state.challengeAttempts >= 2 ? `TRY AGAIN. ${state.currentChallenge.hint}` : 'TRY AGAIN. The patch did not pass validation.' };
     return false;
   }
   if (state.challengeIndex < state.level.machines.length - 1) {
