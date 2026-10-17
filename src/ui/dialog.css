@@ -58,6 +58,8 @@ dialog[open][data-mode="title"] {
   padding: 12vh 12vw;
   transform: none;
   text-align: center;
+  overflow: hidden;
+  background: #000;
   border: 0;
   border-radius: 0;
 }
@@ -86,7 +88,42 @@ dialog[open][data-mode="title"] .secondary-button {
 
 dialog[open][data-mode="title"] .secondary-button { margin-top: 8px; }
 
-dialog[data-mode="title"]::backdrop { background: #081012; }
+dialog[data-mode="title"]::backdrop { background: #000; }
+
+dialog[open][data-mode="title"]::before,
+dialog[open][data-mode="title"]::after {
+  content: '';
+  position: absolute;
+  inset: -100% 0;
+  pointer-events: none;
+  background-repeat: repeat;
+  will-change: transform;
+}
+
+dialog[open][data-mode="title"]::before {
+  opacity: .75;
+  background-image:
+    radial-gradient(circle, #d9e9d4 0 1px, transparent 1.5px),
+    radial-gradient(circle, #78948d 0 1px, transparent 1.5px);
+  background-position: 22px 18px, 84px 61px;
+  background-size: 137px 149px, 211px 193px;
+  animation: title-stars-rise 9s linear infinite;
+}
+
+dialog[open][data-mode="title"]::after {
+  opacity: .5;
+  background-image: radial-gradient(circle, #d9e9d4 0 1px, transparent 1.5px);
+  background-position: 121px 37px;
+  background-size: 263px 227px;
+  animation: title-stars-rise 15s linear infinite;
+}
+
+@keyframes title-stars-rise {
+  from { transform: translateY(0); }
+  to { transform: translateY(-220px); }
+}
+
+dialog[open][data-mode="title"] > * { position: relative; z-index: 1; }
 
 dialog .eyebrow {
   color: #b7c899;
