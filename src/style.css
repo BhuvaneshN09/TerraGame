@@ -8,7 +8,7 @@
   --muted: #92a29b;
   --line: #30403e;
   --accent: #d1e796;
-  --retro: "Courier New", "Lucida Console", monospace;
+  --retro: ui-monospace, "Courier New", "Lucida Console", monospace;
 }
 
 /* Final retro HUD pass. Keep the canvas unobstructed and the two bottom messages separated. */
@@ -39,6 +39,14 @@ html { overflow: hidden !important; }
 * {
   box-sizing: border-box;
 }
+
+/* Keep every interface label in the same crisp terminal voice as the ship markings. */
+body, button, dialog, input, textarea, select, h1, h2, h3, p, span, label {
+  font-family: var(--retro) !important;
+  -webkit-font-smoothing: none;
+  text-rendering: geometricPrecision;
+}
+h1, .briefing h2 { font-family: var(--retro) !important; }
 
 body {
   margin: 0;

@@ -4,7 +4,7 @@ import { followCamera } from './camera.js';
 import { nearbyObject } from './interactions.js';
 import { LEVELS } from './levels.js';
 
-export const PLAYER_SPEED = 80;
+export const PLAYER_SPEED = 76;
 export const EJECT_ZONE = Object.freeze({ x: 41 * 16, y: 33 * 16, width: 3 * 16, height: 3 * 16 });
 export const CORNER_ZONES = Object.freeze(ROOMS.flatMap(room => [
   { x: room.x * 16, y: room.y * 16 },
