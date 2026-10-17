@@ -58,6 +58,30 @@ dialog[open][data-mode="title"] {
   border-radius: 0;
 }
 
+dialog[open][data-mode="title"] h2 {
+  margin: 28px auto 18px;
+  font-size: clamp(72px, 12vw, 156px);
+  letter-spacing: 2px;
+  line-height: .9;
+}
+
+dialog[open][data-mode="title"] > p:not(.eyebrow):not(.dialog-footnote) {
+  margin-bottom: 30px;
+}
+
+dialog[open][data-mode="title"] .primary-button,
+dialog[open][data-mode="title"] .secondary-button {
+  width: min(430px, 82vw);
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center;
+  border-radius: 0;
+  border-width: 1px;
+  padding: 13px 18px;
+}
+
+dialog[open][data-mode="title"] .secondary-button { margin-top: 8px; }
+
 dialog[data-mode="title"]::backdrop { background: #081012; }
 
 dialog .eyebrow {

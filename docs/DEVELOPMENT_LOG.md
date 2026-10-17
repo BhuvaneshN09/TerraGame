@@ -56,6 +56,12 @@ Approximate total active session effort: 37 minutes, including review and verifi
 - Updated canvas room labels, floor markings, and interaction markers so rendered text follows the same retro face as menus, HUD text, dialogs, and code entry.
 - Validation: 21 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
 
+## Checkpoint 9 — title screen cleanup (complete; ~5 minutes)
+
+- Removed the circuit logo from the interface and replaced the browser icon with a blank data icon so no branded favicon is shown.
+- Made the FALLSHIP title the dominant centered element and narrowed the menu controls with thin square pixel borders and centered labels.
+- Validation: 21 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
+
 ## Checkpoint 8 — readable briefing scale (complete; ~4 minutes)
 
 - Increased briefing, menu, inspection, repair labels, code entry, buttons, and dialog footnotes to roughly twice their previous size while preserving the bundled pixel face.
