@@ -8,6 +8,7 @@ import { createInterface } from './ui/interface.js';
 const app = document.querySelector('#app');
 let state = createGame();
 let loop;
+const savedLevel = () => Number.parseInt(localStorage.getItem('fallship-level') ?? '0', 10) || 0;
 
 function transition(change) {
   input.clear();
@@ -17,13 +18,14 @@ function transition(change) {
 }
 
 const actions = {
-  start: () => { document.documentElement.requestFullscreen?.().catch(() => {}); transition(() => { state = createGame(); state.mode = 'playing'; }); },
+  start: () => { document.documentElement.requestFullscreen?.().catch(() => {}); transition(() => { state = createGame(0); state.mode = 'playing'; }); },
+  continue: () => { document.documentElement.requestFullscreen?.().catch(() => {}); transition(() => { state = createGame(savedLevel()); state.mode = 'playing'; }); },
   resume: () => { if (state.mode === 'paused') transition(() => { state.mode = 'playing'; }); },
   pause: () => { if (state.mode === 'playing') transition(() => { state.mode = 'paused'; state.player.moving = false; }); },
   title: () => transition(() => { state = createGame(); }),
   inspect: () => { if (state.mode === 'playing' && state.nearby) transition(() => inspectNearby(state)); },
   close: () => transition(() => closeInspection(state)),
-  solve: code => { solveChallenge(state, code); ui.refresh(state); },
+  solve: code => { solveChallenge(state, code); if (state.levelPassed) localStorage.setItem('fallship-level', String(Math.min(state.levelIndex + 1, 4))); ui.refresh(state); },
 };
 
 const ui = createInterface(app, actions);

@@ -2,8 +2,9 @@ import { SHIP, SPAWN, OBJECTS, VIEW, ROOMS, roomAt } from '../world/ship.js';
 import { isBlocked, moveWithCollision, normalizedDirection, playerBounds } from '../world/collision.js';
 import { followCamera } from './camera.js';
 import { nearbyObject } from './interactions.js';
+import { LEVELS } from './levels.js';
 
-export const PLAYER_SPEED = 76;
+export const PLAYER_SPEED = 80;
 export const EJECT_ZONE = Object.freeze({ x: 41 * 16, y: 33 * 16, width: 3 * 16, height: 3 * 16 });
 export const CORNER_ZONES = Object.freeze(ROOMS.flatMap(room => [
   { x: room.x * 16, y: room.y * 16 },
@@ -12,7 +13,8 @@ export const CORNER_ZONES = Object.freeze(ROOMS.flatMap(room => [
   { x: (room.x + room.width) * 16, y: (room.y + room.height) * 16 },
 ]));
 
-export function createGame() {
+export function createGame(levelIndex = 0) {
+  const level = LEVELS[Math.min(levelIndex, LEVELS.length - 1)];
   const state = {
     mode: 'title',
     player: { ...SPAWN, facing: 'down', moving: false, walkTime: 0 },
@@ -21,7 +23,8 @@ export function createGame() {
     ejectHold: 0, ejectCooldown: 0, cornerHold: 0, cornerCooldown: 0,
     notice: '', noticeTimer: 0,
     talkedToAlien: false, challengeSolved: false, levelPassed: false,
-    stars: 0, challengeAttempts: 0,
+    stars: 0, challengeAttempts: 0, levelIndex: Math.min(levelIndex, LEVELS.length - 1), challengeIndex: 0,
+    level, currentChallenge: level.machines[0],
     room: roomAt(SPAWN.x, SPAWN.y),
   };
   if (isBlocked(playerBounds(state.player), state.map, state.objects)) throw new Error('Player spawn is blocked.');
@@ -78,6 +81,10 @@ export function inspectNearby(state) {
   state.inspection = state.nearby;
   state.inspected.add(state.nearby.id);
   if (state.nearby.id === 'zombie-alien') state.talkedToAlien = true;
+  if (state.nearby.id === 'junction') {
+    state.currentChallenge = state.level.machines[state.challengeIndex];
+    state.inspection = { ...state.nearby, text: `MACHINE ${state.challengeIndex + 1} / ${state.level.machines.length}: ${state.currentChallenge.label}. Correct the broken Python function.` };
+  }
   state.mode = 'inspecting';
   return true;
 }
@@ -91,14 +98,21 @@ export function closeInspection(state) {
 export function solveChallenge(state, code) {
   if (state.mode !== 'inspecting' || state.inspection?.id !== 'junction') return false;
   const normalized = code.trim().replace(/\r/g, '').replace(/[ \t]+$/gm, '');
-  if (normalized !== 'def lights_on():\n    return "LIGHTS_ON"') {
+  if (normalized !== state.currentChallenge.fixed) {
     state.challengeAttempts += 1;
     state.inspection = { ...state.inspection, text: state.challengeAttempts >= 2 ? 'TRY AGAIN. Check the return value spelling: the console expects LIGHTS_ON.' : 'TRY AGAIN. The patch did not pass validation.' };
     return false;
   }
+  if (state.challengeIndex < state.level.machines.length - 1) {
+    state.challengeSolved = false;
+    state.challengeIndex += 1;
+    state.currentChallenge = state.level.machines[state.challengeIndex];
+    state.inspection = { ...state.inspection, text: `PATCH ACCEPTED. Next machine: ${state.currentChallenge.label}.` };
+    return true;
+  }
   state.challengeSolved = true;
   state.levelPassed = true;
   state.stars = state.runTimeLeft >= 240 ? 3 : state.runTimeLeft >= 120 ? 2 : 1;
-  state.inspection = { ...state.inspection, status: 'RESTORED', text: 'PATCH ACCEPTED. lights_on() now returns LIGHTS_ON and the junction control bus is responding again.' };
+  state.inspection = { ...state.inspection, status: 'RESTORED', text: `PATCH ACCEPTED. All ${state.level.machines.length} machines are responding again.` };
   return true;
 }
