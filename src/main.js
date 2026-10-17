@@ -6,6 +6,8 @@ import { createRenderer } from './render/renderer.js';
 import { createInterface } from './ui/interface.js';
 
 const app = document.querySelector('#app');
+// Paint the low-resolution floor labels only after the shared pixel face is ready.
+await document.fonts.load('8px "Fallship Pixel"');
 let state = createGame();
 let loop;
 const savedLevel = () => Number.parseInt(localStorage.getItem('fallship-level') ?? '0', 10) || 0;

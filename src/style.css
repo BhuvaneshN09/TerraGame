@@ -1,15 +1,22 @@
 @import url('./ui/dialog.css');
+@font-face {
+  font-family: 'Fallship Pixel';
+  src: url('./assets/vt323.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+}
 :root {
   color-scheme: dark;
-  /* This is the same crisp terminal face used for the painted floor labels. */
-  font-family: "Courier New", "Lucida Console", monospace;
+  /* The floor labels and every interface surface share this bitmap terminal face. */
+  font-family: 'Fallship Pixel', "Courier New", "Lucida Console", monospace;
   color: #d9e0d5;
   background: #101719;
   font-synthesis: none;
   --muted: #92a29b;
   --line: #30403e;
   --accent: #d1e796;
-  --retro: "Courier New", "Lucida Console", monospace;
+  --retro: 'Fallship Pixel', "Courier New", "Lucida Console", monospace;
 }
 
 /* Final retro HUD pass. Keep the canvas unobstructed and the two bottom messages separated. */
