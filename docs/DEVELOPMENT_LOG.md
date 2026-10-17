@@ -63,6 +63,12 @@ Approximate total active session effort: 37 minutes, including review and verifi
 - Added deterministic tests for the ten-second hint and unique level puzzle progression.
 - Validation: 23 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
 
+## Checkpoint 12 — repair activity guard (complete; ~4 minutes)
+
+- Morrow's ten-second repair message now waits for an untouched patch. Focusing or editing the code editor marks the challenge as active and prevents the message from interrupting the attempt.
+- Added a regression test covering active code entry and revalidated the existing one-shot idle hint.
+- Validation: 24 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
+
 ## Checkpoint 11 — canvas label clarity (complete; ~3 minutes)
 
 - Increased painted room and floor label text from 8px to 10px and raised its contrast so the shared pixel font stays readable after the game canvas is enlarged.

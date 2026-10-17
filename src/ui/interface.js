@@ -55,6 +55,12 @@ export function createInterface(app, actions) {
     else if (action === 'solve') actions.solve(get('patch-code').value);
     else if (action) actions[action]?.();
   });
+  dialog.addEventListener('focusin', event => {
+    if (event.target.id === 'patch-code') actions.challengeActivity();
+  });
+  dialog.addEventListener('input', event => {
+    if (event.target.id === 'patch-code') actions.challengeActivity();
+  });
 
   let resizeFrame;
   let previousWidth = -1;

@@ -111,3 +111,14 @@ test('Morrow offers one repair hint after ten seconds in the junction', () => {
   updateGame(state, { x: 0, y: 0 }, 20);
   assert.equal(state.morrowHintShown, true);
 });
+
+test('Morrow does not interrupt once the player starts entering a patch', () => {
+  const state = createGame();
+  state.mode = 'playing';
+  state.nearby = state.objects.find(object => object.id === 'junction');
+  inspectNearby(state);
+  state.challengeStarted = true;
+  updateGame(state, { x: 0, y: 0 }, 20);
+  assert.equal(state.morrowHint, '');
+  assert.equal(state.morrowHintShown, false);
+});

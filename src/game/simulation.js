@@ -22,7 +22,7 @@ export function createGame(levelIndex = 0) {
     nearby: null, inspection: null, inspected: new Set(), elapsed: 0, runTimeLeft: 300,
     ejectHold: 0, ejectCooldown: 0, cornerHold: 0, cornerCooldown: 0,
     notice: '', noticeTimer: 0,
-    challengeIdleTime: 0, morrowHintShown: false, morrowHint: '',
+    challengeIdleTime: 0, challengeStarted: false, morrowHintShown: false, morrowHint: '',
     talkedToAlien: false, challengeSolved: false, levelPassed: false,
     stars: 0, challengeAttempts: 0, levelIndex: Math.min(levelIndex, LEVELS.length - 1), challengeIndex: 0,
     level, currentChallenge: level.machines[0],
@@ -63,7 +63,7 @@ function refreshState(state) {
 }
 
 export function updateGame(state, input, dt) {
-  if (state.mode === 'inspecting' && state.inspection?.id === 'junction' && !state.levelPassed && !state.morrowHintShown) {
+  if (state.mode === 'inspecting' && state.inspection?.id === 'junction' && !state.levelPassed && !state.challengeStarted && !state.morrowHintShown) {
     state.challengeIdleTime += dt;
     if (state.challengeIdleTime >= 10) {
       state.morrowHintShown = true;
@@ -115,6 +115,7 @@ export function inspectNearby(state) {
   if (state.nearby.id === 'junction') {
     state.currentChallenge = state.level.machines[state.challengeIndex];
     state.challengeIdleTime = 0;
+    state.challengeStarted = false;
     state.inspection = { ...state.nearby, text: `MACHINE ${state.challengeIndex + 1} / ${state.level.machines.length}: ${state.currentChallenge.label}. Correct the broken Python function.` };
   }
   state.mode = 'inspecting';
@@ -138,6 +139,8 @@ export function solveChallenge(state, code) {
   if (state.challengeIndex < state.level.machines.length - 1) {
     state.challengeSolved = false;
     state.challengeIndex += 1;
+    state.challengeStarted = false;
+    state.challengeIdleTime = 0;
     state.currentChallenge = state.level.machines[state.challengeIndex];
     state.inspection = { ...state.inspection, text: `PATCH ACCEPTED. Next machine: ${state.currentChallenge.label}.` };
     return true;
