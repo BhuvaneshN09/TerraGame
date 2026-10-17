@@ -37,7 +37,7 @@ export function createInterface(app, actions) {
   let typingTimer;
   let titleMotionFrame;
   let titleMotionLast = 0;
-  const titleMotion = { x: 32, y: 36, vx: 82, vy: -120 };
+  const titleMotion = { x: 32, y: 0, vx: 104, vy: 28 };
   const stopTyping = () => { clearInterval(typingTimer); typingTimer = undefined; };
   const typeText = (element, text) => {
     stopTyping(); element.textContent = '';
@@ -145,7 +145,7 @@ export function createInterface(app, actions) {
       const titleContext = titleCharacter.getContext('2d');
       titleContext.imageSmoothingEnabled = false;
       paintPlayer(titleContext, { x: 16, y: 24, facing: 'down', moving: false, walkTime: 0 }, 0);
-      titleMotion.x = 32; titleMotion.y = 36; titleMotion.vx = 82; titleMotion.vy = -120;
+      titleMotion.x = 32; titleMotion.y = 0; titleMotion.vx = 104; titleMotion.vy = 28;
       startTitleMotion();
     } else if (state.mode === 'paused') {
       dialog.innerHTML = '<p class="eyebrow">EXPLORATION SUSPENDED</p><h2 id="dialog-heading">PAUSED</h2><p>Your position is held. Resume when you’re ready to continue the survey.</p><button class="primary-button" data-action="resume" autofocus>Resume exploration <span>→</span></button><button class="secondary-button" data-action="title">Return to title</button><p class="dialog-footnote">ESC TO RESUME · RETURNING TO TITLE RESETS THE SESSION</p>';

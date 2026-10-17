@@ -75,6 +75,11 @@ Approximate total active session effort: 37 minutes, including review and verifi
 - The animation stops when the title closes and cannot affect gameplay state.
 - Validation: syntax checks, 24 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
 
+## Checkpoint 21 — top-edge launch and deflection (complete; ~2 minutes)
+
+- Started the title physics at the top edge with a downward launch velocity and horizontal drift, making the gravity fall and boundary deflections immediately visible.
+- Validation: 24 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
+
 ## Checkpoint 19 — ball-style title bounce (complete; ~3 minutes)
 
 - Changed the bounded corner path to linear DVD-style travel with a brief squash at each impact, including the loop’s top-left rebound.
