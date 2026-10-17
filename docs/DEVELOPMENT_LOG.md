@@ -30,7 +30,7 @@ Date: 2026-10-14 (America/Toronto). Effort estimates below are approximate activ
 
 ## Checkpoint 4 — menus, HUD and interactions (complete; ~8 minutes)
 
-- Added native modal title/pause/inspection menus, keyboard focus handling, reset-to-title, an actual position/session HUD, object count, field notes and a camera-aware deck schematic.
+- Added native modal title/pause/inspection menus which work in a retro style, keyboard focus handling, reset-to-title, an actual position/session HUD, object count, field notes and a camera-aware deck schematic.
 - Added responsive layout, integer canvas scaling, visible keyboard help, and a clear mobile keyboard requirement.
 - Connected Morrow’s introductory inspection and all six placeholder inspections. Inspections do not mutate ship power, repair, inventory or campaign state.
 - Re-ran syntax checks, 15 unit tests, and build successfully. Observed movement changing HUD coordinates in the local browser.
