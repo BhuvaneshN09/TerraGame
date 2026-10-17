@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { followCamera } from '../../src/game/camera.js';
 import { createClock } from '../../src/game/loop.js';
 import { createGame, updateGame, inspectNearby, closeInspection, EJECT_ZONE, CORNER_ZONES } from '../../src/game/simulation.js';
+import { LEVELS } from '../../src/game/levels.js';
 
 test('camera follows and clamps at each edge, including worlds smaller than view', () => {
   const world = { width: 1000, height: 600 };
@@ -89,4 +90,24 @@ test('every authored corner gives the three-second harmless easter egg notice', 
     assert.equal(state.notice, 'What are you doing in the corner? huh?');
     assert.equal(state.player.x, corner.x + 20);
   }
+});
+
+test('each level has its own repair puzzles and level two does not repeat lights', () => {
+  const puzzles = LEVELS.flatMap(level => level.machines);
+  assert.equal(new Set(puzzles.map(puzzle => puzzle.id)).size, puzzles.length);
+  assert.equal(LEVELS[1].machines.some(puzzle => puzzle.id === 'lights'), false);
+  assert.deepEqual(LEVELS.map(level => level.machines.length), [1, 2, 3, 4, 5]);
+});
+
+test('Morrow offers one repair hint after ten seconds in the junction', () => {
+  const state = createGame();
+  state.mode = 'playing';
+  state.nearby = state.objects.find(object => object.id === 'junction');
+  inspectNearby(state);
+  updateGame(state, { x: 0, y: 0 }, 9.9);
+  assert.equal(state.morrowHint, '');
+  updateGame(state, { x: 0, y: 0 }, 0.2);
+  assert.match(state.morrowHint, /Need a hand/);
+  updateGame(state, { x: 0, y: 0 }, 20);
+  assert.equal(state.morrowHintShown, true);
 });

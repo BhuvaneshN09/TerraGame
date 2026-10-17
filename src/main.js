@@ -30,6 +30,7 @@ const actions = {
   inspect: () => { if (state.mode === 'playing' && state.nearby) transition(() => inspectNearby(state)); },
   close: () => transition(() => closeInspection(state)),
   solve: code => { solveChallenge(state, code); if (state.levelPassed) localStorage.setItem('fallship-level', String(Math.min(state.levelIndex + 1, 4))); ui.refresh(state); },
+  dismissMorrowHint: () => transition(() => { state.morrowHint = ''; }),
 };
 
 const ui = createInterface(app, actions);

@@ -72,6 +72,18 @@ export function createInterface(app, actions) {
   resize.observe(get('viewport'));
 
   function showMenu(state) {
+    if (state.morrowHint) {
+      if (shownMode !== 'morrow-hint') {
+        shownMode = 'morrow-hint';
+        dialog.dataset.mode = 'morrow-hint';
+        dialog.dataset.result = '';
+        dialog.innerHTML = '<p class="eyebrow">MORROW / MESSAGE</p><h2 id="dialog-heading">Morrow</h2><p>Need a hand? Read the function one line at a time. The machine label tells you what the finished check must return.</p><button class="primary-button" data-action="dismissMorrowHint" autofocus>BACK TO PATCH <span>↵</span></button>';
+        if (!dialog.open) dialog.showModal();
+        dialog.querySelector('[autofocus]')?.focus();
+      }
+      return;
+    }
+    if (shownMode === 'morrow-hint') shownMode = '';
     if (shownMode === state.mode) return;
     shownMode = state.mode;
     dialog.dataset.mode = state.mode;

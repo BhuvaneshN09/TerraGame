@@ -56,6 +56,13 @@ Approximate total active session effort: 37 minutes, including review and verifi
 - Updated canvas room labels, floor markings, and interaction markers so rendered text follows the same retro face as menus, HUD text, dialogs, and code entry.
 - Validation: 21 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
 
+## Checkpoint 10 — one-shot repair help and unique level puzzles (complete; ~8 minutes)
+
+- Added a one-time Morrow message after ten seconds of inactivity in a junction repair screen. It returns the player to the same patch without changing the timer or code.
+- Replaced repeated machine definitions with unique puzzle sets for every level. Levels now contain 1, 2, 3, 4, and 5 distinct machines, and the lights spelling puzzle exists only in level 1.
+- Added deterministic tests for the ten-second hint and unique level puzzle progression.
+- Validation: 23 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
+
 ## Checkpoint 9 — title screen cleanup (complete; ~5 minutes)
 
 - Removed the circuit logo from the interface and replaced the browser icon with a blank data icon so no branded favicon is shown.

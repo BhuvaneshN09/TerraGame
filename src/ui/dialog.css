@@ -46,6 +46,10 @@ dialog[data-mode="inspecting"]::backdrop {
   background: transparent;
 }
 
+dialog[data-mode="morrow-hint"]::backdrop {
+  background: transparent;
+}
+
 dialog[open][data-mode="title"] {
   inset: 0;
   width: 100vw;
