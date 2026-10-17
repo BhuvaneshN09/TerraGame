@@ -54,8 +54,16 @@ export function createRenderer(canvas, map, minimap) {
       const object = state.nearby;
       ctx.strokeStyle = '#c5dc8b'; ctx.lineWidth = 1;
       ctx.strokeRect(object.x - 2.5, object.y - 2.5, object.width + 5, object.height + 5);
-      ctx.fillStyle = '#c5dc8b'; ctx.fillRect(object.x + object.width / 2 - 3, object.y - 10, 7, 7);
-      ctx.fillStyle = '#172729'; ctx.font = '6px "Fallship Pixel", "Courier New", "Lucida Console", monospace'; ctx.fillText('E', object.x + object.width / 2 - 1, object.y - 4);
+      const markerX = Math.round(object.x + object.width / 2 - 6);
+      const markerY = Math.round(object.y - 16);
+      ctx.save();
+      ctx.fillStyle = '#c5dc8b'; ctx.fillRect(markerX, markerY, 12, 12);
+      ctx.strokeStyle = '#172729'; ctx.strokeRect(markerX + 0.5, markerY + 0.5, 11, 11);
+      ctx.fillStyle = '#172729';
+      ctx.font = '8px "Fallship Pixel", "Courier New", "Lucida Console", monospace';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('E', markerX + 6, markerY + 6);
+      ctx.restore();
     }
     // keep for refff
     ctx.restore();

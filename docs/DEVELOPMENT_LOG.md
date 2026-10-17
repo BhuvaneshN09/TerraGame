@@ -69,6 +69,11 @@ Approximate total active session effort: 37 minutes, including review and verifi
 - Added a regression test covering active code entry and revalidated the existing one-shot idle hint.
 - Validation: 24 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
 
+## Checkpoint 13 — interaction marker legibility (complete; ~3 minutes)
+
+- Reworked the machine interaction marker into a 12px pixel badge with a centered 8px `E`, explicit text alignment, and a one-pixel inner border.
+- Validation: 24 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
+
 ## Checkpoint 11 — canvas label clarity (complete; ~3 minutes)
 
 - Increased painted room and floor label text from 8px to 10px and raised its contrast so the shared pixel font stays readable after the game canvas is enlarged.
