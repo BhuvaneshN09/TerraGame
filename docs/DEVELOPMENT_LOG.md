@@ -81,7 +81,12 @@ Approximate total active session effort: 37 minutes, including review and verifi
 
 ## Checkpoint 24 — populated shooting-star field (complete; ~5 minutes)
 
-- Expanded title shooting stars to randomized bursts of twelve streaks, with overlapping flights so more than ten remain visible across the menu at once.
+- Expanded title shooting stars to randomized bursts of two streaks, with positions and directions spread across the full menu screen.
+- Validation: syntax checks, 24 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
+
+## Checkpoint 25 — restrained shooting-star pair (complete; ~3 minutes)
+
+- Reduced each title burst to two randomized shooting stars so the black menu stays clear while the animation still crosses the full screen.
 - Validation: syntax checks, 24 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
 
 ## Checkpoint 20 — gravity title motion (complete; ~5 minutes)

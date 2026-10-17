@@ -64,9 +64,9 @@ export function createInterface(app, actions) {
       star.addEventListener('animationend', () => star.remove(), { once: true });
       field.append(star);
     };
-    for (let count = 0; count < 12; count++) spawn();
+    for (let count = 0; count < 2; count++) spawn();
     shootingStarTimer = setInterval(() => {
-      for (let count = 0; count < 12; count++) spawn();
+      for (let count = 0; count < 2; count++) spawn();
     }, 2000);
   };
   get('pause').addEventListener('click', actions.pause);
