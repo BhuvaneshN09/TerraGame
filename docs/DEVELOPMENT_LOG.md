@@ -69,6 +69,11 @@ Approximate total active session effort: 37 minutes, including review and verifi
 - Added a regression test covering active code entry and revalidated the existing one-shot idle hint.
 - Validation: 24 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
 
+## Checkpoint 19 — ball-style title bounce (complete; ~3 minutes)
+
+- Changed the bounded corner path to linear DVD-style travel with a brief squash at each impact, including the loop’s top-left rebound.
+- Validation: 24 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
+
 ## Checkpoint 18 — bounded DVD-style character motion (complete; ~3 minutes)
 
 - Constrained the title character to the dialog’s actual rectangle so it reaches each corner without negative offsets, clipping, or rotation outside the screen bounds.
