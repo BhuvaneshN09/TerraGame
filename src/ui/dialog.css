@@ -64,6 +64,53 @@ dialog[open][data-mode="title"] {
   border-radius: 0;
 }
 
+dialog[open][data-mode="loading"] {
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  transform: none;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  overflow: hidden;
+  background: #000;
+  border: 0;
+  border-radius: 0;
+  animation: loading-fade-in 260ms ease-out both;
+}
+
+dialog[open][data-mode="loading"].loading-exit {
+  animation: loading-fade-out 350ms ease-in forwards;
+}
+
+dialog[data-mode="loading"]::backdrop { background: #000; }
+
+dialog[open][data-mode="loading"] .loading-mark {
+  position: relative;
+  z-index: 1;
+}
+
+dialog[open][data-mode="loading"] h2 {
+  margin: 18px 0 0;
+  color: #dfe4d6;
+  font-size: clamp(58px, 12vw, 144px);
+  letter-spacing: 4px;
+  line-height: .9;
+}
+
+@keyframes loading-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes loading-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
 dialog[open][data-mode="title"] h2 {
   margin: 28px auto 18px;
   font-size: clamp(72px, 12vw, 156px);
@@ -91,7 +138,9 @@ dialog[open][data-mode="title"] .secondary-button { margin-top: 8px; }
 dialog[data-mode="title"]::backdrop { background: #000; }
 
 dialog[open][data-mode="title"]::before,
-dialog[open][data-mode="title"]::after {
+dialog[open][data-mode="title"]::after,
+dialog[open][data-mode="loading"]::before,
+dialog[open][data-mode="loading"]::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -100,7 +149,8 @@ dialog[open][data-mode="title"]::after {
   will-change: background-position;
 }
 
-dialog[open][data-mode="title"]::before {
+dialog[open][data-mode="title"]::before,
+dialog[open][data-mode="loading"]::before {
   opacity: .75;
   background-image:
     radial-gradient(circle, #d9e9d4 0 1px, transparent 1.5px),
@@ -111,7 +161,8 @@ dialog[open][data-mode="title"]::before {
   animation: title-stars-rise-near 9s linear infinite;
 }
 
-dialog[open][data-mode="title"]::after {
+dialog[open][data-mode="title"]::after,
+dialog[open][data-mode="loading"]::after {
   opacity: .5;
   background-image:
     radial-gradient(circle, #d9e9d4 0 1px, transparent 1.5px),
@@ -131,7 +182,8 @@ dialog[open][data-mode="title"]::after {
   to { background-position: 121px -190px, 17px -142px; }
 }
 
-dialog[open][data-mode="title"] > * { position: relative; z-index: 1; }
+dialog[open][data-mode="title"] > *,
+dialog[open][data-mode="loading"] > * { position: relative; z-index: 1; }
 
 dialog[open][data-mode="title"] > .shooting-stars {
   position: absolute;

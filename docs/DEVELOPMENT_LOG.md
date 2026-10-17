@@ -89,6 +89,12 @@ Approximate total active session effort: 37 minutes, including review and verifi
 - Reduced each title burst to two randomized shooting stars so the black menu stays clear while the animation still crosses the full screen.
 - Validation: syntax checks, 24 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
 
+## Checkpoint 26 — level loading transition (complete; ~8 minutes)
+
+- Added a button-free full-screen FALLSHIP loading screen with the moving star background for new games, continued games, and each next-level transition.
+- The mark fades out after the short loading beat, then the next Morrow briefing appears. Added a browser regression for the no-button loading state.
+- Validation: syntax checks, 24 unit tests, six Chromium browser tests, `git diff --check`, and the production build passed.
+
 ## Checkpoint 20 — gravity title motion (complete; ~5 minutes)
 
 - Replaced the scripted corner loop with a small title-only physics loop. The player has horizontal velocity, gravity, wall and ceiling collisions, floor rebounds, and impact damping, so it bounces freely inside the menu.

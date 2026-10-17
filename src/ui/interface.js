@@ -34,6 +34,7 @@ export function createInterface(app, actions) {
   let lastNote = '';
   let typingTimer;
   let shootingStarTimer;
+  let loadingActive = false;
   const stopTyping = () => { clearInterval(typingTimer); typingTimer = undefined; };
   const typeText = (element, text) => {
     stopTyping(); element.textContent = '';
@@ -104,7 +105,25 @@ export function createInterface(app, actions) {
   });
   resize.observe(get('viewport'));
 
+  function showLoading() {
+    stopTyping();
+    stopShootingStars();
+    loadingActive = true;
+    shownMode = 'loading';
+    dialog.dataset.mode = 'loading';
+    dialog.dataset.result = '';
+    dialog.classList.remove('loading-exit');
+    dialog.innerHTML = '<div class="loading-mark" aria-label="Loading FALLSHIP"><p class="eyebrow">MERIDIAN EXPLORATION PROGRAM</p><h2 id="dialog-heading">FALLSHIP</h2></div>';
+    if (!dialog.open) dialog.showModal();
+  }
+
+  const fadeLoading = () => dialog.classList.add('loading-exit');
+
   function showMenu(state) {
+    if (loadingActive) {
+      if (state.mode === 'title' || state.mode === 'inspecting') return;
+      loadingActive = false;
+    }
     if (state.morrowHint) {
       if (shownMode !== 'morrow-hint') {
         shownMode = 'morrow-hint';
@@ -188,5 +207,5 @@ export function createInterface(app, actions) {
       setText('field-note', object ? `${object.name}: ${object.status.toLowerCase()}. Observation recorded.` : 'No observations yet. The junction console is nearby.');
     }
   }
-  return { canvas, minimap: get('minimap'), render, refresh: state => { shownMode = ''; render(state); }, toggleHelp, destroy: () => { stopShootingStars(); resize.disconnect(); cancelAnimationFrame(resizeFrame); } };
+  return { canvas, minimap: get('minimap'), render, refresh: state => { shownMode = ''; render(state); }, showLoading, fadeLoading, toggleHelp, destroy: () => { stopShootingStars(); resize.disconnect(); cancelAnimationFrame(resizeFrame); } };
 }

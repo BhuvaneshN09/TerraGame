@@ -19,11 +19,24 @@ function transition(change) {
   ui.render(state);
 }
 
+function loadLevel(levelIndex) {
+  document.documentElement.requestFullscreen?.().catch(() => {});
+  input.clear();
+  ui.showLoading();
+  window.setTimeout(() => ui.fadeLoading(), 1300);
+  window.setTimeout(() => {
+    transition(() => {
+      state = createGame(levelIndex);
+      beginBriefing(state);
+    });
+  }, 1650);
+}
+
 const actions = {
-  start: () => { document.documentElement.requestFullscreen?.().catch(() => {}); transition(() => { state = createGame(0); beginBriefing(state); }); },
-  continue: () => { document.documentElement.requestFullscreen?.().catch(() => {}); transition(() => { state = createGame(savedLevel()); beginBriefing(state); }); },
+  start: () => loadLevel(0),
+  continue: () => loadLevel(savedLevel()),
   briefingNext: () => transition(() => advanceBriefing(state)),
-  nextLevel: () => transition(() => { state = createGame(Math.min(state.levelIndex + 1, 4)); beginBriefing(state); }),
+  nextLevel: () => loadLevel(Math.min(state.levelIndex + 1, 4)),
   resume: () => { if (state.mode === 'paused') transition(() => { state.mode = 'playing'; }); },
   pause: () => { if (state.mode === 'playing') transition(() => { state.mode = 'paused'; state.player.moving = false; }); },
   title: () => transition(() => { state = createGame(); }),
