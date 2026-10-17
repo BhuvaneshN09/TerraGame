@@ -49,3 +49,10 @@ Date: 2026-10-14 (America/Toronto). Effort estimates below are approximate activ
 - Next recommended task: user playtest of movement/rooms/inspection feedback, then specify one small programming interaction. Implementation stops at the foundation.
 
 Approximate total active session effort: 37 minutes, including review and verification; rounded estimates are not a claim that the planned 20-hour foundation allocation has been exhausted. The 12-week/120-hour plan includes human review, iteration and future work.
+
+## Checkpoint 6 — unified floor-label typography (complete; ~4 minutes)
+
+- Replaced the remaining legacy Arial and generic system font declarations with the same Courier/Lucida terminal stack used by the painted floor labels.
+- Updated canvas room labels, floor markings, and interaction markers so rendered text follows the same retro face as menus, HUD text, dialogs, and code entry.
+- Validation: 21 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
+- Next recommended task: review the updated typography in the browser at desktop and narrow viewport sizes before adding another gameplay system.

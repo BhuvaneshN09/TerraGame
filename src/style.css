@@ -1,14 +1,15 @@
 @import url('./ui/dialog.css');
 :root {
   color-scheme: dark;
-  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  /* This is the same crisp terminal face used for the painted floor labels. */
+  font-family: "Courier New", "Lucida Console", monospace;
   color: #d9e0d5;
   background: #101719;
   font-synthesis: none;
   --muted: #92a29b;
   --line: #30403e;
   --accent: #d1e796;
-  --retro: ui-monospace, "Courier New", "Lucida Console", monospace;
+  --retro: "Courier New", "Lucida Console", monospace;
 }
 
 /* Final retro HUD pass. Keep the canvas unobstructed and the two bottom messages separated. */
@@ -230,7 +231,7 @@ button:hover:not(:disabled) {
 }
 
 h1 {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--retro);
   font-size: clamp(29px, 3vw, 40px);
   letter-spacing: -1.5px;
   font-weight: 500;
@@ -473,7 +474,7 @@ kbd {
 }
 
 .briefing h2 {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--retro);
   margin: 17px 0 13px;
   font-size: 23px;
   font-weight: 500;

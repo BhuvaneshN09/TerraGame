@@ -8,7 +8,7 @@ dialog {
   background: #172223;
   color: #dfe4d6;
   box-shadow: 0 24px 120px #0009;
-  font-family: "Courier New", "Lucida Console", monospace;
+  font-family: var(--retro);
 }
 
 dialog[open] {
@@ -67,7 +67,7 @@ dialog .eyebrow {
 }
 
 dialog h2 {
-  font-family: "Courier New", "Lucida Console", monospace;
+  font-family: var(--retro);
   font-size: 34px;
   font-weight: 500;
   letter-spacing: -1.2px;

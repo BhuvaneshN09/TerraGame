@@ -55,7 +55,7 @@ export function createRenderer(canvas, map, minimap) {
       ctx.strokeStyle = '#c5dc8b'; ctx.lineWidth = 1;
       ctx.strokeRect(object.x - 2.5, object.y - 2.5, object.width + 5, object.height + 5);
       ctx.fillStyle = '#c5dc8b'; ctx.fillRect(object.x + object.width / 2 - 3, object.y - 10, 7, 7);
-      ctx.fillStyle = '#172729'; ctx.font = '6px monospace'; ctx.fillText('E', object.x + object.width / 2 - 1, object.y - 4);
+      ctx.fillStyle = '#172729'; ctx.font = '6px "Courier New", "Lucida Console", monospace'; ctx.fillText('E', object.x + object.width / 2 - 1, object.y - 4);
     }
     // keep for refff
     ctx.restore();

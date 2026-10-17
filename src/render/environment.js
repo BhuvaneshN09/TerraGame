@@ -48,7 +48,7 @@ export function paintEnvironment(map) {
     ctx.strokeStyle = '#61716a'; ctx.lineWidth = 1;
     ctx.strokeRect(x + 9.5, y + 9.5, room.width * 16 - 19, room.height * 16 - 19);
     rect(COLORS.floor, x + 17, y + 5, Math.min(122, room.width * 16 - 40), 9);
-    ctx.fillStyle = '#b9c8b3'; ctx.font = '8px monospace';
+    ctx.fillStyle = '#b9c8b3'; ctx.font = '8px "Courier New", "Lucida Console", monospace';
     ctx.fillText(room.name.toUpperCase(), x + 20, y + 12);
   }
   // Inset observation windows, painted into the upper hull rather than obstacles.
@@ -59,7 +59,7 @@ export function paintEnvironment(map) {
     rect('#324e5c', x + 19, 2 * 16 + 7, 4, 1);
   }
   // Floor markings communicate room purpose without adding hidden obstacles.
-  ctx.font = '8px monospace'; ctx.fillStyle = '#93a99a';
+  ctx.font = '8px "Courier New", "Lucida Console", monospace'; ctx.fillStyle = '#93a99a';
   ctx.fillText('HELLO CREW!', 8 * 16, 24 * 16);
   ctx.fillText('AUXILIARY DRIVE', 42 * 16, 24 * 16);
   ctx.fillStyle = '#998961'; ctx.fillText('CAUTION', 45 * 16, 18 * 16);
