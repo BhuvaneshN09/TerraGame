@@ -74,6 +74,11 @@ Approximate total active session effort: 37 minutes, including review and verifi
 - Added the player’s pixel sprite to the title menu and animated it slowly through uneven corner positions with small rotations, giving the black starfield a floating character without changing gameplay.
 - Validation: syntax checks, 24 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
 
+## Checkpoint 17 — corner-to-corner title path (complete; ~2 minutes)
+
+- Adjusted the title character’s animation coordinates to account for its transparent sprite padding, so the visible player reaches all four screen corners.
+- Validation: 24 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
+
 ## Checkpoint 15 — seamless varied starfield (complete; ~4 minutes)
 
 - Reworked the title star animation to move repeating background tiles by exact cycle lengths, removing the visible loop break.

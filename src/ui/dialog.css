@@ -145,10 +145,10 @@ dialog[open][data-mode="title"] > .title-character {
 }
 
 @keyframes title-character-float {
-  0%, 100% { left: 7%; top: 10%; transform: rotate(-7deg); }
-  24% { left: 86%; top: 17%; transform: rotate(8deg); }
-  51% { left: 82%; top: 82%; transform: rotate(-4deg); }
-  76% { left: 12%; top: 76%; transform: rotate(6deg); }
+  0%, 100% { left: -10px; top: -9px; transform: rotate(-7deg); }
+  24% { left: calc(100% - 24px); top: -9px; transform: rotate(8deg); }
+  51% { left: calc(100% - 24px); top: calc(100% - 32px); transform: rotate(-4deg); }
+  76% { left: -10px; top: calc(100% - 32px); transform: rotate(6deg); }
 }
 
 dialog .eyebrow {
