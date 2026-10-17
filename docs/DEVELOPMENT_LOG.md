@@ -69,6 +69,11 @@ Approximate total active session effort: 37 minutes, including review and verifi
 - Added a regression test covering active code entry and revalidated the existing one-shot idle hint.
 - Validation: 24 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
 
+## Checkpoint 16 — title character drift (complete; ~5 minutes)
+
+- Added the player’s pixel sprite to the title menu and animated it slowly through uneven corner positions with small rotations, giving the black starfield a floating character without changing gameplay.
+- Validation: syntax checks, 24 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
+
 ## Checkpoint 15 — seamless varied starfield (complete; ~4 minutes)
 
 - Reworked the title star animation to move repeating background tiles by exact cycle lengths, removing the visible loop break.

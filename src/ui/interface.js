@@ -1,3 +1,5 @@
+import { paintPlayer } from '../render/sprites.js';
+
 export function createInterface(app, actions) {
   app.innerHTML = `
     <div class="workspace">
@@ -98,7 +100,11 @@ export function createInterface(app, actions) {
       dialog.close(); canvas.focus({ preventScroll: true }); return;
     }
     if (state.mode === 'title') {
-      const hasSave = Number.parseInt(localStorage.getItem('fallship-level') ?? '0', 10) > 0; dialog.innerHTML = `<p class="eyebrow">FALLSHIP</p><h2 id="dialog-heading">FALLSHIP</h2><p>MERIDIAN EXPLORATION PROGRAM</p>${hasSave ? '<button class="primary-button" data-action="continue" autofocus>CONTINUE</button><button class="secondary-button" data-action="start">NEW GAME</button>' : '<button class="primary-button" data-action="start" autofocus>Begin exploration</button>'}<button class="secondary-button" data-action="help">CONTROLS</button><p class="dialog-footnote">WASD MOVE · E INTERACT · ESC PAUSE</p>`;
+      const hasSave = Number.parseInt(localStorage.getItem('fallship-level') ?? '0', 10) > 0; dialog.innerHTML = `<canvas id="title-character" class="title-character" width="32" height="32" aria-hidden="true"></canvas><p class="eyebrow">FALLSHIP</p><h2 id="dialog-heading">FALLSHIP</h2><p>MERIDIAN EXPLORATION PROGRAM</p>${hasSave ? '<button class="primary-button" data-action="continue" autofocus>CONTINUE</button><button class="secondary-button" data-action="start">NEW GAME</button>' : '<button class="primary-button" data-action="start" autofocus>Begin exploration</button>'}<button class="secondary-button" data-action="help">CONTROLS</button><p class="dialog-footnote">WASD MOVE · E INTERACT · ESC PAUSE</p>`;
+      const titleCharacter = get('title-character');
+      const titleContext = titleCharacter.getContext('2d');
+      titleContext.imageSmoothingEnabled = false;
+      paintPlayer(titleContext, { x: 16, y: 24, facing: 'down', moving: false, walkTime: 0 }, 0);
     } else if (state.mode === 'paused') {
       dialog.innerHTML = '<p class="eyebrow">EXPLORATION SUSPENDED</p><h2 id="dialog-heading">PAUSED</h2><p>Your position is held. Resume when you’re ready to continue the survey.</p><button class="primary-button" data-action="resume" autofocus>Resume exploration <span>→</span></button><button class="secondary-button" data-action="title">Return to title</button><p class="dialog-footnote">ESC TO RESUME · RETURNING TO TITLE RESETS THE SESSION</p>';
     } else if (state.mode === 'briefing') {
