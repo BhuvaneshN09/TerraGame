@@ -74,6 +74,11 @@ Approximate total active session effort: 37 minutes, including review and verifi
 - Removed the decorative player canvas, gravity loop, animation styles, and title-only sprite import from the menu. The black starfield remains, and the gameplay player is unchanged.
 - Validation: syntax checks, 24 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
 
+## Checkpoint 23 — random title shooting stars (complete; ~5 minutes)
+
+- Added a title-only shooting-star spawner that fires one streak every two seconds with random position, direction, distance, and flight time. Each streak cleans itself up, and the timer stops when the menu closes.
+- Validation: syntax checks, 24 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
+
 ## Checkpoint 20 — gravity title motion (complete; ~5 minutes)
 
 - Replaced the scripted corner loop with a small title-only physics loop. The player has horizontal velocity, gravity, wall and ceiling collisions, floor rebounds, and impact damping, so it bounces freely inside the menu.

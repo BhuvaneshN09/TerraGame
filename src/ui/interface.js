@@ -33,6 +33,7 @@ export function createInterface(app, actions) {
   let shownMode = '';
   let lastNote = '';
   let typingTimer;
+  let shootingStarTimer;
   const stopTyping = () => { clearInterval(typingTimer); typingTimer = undefined; };
   const typeText = (element, text) => {
     stopTyping(); element.textContent = '';
@@ -41,6 +42,29 @@ export function createInterface(app, actions) {
       element.textContent = text.slice(0, ++index);
       if (index >= text.length) stopTyping();
     }, 18);
+  };
+  const stopShootingStars = () => {
+    clearInterval(shootingStarTimer);
+    shootingStarTimer = undefined;
+  };
+  const startShootingStars = () => {
+    stopShootingStars();
+    const spawn = () => {
+      const field = get('shooting-stars');
+      if (!field) return;
+      const star = document.createElement('span');
+      star.className = 'shooting-star';
+      const angle = Math.random() * 360;
+      const distance = 140 + Math.random() * 260;
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.setProperty('--angle', `${angle}deg`);
+      star.style.setProperty('--distance', `${distance}px`);
+      star.style.setProperty('--flight', `${700 + Math.random() * 700}ms`);
+      star.addEventListener('animationend', () => star.remove(), { once: true });
+      field.append(star);
+    };
+    shootingStarTimer = setInterval(spawn, 2000);
   };
   get('pause').addEventListener('click', actions.pause);
   get('interact').addEventListener('click', actions.inspect);
@@ -90,6 +114,7 @@ export function createInterface(app, actions) {
       return;
     }
     if (shownMode === 'morrow-hint') shownMode = '';
+    if (state.mode !== 'title') stopShootingStars();
     if (shownMode === state.mode) return;
     shownMode = state.mode;
     dialog.dataset.mode = state.mode;
@@ -98,7 +123,8 @@ export function createInterface(app, actions) {
       dialog.close(); canvas.focus({ preventScroll: true }); return;
     }
     if (state.mode === 'title') {
-      const hasSave = Number.parseInt(localStorage.getItem('fallship-level') ?? '0', 10) > 0; dialog.innerHTML = `<p class="eyebrow">FALLSHIP</p><h2 id="dialog-heading">FALLSHIP</h2><p>MERIDIAN EXPLORATION PROGRAM</p>${hasSave ? '<button class="primary-button" data-action="continue" autofocus>CONTINUE</button><button class="secondary-button" data-action="start">NEW GAME</button>' : '<button class="primary-button" data-action="start" autofocus>Begin exploration</button>'}<button class="secondary-button" data-action="help">CONTROLS</button><p class="dialog-footnote">WASD MOVE · E INTERACT · ESC PAUSE</p>`;
+      const hasSave = Number.parseInt(localStorage.getItem('fallship-level') ?? '0', 10) > 0; dialog.innerHTML = `<div id="shooting-stars" class="shooting-stars" aria-hidden="true"></div><p class="eyebrow">FALLSHIP</p><h2 id="dialog-heading">FALLSHIP</h2><p>MERIDIAN EXPLORATION PROGRAM</p>${hasSave ? '<button class="primary-button" data-action="continue" autofocus>CONTINUE</button><button class="secondary-button" data-action="start">NEW GAME</button>' : '<button class="primary-button" data-action="start" autofocus>Begin exploration</button>'}<button class="secondary-button" data-action="help">CONTROLS</button><p class="dialog-footnote">WASD MOVE · E INTERACT · ESC PAUSE</p>`;
+      startShootingStars();
     } else if (state.mode === 'paused') {
       dialog.innerHTML = '<p class="eyebrow">EXPLORATION SUSPENDED</p><h2 id="dialog-heading">PAUSED</h2><p>Your position is held. Resume when you’re ready to continue the survey.</p><button class="primary-button" data-action="resume" autofocus>Resume exploration <span>→</span></button><button class="secondary-button" data-action="title">Return to title</button><p class="dialog-footnote">ESC TO RESUME · RETURNING TO TITLE RESETS THE SESSION</p>';
     } else if (state.mode === 'briefing') {
@@ -159,5 +185,5 @@ export function createInterface(app, actions) {
       setText('field-note', object ? `${object.name}: ${object.status.toLowerCase()}. Observation recorded.` : 'No observations yet. The junction console is nearby.');
     }
   }
-  return { canvas, minimap: get('minimap'), render, refresh: state => { shownMode = ''; render(state); }, toggleHelp, destroy: () => { resize.disconnect(); cancelAnimationFrame(resizeFrame); } };
+  return { canvas, minimap: get('minimap'), render, refresh: state => { shownMode = ''; render(state); }, toggleHelp, destroy: () => { stopShootingStars(); resize.disconnect(); cancelAnimationFrame(resizeFrame); } };
 }

@@ -133,6 +133,32 @@ dialog[open][data-mode="title"]::after {
 
 dialog[open][data-mode="title"] > * { position: relative; z-index: 1; }
 
+dialog[open][data-mode="title"] > .shooting-stars {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.shooting-star {
+  position: absolute;
+  width: 34px;
+  height: 1px;
+  opacity: 0;
+  transform-origin: left center;
+  transform: rotate(var(--angle)) translateX(0);
+  background: linear-gradient(90deg, transparent, #d9e9d4 70%, #fff 100%);
+  box-shadow: 0 0 5px #d9e9d4;
+  animation: shooting-star-flight var(--flight) linear forwards;
+}
+
+@keyframes shooting-star-flight {
+  0% { opacity: 0; transform: rotate(var(--angle)) translateX(0); }
+  12% { opacity: .95; }
+  100% { opacity: 0; transform: rotate(var(--angle)) translateX(var(--distance)); }
+}
+
 dialog .eyebrow {
   color: #b7c899;
   font-size: 14px;
