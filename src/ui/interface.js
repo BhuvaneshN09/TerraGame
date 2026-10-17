@@ -1,5 +1,3 @@
-import { paintPlayer } from '../render/sprites.js';
-
 export function createInterface(app, actions) {
   app.innerHTML = `
     <div class="workspace">
@@ -35,9 +33,6 @@ export function createInterface(app, actions) {
   let shownMode = '';
   let lastNote = '';
   let typingTimer;
-  let titleMotionFrame;
-  let titleMotionLast = 0;
-  const titleMotion = { x: 32, y: 0, vx: 104, vy: 28 };
   const stopTyping = () => { clearInterval(typingTimer); typingTimer = undefined; };
   const typeText = (element, text) => {
     stopTyping(); element.textContent = '';
@@ -46,42 +41,6 @@ export function createInterface(app, actions) {
       element.textContent = text.slice(0, ++index);
       if (index >= text.length) stopTyping();
     }, 18);
-  };
-  const stopTitleMotion = () => {
-    cancelAnimationFrame(titleMotionFrame);
-    titleMotionFrame = undefined;
-  };
-  const startTitleMotion = () => {
-    stopTitleMotion();
-    titleMotionLast = performance.now();
-    const tick = now => {
-      if (!dialog.open || dialog.dataset.mode !== 'title') return;
-      const dt = Math.min((now - titleMotionLast) / 1000, 0.04);
-      titleMotionLast = now;
-      const maxX = Math.max(0, dialog.clientWidth - 32);
-      const maxY = Math.max(0, dialog.clientHeight - 32);
-      titleMotion.vy += 260 * dt;
-      titleMotion.x += titleMotion.vx * dt;
-      titleMotion.y += titleMotion.vy * dt;
-      if (titleMotion.x <= 0 || titleMotion.x >= maxX) {
-        titleMotion.x = Math.max(0, Math.min(maxX, titleMotion.x));
-        titleMotion.vx *= -0.92;
-      }
-      if (titleMotion.y <= 0) {
-        titleMotion.y = 0;
-        titleMotion.vy = Math.abs(titleMotion.vy) * 0.82;
-      } else if (titleMotion.y >= maxY) {
-        titleMotion.y = maxY;
-        titleMotion.vy = -Math.max(88, Math.abs(titleMotion.vy) * 0.78);
-      }
-      const character = get('title-character');
-      if (character) {
-        character.style.left = `${titleMotion.x}px`;
-        character.style.top = `${titleMotion.y}px`;
-      }
-      titleMotionFrame = requestAnimationFrame(tick);
-    };
-    titleMotionFrame = requestAnimationFrame(tick);
   };
   get('pause').addEventListener('click', actions.pause);
   get('interact').addEventListener('click', actions.inspect);
@@ -131,7 +90,6 @@ export function createInterface(app, actions) {
       return;
     }
     if (shownMode === 'morrow-hint') shownMode = '';
-    if (state.mode !== 'title') stopTitleMotion();
     if (shownMode === state.mode) return;
     shownMode = state.mode;
     dialog.dataset.mode = state.mode;
@@ -140,13 +98,7 @@ export function createInterface(app, actions) {
       dialog.close(); canvas.focus({ preventScroll: true }); return;
     }
     if (state.mode === 'title') {
-      const hasSave = Number.parseInt(localStorage.getItem('fallship-level') ?? '0', 10) > 0; dialog.innerHTML = `<canvas id="title-character" class="title-character" width="32" height="32" aria-hidden="true"></canvas><p class="eyebrow">FALLSHIP</p><h2 id="dialog-heading">FALLSHIP</h2><p>MERIDIAN EXPLORATION PROGRAM</p>${hasSave ? '<button class="primary-button" data-action="continue" autofocus>CONTINUE</button><button class="secondary-button" data-action="start">NEW GAME</button>' : '<button class="primary-button" data-action="start" autofocus>Begin exploration</button>'}<button class="secondary-button" data-action="help">CONTROLS</button><p class="dialog-footnote">WASD MOVE · E INTERACT · ESC PAUSE</p>`;
-      const titleCharacter = get('title-character');
-      const titleContext = titleCharacter.getContext('2d');
-      titleContext.imageSmoothingEnabled = false;
-      paintPlayer(titleContext, { x: 16, y: 24, facing: 'down', moving: false, walkTime: 0 }, 0);
-      titleMotion.x = 32; titleMotion.y = 0; titleMotion.vx = 104; titleMotion.vy = 28;
-      startTitleMotion();
+      const hasSave = Number.parseInt(localStorage.getItem('fallship-level') ?? '0', 10) > 0; dialog.innerHTML = `<p class="eyebrow">FALLSHIP</p><h2 id="dialog-heading">FALLSHIP</h2><p>MERIDIAN EXPLORATION PROGRAM</p>${hasSave ? '<button class="primary-button" data-action="continue" autofocus>CONTINUE</button><button class="secondary-button" data-action="start">NEW GAME</button>' : '<button class="primary-button" data-action="start" autofocus>Begin exploration</button>'}<button class="secondary-button" data-action="help">CONTROLS</button><p class="dialog-footnote">WASD MOVE · E INTERACT · ESC PAUSE</p>`;
     } else if (state.mode === 'paused') {
       dialog.innerHTML = '<p class="eyebrow">EXPLORATION SUSPENDED</p><h2 id="dialog-heading">PAUSED</h2><p>Your position is held. Resume when you’re ready to continue the survey.</p><button class="primary-button" data-action="resume" autofocus>Resume exploration <span>→</span></button><button class="secondary-button" data-action="title">Return to title</button><p class="dialog-footnote">ESC TO RESUME · RETURNING TO TITLE RESETS THE SESSION</p>';
     } else if (state.mode === 'briefing') {
@@ -207,5 +159,5 @@ export function createInterface(app, actions) {
       setText('field-note', object ? `${object.name}: ${object.status.toLowerCase()}. Observation recorded.` : 'No observations yet. The junction console is nearby.');
     }
   }
-  return { canvas, minimap: get('minimap'), render, refresh: state => { shownMode = ''; render(state); }, toggleHelp, destroy: () => { stopTitleMotion(); resize.disconnect(); cancelAnimationFrame(resizeFrame); } };
+  return { canvas, minimap: get('minimap'), render, refresh: state => { shownMode = ''; render(state); }, toggleHelp, destroy: () => { resize.disconnect(); cancelAnimationFrame(resizeFrame); } };
 }

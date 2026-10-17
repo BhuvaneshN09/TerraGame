@@ -69,6 +69,11 @@ Approximate total active session effort: 37 minutes, including review and verifi
 - Added a regression test covering active code entry and revalidated the existing one-shot idle hint.
 - Validation: 24 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
 
+## Checkpoint 22 — removed title character (complete; ~3 minutes)
+
+- Removed the decorative player canvas, gravity loop, animation styles, and title-only sprite import from the menu. The black starfield remains, and the gameplay player is unchanged.
+- Validation: syntax checks, 24 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
+
 ## Checkpoint 20 — gravity title motion (complete; ~5 minutes)
 
 - Replaced the scripted corner loop with a small title-only physics loop. The player has horizontal velocity, gravity, wall and ceiling collisions, floor rebounds, and impact damping, so it bounces freely inside the menu.

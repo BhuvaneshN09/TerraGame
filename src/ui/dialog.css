@@ -133,16 +133,6 @@ dialog[open][data-mode="title"]::after {
 
 dialog[open][data-mode="title"] > * { position: relative; z-index: 1; }
 
-dialog[open][data-mode="title"] > .title-character {
-  display: block;
-  position: absolute;
-  z-index: 1;
-  width: 32px;
-  height: 32px;
-  image-rendering: pixelated;
-  pointer-events: none;
-}
-
 dialog .eyebrow {
   color: #b7c899;
   font-size: 14px;
