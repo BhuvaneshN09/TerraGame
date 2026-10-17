@@ -91,6 +91,7 @@ dialog[data-mode="loading"]::backdrop { background: #000; }
 dialog[open][data-mode="loading"] .loading-mark {
   position: relative;
   z-index: 1;
+  animation: loading-logo-fall 1500ms cubic-bezier(.2, .75, .35, 1) both;
 }
 
 dialog[open][data-mode="loading"] h2 {
@@ -109,6 +110,11 @@ dialog[open][data-mode="loading"] h2 {
 @keyframes loading-fade-out {
   from { opacity: 1; }
   to { opacity: 0; }
+}
+
+@keyframes loading-logo-fall {
+  from { transform: translateY(-46vh); }
+  to { transform: translateY(0); }
 }
 
 dialog[open][data-mode="title"] h2 {

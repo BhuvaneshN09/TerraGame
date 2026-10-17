@@ -95,6 +95,11 @@ Approximate total active session effort: 37 minutes, including review and verifi
 - The mark fades out after the short loading beat, then the next Morrow briefing appears. Added a browser regression for the no-button loading state.
 - Validation: syntax checks, 24 unit tests, six Chromium browser tests, `git diff --check`, and the production build passed.
 
+## Checkpoint 27 — centered loading logo (complete; ~3 minutes)
+
+- Updated the loading animation so the FALLSHIP mark enters from above and settles in the center before the next briefing appears.
+- Validation: syntax checks, 24 unit tests, six Chromium browser tests, `git diff --check`, and the production build passed.
+
 ## Checkpoint 20 — gravity title motion (complete; ~5 minutes)
 
 - Replaced the scripted corner loop with a small title-only physics loop. The player has horizontal velocity, gravity, wall and ceiling collisions, floor rebounds, and impact damping, so it bounces freely inside the menu.
