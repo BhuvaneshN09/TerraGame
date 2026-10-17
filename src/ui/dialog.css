@@ -141,23 +141,6 @@ dialog[open][data-mode="title"] > .title-character {
   height: 32px;
   image-rendering: pixelated;
   pointer-events: none;
-  animation: title-character-float 42s linear infinite;
-}
-
-@keyframes title-character-float {
-  0% { left: 0; top: 0; transform: scale(1.12, .88); }
-  1% { left: 0; top: 0; transform: scale(1); }
-  23% { left: calc(100% - 32px); top: 0; transform: scale(1); }
-  24% { left: calc(100% - 32px); top: 0; transform: scale(1.12, .88); }
-  25% { left: calc(100% - 32px); top: 0; transform: scale(1); }
-  50% { left: calc(100% - 32px); top: calc(100% - 32px); transform: scale(1); }
-  51% { left: calc(100% - 32px); top: calc(100% - 32px); transform: scale(1.12, .88); }
-  52% { left: calc(100% - 32px); top: calc(100% - 32px); transform: scale(1); }
-  75% { left: 0; top: calc(100% - 32px); transform: scale(1); }
-  76% { left: 0; top: calc(100% - 32px); transform: scale(1.12, .88); }
-  77% { left: 0; top: calc(100% - 32px); transform: scale(1); }
-  99% { left: 0; top: 0; transform: scale(1); }
-  100% { left: 0; top: 0; transform: scale(1.12, .88); }
 }
 
 dialog .eyebrow {

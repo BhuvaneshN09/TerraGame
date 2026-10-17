@@ -69,6 +69,12 @@ Approximate total active session effort: 37 minutes, including review and verifi
 - Added a regression test covering active code entry and revalidated the existing one-shot idle hint.
 - Validation: 24 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
 
+## Checkpoint 20 — gravity title motion (complete; ~5 minutes)
+
+- Replaced the scripted corner loop with a small title-only physics loop. The player has horizontal velocity, gravity, wall and ceiling collisions, floor rebounds, and impact damping, so it bounces freely inside the menu.
+- The animation stops when the title closes and cannot affect gameplay state.
+- Validation: syntax checks, 24 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
+
 ## Checkpoint 19 — ball-style title bounce (complete; ~3 minutes)
 
 - Changed the bounded corner path to linear DVD-style travel with a brief squash at each impact, including the loop’s top-left rebound.
