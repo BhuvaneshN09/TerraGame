@@ -32,6 +32,29 @@ export function createGame(levelIndex = 0) {
   return state;
 }
 
+export function beginBriefing(state) {
+  state.mode = 'briefing';
+  state.briefingStep = 0;
+  state.inspection = { id: 'morrow-briefing', name: 'Morrow', status: 'BRIEFING', text: levelBriefing(state) };
+}
+
+export function advanceBriefing(state) {
+  if (state.mode !== 'briefing') return;
+  if (state.levelIndex === 0 && state.briefingStep === 0) {
+    state.briefingStep = 1;
+    state.inspection.text = `LEVEL 1: repair ${state.level.machines.length} machine. Start at the junction console.`;
+    return;
+  }
+  state.inspection = null;
+  state.mode = 'playing';
+}
+
+function levelBriefing(state) {
+  return state.levelIndex === 0
+    ? 'Hello there traveler. This is the Meridian. Talk to me, find broken machines, and repair them with Python.'
+    : `LEVEL ${state.levelIndex + 1}: ${state.level.name}. Morrow needs ${state.level.machines.length} machines repaired.`;
+}
+
 function refreshState(state) {
   state.camera = followCamera(state.player, { width: state.map.width * 16, height: state.map.height * 16 }, VIEW);
   state.nearby = nearbyObject(state.player, state.objects, state.map);

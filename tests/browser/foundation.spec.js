@@ -12,6 +12,8 @@ test.afterEach(() => expect(errors).toEqual([]));
 
 async function start(page) {
   await page.getByRole('button', { name: 'Begin exploration' }).click();
+  await page.getByRole('button', { name: 'NEXT' }).click();
+  await page.getByRole('button', { name: 'NEXT' }).click();
   await expect(page.locator('#game')).toHaveAttribute('data-mode', 'playing');
 }
 async function position(page) {
@@ -29,6 +31,8 @@ test('title is keyboard accessible; rendered canvas is crisp and nonempty', asyn
   await expect(page.getByRole('dialog')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Begin exploration' })).toBeFocused();
   await page.keyboard.press('Enter');
+  await page.getByRole('button', { name: 'NEXT' }).click();
+  await page.getByRole('button', { name: 'NEXT' }).click();
   await expect(page.locator('#game')).toBeFocused();
   const canvas = await page.locator('#game').evaluate(element => {
     const ctx = element.getContext('2d');

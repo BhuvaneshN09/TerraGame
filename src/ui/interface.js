@@ -53,7 +53,8 @@ export function createInterface(app, actions) {
   dialog.addEventListener('cancel', event => event.preventDefault()); // Escape goes through the single input action path.
   dialog.addEventListener('click', event => {
     const action = event.target.closest('button')?.dataset.action;
-    if (action === 'solve') actions.solve(get('patch-code').value);
+    if (action === 'help') { get('help-panel').hidden = false; dialog.close(); }
+    else if (action === 'solve') actions.solve(get('patch-code').value);
     else if (action) actions[action]?.();
   });
 
@@ -81,15 +82,19 @@ export function createInterface(app, actions) {
       dialog.close(); canvas.focus({ preventScroll: true }); return;
     }
     if (state.mode === 'title') {
-      const hasSave = Number.parseInt(localStorage.getItem('fallship-level') ?? '0', 10) > 0; dialog.innerHTML = `<p class="eyebrow">FALLSHIP / EXPLORATION BUILD</p><div class="dialog-symbol">${circuit}</div><h2 id="dialog-heading">The ship is silent.<br>You’re still here.</h2><p>Step aboard the Meridian. Explore its empty corridors and inspect the systems left behind.</p>${hasSave ? '<button class="primary-button" data-action="continue" autofocus>Continue run <span>→</span></button><button class="secondary-button" data-action="start">New game</button>' : '<button class="primary-button" data-action="start" autofocus>Begin exploration <span>→</span></button>'}<p class="dialog-footnote">WASD / ARROWS TO MOVE <span>·</span> E TO INSPECT</p>`;
+      const hasSave = Number.parseInt(localStorage.getItem('fallship-level') ?? '0', 10) > 0; dialog.innerHTML = `<p class="eyebrow">FALLSHIP</p><div class="dialog-symbol">${circuit}</div><h2 id="dialog-heading">FALLSHIP</h2><p>MERIDIAN EXPLORATION PROGRAM</p>${hasSave ? '<button class="primary-button" data-action="continue" autofocus>CONTINUE</button><button class="secondary-button" data-action="start">NEW GAME</button>' : '<button class="primary-button" data-action="start" autofocus>Begin exploration</button>'}<button class="secondary-button" data-action="help">CONTROLS</button><p class="dialog-footnote">WASD MOVE · E INTERACT · ESC PAUSE</p>`;
     } else if (state.mode === 'paused') {
       dialog.innerHTML = '<p class="eyebrow">EXPLORATION SUSPENDED</p><h2 id="dialog-heading">PAUSED</h2><p>Your position is held. Resume when you’re ready to continue the survey.</p><button class="primary-button" data-action="resume" autofocus>Resume exploration <span>→</span></button><button class="secondary-button" data-action="title">Return to title</button><p class="dialog-footnote">ESC TO RESUME · RETURNING TO TITLE RESETS THE SESSION</p>';
+    } else if (state.mode === 'briefing') {
+      dialog.dataset.result = '';
+      dialog.innerHTML = '<p class="eyebrow">MORROW / BRIEFING</p><h2 id="dialog-heading">Morrow</h2><p id="object-description" class="typing-copy"></p><button class="primary-button" data-action="briefingNext" autofocus>NEXT <span>→</span></button>';
+      typeText(get('object-description'), state.inspection.text);
     } else if (state.mode === 'inspecting') {
       const challenge = state.inspection.id === 'junction' && !state.levelPassed;
       const result = state.levelPassed;
       dialog.dataset.result = result ? 'passed' : '';
       const code = state.currentChallenge?.broken ?? 'def lights_on():\n    return "LIGTHS_ON"';
-      dialog.innerHTML = `${result ? '<div class="confetti" aria-hidden="true">✦ · ✧ ✦ · ✧ ✦</div>' : ''}<p class="eyebrow">${result ? 'LEVEL PASSED / REPAIR CONFIRMED' : 'OBJECT INSPECTION / <span id="object-status"></span>'}</p><h2 id="dialog-heading">${result ? 'RESTORED' : ''}</h2><p id="object-description" class="typing-copy"></p>${challenge ? `<label class="code-label" for="patch-code">PYTHON PATCH / ${state.currentChallenge.label}</label><textarea id="patch-code" class="code-input" rows="3" spellcheck="false">${code}</textarea><button class="primary-button" data-action="solve" autofocus>Run patch <span>↵</span></button>` : result ? `<p class="level-result">LEVEL PASSED<br>${'★'.repeat(state.stars)}${'☆'.repeat(3 - state.stars)}<br>Run time ${Math.ceil(state.runTimeLeft)} seconds remaining.</p><button class="primary-button" data-action="close" autofocus>Continue exploration <span>↵</span></button>` : '<button class="primary-button" data-action="close" autofocus>Back to exploration <span>↵</span></button>'}<p class="dialog-footnote">E OR ESC TO CLOSE</p>`;
+      dialog.innerHTML = `${result ? '<div class="confetti" aria-hidden="true">✦ · ✧ ✦ · ✧ ✦</div>' : ''}<p class="eyebrow">${result ? 'LEVEL PASSED / REPAIR CONFIRMED' : 'OBJECT INSPECTION / <span id="object-status"></span>'}</p><h2 id="dialog-heading">${result ? 'RESTORED' : ''}</h2><p id="object-description" class="typing-copy"></p>${challenge ? `<label class="code-label" for="patch-code">PYTHON PATCH / ${state.currentChallenge.label}</label><textarea id="patch-code" class="code-input" rows="3" spellcheck="false">${code}</textarea><button class="primary-button" data-action="solve" autofocus>Run patch <span>↵</span></button>` : result ? `<p class="level-result">LEVEL PASSED<br>${'★'.repeat(state.stars)}${'☆'.repeat(3 - state.stars)}<br>Run time ${Math.ceil(state.runTimeLeft)} seconds remaining.</p><button class="primary-button" data-action="nextLevel" autofocus>Next level <span>↵</span></button>` : '<button class="primary-button" data-action="close" autofocus>Back to exploration <span>↵</span></button>'}<p class="dialog-footnote">E OR ESC TO CLOSE</p>`;
       if (!result) {
         get('dialog-heading').textContent = state.inspection.name;
         get('object-status').textContent = state.inspection.status;
@@ -135,7 +140,7 @@ export function createInterface(app, actions) {
     if (note !== lastNote) {
       lastNote = note;
       const object = state.objects.find(object => object.id === note);
-      setText('field-note', object ? `${object.name} — ${object.status.toLowerCase()}. Observation recorded.` : 'No observations yet. The junction console is nearby.');
+      setText('field-note', object ? `${object.name}: ${object.status.toLowerCase()}. Observation recorded.` : 'No observations yet. The junction console is nearby.');
     }
   }
   return { canvas, minimap: get('minimap'), render, refresh: state => { shownMode = ''; render(state); }, toggleHelp, destroy: () => { resize.disconnect(); cancelAnimationFrame(resizeFrame); } };

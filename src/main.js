@@ -1,5 +1,5 @@
 import './style.css';
-import { createGame, updateGame, inspectNearby, closeInspection, solveChallenge } from './game/simulation.js';
+import { createGame, updateGame, inspectNearby, closeInspection, solveChallenge, beginBriefing, advanceBriefing } from './game/simulation.js';
 import { bindInput } from './game/input.js';
 import { startLoop } from './game/loop.js';
 import { createRenderer } from './render/renderer.js';
@@ -18,8 +18,10 @@ function transition(change) {
 }
 
 const actions = {
-  start: () => { document.documentElement.requestFullscreen?.().catch(() => {}); transition(() => { state = createGame(0); state.mode = 'playing'; }); },
-  continue: () => { document.documentElement.requestFullscreen?.().catch(() => {}); transition(() => { state = createGame(savedLevel()); state.mode = 'playing'; }); },
+  start: () => { document.documentElement.requestFullscreen?.().catch(() => {}); transition(() => { state = createGame(0); beginBriefing(state); }); },
+  continue: () => { document.documentElement.requestFullscreen?.().catch(() => {}); transition(() => { state = createGame(savedLevel()); beginBriefing(state); }); },
+  briefingNext: () => transition(() => advanceBriefing(state)),
+  nextLevel: () => transition(() => { state = createGame(Math.min(state.levelIndex + 1, 4)); beginBriefing(state); }),
   resume: () => { if (state.mode === 'paused') transition(() => { state.mode = 'playing'; }); },
   pause: () => { if (state.mode === 'playing') transition(() => { state.mode = 'paused'; state.player.moving = false; }); },
   title: () => transition(() => { state = createGame(); }),
@@ -39,8 +41,10 @@ loop = startLoop(dt => {
     else if (state.mode === 'paused') actions.resume();
     else if (state.mode === 'inspecting') actions.close();
   }
+  const interacted = input.consume('interact');
+  if (interacted && state.mode === 'briefing') actions.briefingNext();
   if (input.consume('menu')) actions.pause();
-  if (input.consume('interact')) {
+  if (interacted && state.mode !== 'briefing') {
     if (state.mode === 'inspecting') actions.close();
     else actions.inspect();
   }
