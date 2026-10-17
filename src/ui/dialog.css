@@ -94,33 +94,41 @@ dialog[open][data-mode="title"]::before,
 dialog[open][data-mode="title"]::after {
   content: '';
   position: absolute;
-  inset: -100% 0;
+  inset: 0;
   pointer-events: none;
   background-repeat: repeat;
-  will-change: transform;
+  will-change: background-position;
 }
 
 dialog[open][data-mode="title"]::before {
   opacity: .75;
   background-image:
     radial-gradient(circle, #d9e9d4 0 1px, transparent 1.5px),
-    radial-gradient(circle, #78948d 0 1px, transparent 1.5px);
-  background-position: 22px 18px, 84px 61px;
-  background-size: 137px 149px, 211px 193px;
-  animation: title-stars-rise 9s linear infinite;
+    radial-gradient(ellipse 1px 2px, #78948d 0 1px, transparent 1.5px),
+    radial-gradient(ellipse 2px 1px, #a7c1a6 0 1px, transparent 1.5px);
+  background-position: 22px 18px, 84px 61px, 49px 119px;
+  background-size: 137px 149px, 211px 193px, 173px 181px;
+  animation: title-stars-rise-near 9s linear infinite;
 }
 
 dialog[open][data-mode="title"]::after {
   opacity: .5;
-  background-image: radial-gradient(circle, #d9e9d4 0 1px, transparent 1.5px);
-  background-position: 121px 37px;
-  background-size: 263px 227px;
-  animation: title-stars-rise 15s linear infinite;
+  background-image:
+    radial-gradient(circle, #d9e9d4 0 1px, transparent 1.5px),
+    radial-gradient(ellipse 1px 2px, #63827c 0 1px, transparent 1.5px);
+  background-position: 121px 37px, 17px 97px;
+  background-size: 263px 227px, 197px 239px;
+  animation: title-stars-rise-far 15s linear infinite;
 }
 
-@keyframes title-stars-rise {
-  from { transform: translateY(0); }
-  to { transform: translateY(-220px); }
+@keyframes title-stars-rise-near {
+  from { background-position: 22px 18px, 84px 61px, 49px 119px; }
+  to { background-position: 22px -131px, 84px -132px, 49px -62px; }
+}
+
+@keyframes title-stars-rise-far {
+  from { background-position: 121px 37px, 17px 97px; }
+  to { background-position: 121px -190px, 17px -142px; }
 }
 
 dialog[open][data-mode="title"] > * { position: relative; z-index: 1; }

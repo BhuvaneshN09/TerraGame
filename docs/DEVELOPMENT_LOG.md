@@ -69,6 +69,12 @@ Approximate total active session effort: 37 minutes, including review and verifi
 - Added a regression test covering active code entry and revalidated the existing one-shot idle hint.
 - Validation: 24 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
 
+## Checkpoint 15 — seamless varied starfield (complete; ~4 minutes)
+
+- Reworked the title star animation to move repeating background tiles by exact cycle lengths, removing the visible loop break.
+- Added varied round and stretched star shapes across two depth layers while keeping the title menu black and unobstructed.
+- Validation: 24 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
+
 ## Checkpoint 14 — animated title space (complete; ~4 minutes)
 
 - Changed the title menu backdrop to black and added two subtle upward-moving star layers at different speeds. The menu remains centered above the animation with no ship artwork behind it.
