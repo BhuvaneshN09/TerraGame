@@ -63,6 +63,11 @@ Approximate total active session effort: 37 minutes, including review and verifi
 - Added deterministic tests for the ten-second hint and unique level puzzle progression.
 - Validation: 23 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
 
+## Checkpoint 11 — canvas label clarity (complete; ~3 minutes)
+
+- Increased painted room and floor label text from 8px to 10px and raised its contrast so the shared pixel font stays readable after the game canvas is enlarged.
+- Validation: 23 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
+
 ## Checkpoint 9 — title screen cleanup (complete; ~5 minutes)
 
 - Removed the circuit logo from the interface and replaced the browser icon with a blank data icon so no branded favicon is shown.
