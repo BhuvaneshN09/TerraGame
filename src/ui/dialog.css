@@ -35,8 +35,8 @@ dialog[open][data-result="passed"] {
   text-align: center;
 }
 
-dialog[open] .typing-copy { max-width: 1100px; min-height: 42px; }
-dialog[open] h2 { margin: 5px 0 8px; font-size: 22px; }
+dialog[open] .typing-copy { max-width: 1100px; min-height: 64px; }
+dialog[open] h2 { margin: 5px 0 12px; font-size: 42px; }
 
 dialog::backdrop {
   background: #071013ba;
@@ -62,13 +62,13 @@ dialog[data-mode="title"]::backdrop { background: #081012; }
 
 dialog .eyebrow {
   color: #b7c899;
-  font-size: 9px;
+  font-size: 14px;
   letter-spacing: 1.2px;
 }
 
 dialog h2 {
   font-family: var(--retro);
-  font-size: 34px;
+  font-size: 42px;
   font-weight: 500;
   letter-spacing: -1.2px;
   line-height: 1.12;
@@ -76,8 +76,8 @@ dialog h2 {
 }
 
 dialog > p:not(.eyebrow):not(.dialog-footnote) {
-  font-size: 12px;
-  line-height: 1.9;
+  font-size: 18px;
+  line-height: 1.55;
   color: #b3c1b4;
   margin-bottom: 25px;
 }
@@ -95,8 +95,8 @@ dialog > p:not(.eyebrow):not(.dialog-footnote) {
   justify-content: space-between;
   align-items: center;
   border: 1px solid #d1e796;
-  font-size: 11px;
-  padding: 15px;
+  font-size: 18px;
+  padding: 18px;
 }
 
 .primary-button {
@@ -115,7 +115,7 @@ dialog > p:not(.eyebrow):not(.dialog-footnote) {
 
 dialog .dialog-footnote {
   margin: 18px 0 0;
-  font-size: 8px;
+  font-size: 12px;
   line-height: 1.8;
   letter-spacing: .4px;
   color: #96ab95;
@@ -128,7 +128,7 @@ dialog .dialog-footnote {
 .placeholder-label {
   border-left: 2px solid #b99c68;
   color: #bcac8b;
-  font-size: 9px;
+  font-size: 14px;
   letter-spacing: .5px;
   line-height: 1.6;
   padding: 8px 12px;
@@ -142,6 +142,6 @@ dialog .dialog-footnote {
     padding: 16px;
   }
   dialog h2 {
-    font-size: 29px;
+    font-size: 36px;
   }
 }

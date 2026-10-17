@@ -55,6 +55,12 @@ Approximate total active session effort: 37 minutes, including review and verifi
 - Replaced the remaining legacy Arial and generic system font declarations with the same Courier/Lucida terminal stack used by the painted floor labels.
 - Updated canvas room labels, floor markings, and interaction markers so rendered text follows the same retro face as menus, HUD text, dialogs, and code entry.
 - Validation: 21 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
+
+## Checkpoint 8 — readable briefing scale (complete; ~4 minutes)
+
+- Increased briefing, menu, inspection, repair labels, code entry, buttons, and dialog footnotes to roughly twice their previous size while preserving the bundled pixel face.
+- Kept a smaller mobile heading override so the larger type does not push controls outside narrow screens.
+- Validation: 21 unit tests, five Chromium browser tests, `git diff --check`, and the production build passed.
 - Next recommended task: review the updated typography in the browser at desktop and narrow viewport sizes before adding another gameplay system.
 
 ## Checkpoint 7 — bundled pixel terminal face (complete; ~6 minutes)
