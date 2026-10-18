@@ -10,4 +10,7 @@ The project uses Node.js, Vite, native Canvas, and ES modules. From this directo
 npm ci
 npm run dev
 ```
+```
+also you could run it on vercel - fallship.vercel.app
+```
 ## The code is really just plain JS
