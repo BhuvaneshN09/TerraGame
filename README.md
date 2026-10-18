@@ -29,10 +29,8 @@ The first briefing tells you what to repair. At a machine, read the GOAL before 
 
 ## Code layout
 
-`src/main.js` connects the loop, simulation, renderer, and interface. `src/game/` contains input, timing, level data, the simulation, and the small static Python checker. `src/world/` contains the tile maps, objects, and collision rules. `src/render/` draws the pixel environment, sprites, camera view, and minimaps. `src/ui/` contains the DOM panels and styles. Tests live in `tests/unit/` and `tests/browser/`.
-
-The game uses a 480×288 logical canvas and 16-pixel tiles. The simulation runs at a capped fixed step; the renderer rounds positions to keep the pixel art sharp. The level maps and machine placements are data, so new rooms and challenges can be added without putting game rules in the renderer.
+It is mostly plain JavaScript split into game logic, ship data, drawing, and UI, with `src/main.js` wiring those pieces together. I kept the map and machine data separate from the renderer so I can move things around without rewriting the game loop.
 
 ## Current scope
 
-The current build covers exploration, collision, camera tracking, physical machine interactions, map navigation, timed runs, menus, and the first set of program challenges. It does not include a general Python interpreter, audio, touch controls, or a larger campaign beyond the five authored levels.
+Right now it is an exploration slice with five levels, timed machine challenges, and a small static checker; audio, touch controls, and a full Python runtime are still out of scope.

@@ -8,6 +8,10 @@ The project stays intentionally small: simulation rules live in `src/game/`, map
 
 ## Recent work
 
+### Documentation tone cleanup
+
+The README had started to read like a system overview. I shortened the code-layout and scope notes so they say what I actually need to remember when working on the game, without repeating the test and architecture details.
+
 ### Six-machine maps and map navigation
 
 The old single junction repair object was removed. Each level now creates six machine objects from its level data. A machine has a position, fault description, goal, starter code, and checker kind. Solving one closes the panel and marks only that machine restored, so the player must travel to the next fault.
