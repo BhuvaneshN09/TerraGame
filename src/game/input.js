@@ -1,7 +1,7 @@
 const MOVEMENT = new Set(['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight']);
 const ACTIONS = new Map([['KeyE', 'interact'], ['Escape', 'pause'], ['KeyM', 'menu'], ['KeyT', 'map']]);
 
-// Held keys and one-shot actions use separate sets.
+// keyss
 export class InputState {
   held = new Set();
   actions = new Set();
