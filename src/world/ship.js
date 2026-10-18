@@ -42,11 +42,16 @@ function authorShip(extraCarves = []) {
 
 export const SHIP = authorShip();
 const LEVEL_SHAPES = [
+  // The first deck is the compact cross-shaped layout used for the tutorial.
   [],
-  [{ x: 44, y: 27, width: 5, height: 2 }, { x: 45, y: 28, width: 11, height: 7 }],
-  [{ x: 39, y: 7, width: 5, height: 3 }, { x: 40, y: 5, width: 10, height: 5 }],
-  [{ x: 11, y: 27, width: 5, height: 3 }, { x: 5, y: 28, width: 12, height: 7 }],
-  [{ x: 18, y: 11, width: 6, height: 5 }, { x: 16, y: 12, width: 10, height: 3 }],
+  // Cold Deck bends out to the right, making a hook around the cargo hold.
+  [{ x: 44, y: 27, width: 5, height: 2 }, { x: 45, y: 28, width: 11, height: 8 }, { x: 54, y: 20, width: 5, height: 9 }],
+  // Locked Air grows a raised tower above the bridge and a broad upper bay.
+  [{ x: 39, y: 7, width: 5, height: 3 }, { x: 40, y: 5, width: 10, height: 5 }, { x: 49, y: 6, width: 9, height: 5 }, { x: 44, y: 10, width: 10, height: 5 }],
+  // Reactor Wake fans into two left-side rooms instead of the right-hand hook.
+  [{ x: 11, y: 27, width: 5, height: 3 }, { x: 5, y: 28, width: 12, height: 7 }, { x: 1, y: 28, width: 4, height: 7 }, { x: 1, y: 16, width: 5, height: 8 }],
+  // Meridian Core forms a tall central neck with wings on both sides.
+  [{ x: 18, y: 11, width: 6, height: 5 }, { x: 16, y: 12, width: 10, height: 3 }, { x: 18, y: 5, width: 4, height: 7 }, { x: 54, y: 15, width: 5, height: 12 }, { x: 44, y: 28, width: 10, height: 5 }],
 ];
 export const LEVEL_MAPS = Object.freeze(LEVEL_SHAPES.map(shapes => authorShip(shapes)));
 export const SPAWN = Object.freeze({ x: 30.5 * TILE_SIZE, y: 22.5 * TILE_SIZE });

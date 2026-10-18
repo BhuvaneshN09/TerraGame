@@ -8,6 +8,10 @@ The project stays intentionally small: simulation rules live in `src/game/`, map
 
 ## Recent work
 
+### Distinct level footprints
+
+The five decks now have different floor silhouettes instead of sharing one outline with a color swap. The later maps branch into their own hooks, towers, side rooms, and wings, while the connectivity checks keep every machine reachable.
+
 ### Documentation tone cleanup
 
 The README had started to read like a system overview. I shortened the code-layout and scope notes so they say what I actually need to remember when working on the game, without repeating the test and architecture details.
