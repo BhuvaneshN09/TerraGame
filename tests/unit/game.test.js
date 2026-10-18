@@ -2,8 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { followCamera } from '../../src/game/camera.js';
 import { createClock } from '../../src/game/loop.js';
-import { createGame, updateGame, inspectNearby, closeInspection, EJECT_ZONE, CORNER_ZONES, LEVEL_TIME_LIMITS } from '../../src/game/simulation.js';
+import { createGame, updateGame, inspectNearby, closeInspection, solveChallenge, EJECT_ZONE, CORNER_ZONES, LEVEL_TIME_LIMITS } from '../../src/game/simulation.js';
 import { LEVELS } from '../../src/game/levels.js';
+import { LEVEL_MAPS } from '../../src/world/ship.js';
+import { compilePython, testPythonChallenge } from '../../src/game/compiler.js';
 
 test('camera follows and clamps at each edge, including worlds smaller than view', () => {
   const world = { width: 1000, height: 600 };
@@ -92,11 +94,41 @@ test('every authored corner gives the three-second harmless easter egg notice', 
   }
 });
 
-test('each level has its own repair puzzles and level two does not repeat lights', () => {
+test('each level has its own map, console, and repair puzzles', () => {
   const puzzles = LEVELS.flatMap(level => level.machines);
   assert.equal(new Set(puzzles.map(puzzle => puzzle.id)).size, puzzles.length);
-  assert.equal(LEVELS[1].machines.some(puzzle => puzzle.id === 'lights'), false);
+  assert.equal(new Set(LEVELS.map(level => level.console.name)).size, LEVELS.length);
+  assert.equal(new Set(LEVEL_MAPS.map(map => map.rows.join('\n'))).size, 5);
   assert.deepEqual(LEVELS.map(level => level.machines.length), [1, 2, 3, 4, 5]);
+});
+
+test('every level map keeps its spawn and console on walkable tiles', () => {
+  for (let levelIndex = 0; levelIndex < LEVELS.length; levelIndex++) {
+    const state = createGame(levelIndex);
+    const consoleObject = state.objects.find(object => object.id === 'junction');
+    const col = Math.floor(consoleObject.x / 16);
+    const row = Math.floor(consoleObject.y / 16);
+    assert.ok('.D'.includes(state.map.rows[row][col]), `level ${levelIndex + 1} console blocked`);
+    assert.ok(state.map.rows[Math.floor(state.player.y / 16)][Math.floor(state.player.x / 16)] === '.', `level ${levelIndex + 1} spawn blocked`);
+    assert.notEqual(LEVELS[levelIndex].palette.floor, LEVELS[(levelIndex + 1) % LEVELS.length].palette.floor);
+  }
+});
+
+test('all five level maps remain connected from the spawn', () => {
+  for (const map of LEVEL_MAPS) {
+    const start = [30, 22];
+    const queue = [start];
+    const seen = new Set([start.join(',')]);
+    while (queue.length) {
+      const [x, y] = queue.shift();
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+        const nx = x + dx; const ny = y + dy; const key = `${nx},${ny}`;
+        if (!seen.has(key) && '.D'.includes(map.rows[ny]?.[nx] ?? ' ')) { seen.add(key); queue.push([nx, ny]); }
+      }
+    }
+    const floorCount = map.rows.join('').split('').filter(tile => '.D'.includes(tile)).length;
+    assert.equal(seen.size, floorCount);
+  }
 });
 
 test('repair runs use one minute, two minutes, then three minutes', () => {
@@ -110,10 +142,29 @@ test('repair runs use one minute, two minutes, then three minutes', () => {
 
 test('every repair patch gives a goal and later levels teach varied Python shapes', () => {
   const puzzles = LEVELS.flatMap(level => level.machines);
-  assert.ok(puzzles.every(puzzle => puzzle.goal.length > 12));
-  assert.ok(puzzles.some(puzzle => puzzle.fixed.includes('sum(')));
-  assert.ok(puzzles.some(puzzle => puzzle.fixed.includes('.get(')));
-  assert.ok(puzzles.some(puzzle => !puzzle.fixed.startsWith('def ')));
+  assert.ok(puzzles.every(puzzle => puzzle.goal.length > 12 && puzzle.prompt.length > 12 && puzzle.starter.length > 12));
+  assert.equal(new Set(puzzles.map(puzzle => puzzle.kind)).size, puzzles.length);
+  assert.ok(puzzles.some(puzzle => puzzle.kind === 'commands'));
+  assert.ok(puzzles.some(puzzle => puzzle.starter.includes('{')));
+});
+
+test('the small Python checker reports syntax and challenge requirements', () => {
+  assert.equal(compilePython('x = [1, 2').ok, false);
+  const access = LEVELS[0].machines[0];
+  assert.equal(testPythonChallenge(access, access.starter).ok, false);
+  assert.equal(testPythonChallenge(access, 'code = input("ACCESS CODE: ")\nif code == "MERIDIAN":\n    print("ACCESS GRANTED")\nelse:\n    print("ACCESS DENIED")').ok, true);
+});
+
+test('a program is tested against the active machine goal instead of an exact patch string', () => {
+  const state = createGame();
+  state.mode = 'playing';
+  state.nearby = state.objects.find(object => object.id === 'junction');
+  inspectNearby(state);
+  assert.equal(solveChallenge(state, state.currentChallenge.starter), false);
+  assert.match(state.inspection.text, /TEST FAILED/);
+  const program = 'code = input("ACCESS CODE: ")\nif code == "MERIDIAN":\n    print("ACCESS GRANTED")\nelse:\n    print("ACCESS DENIED")';
+  assert.equal(solveChallenge(state, program), true);
+  assert.equal(state.levelPassed, true);
 });
 
 test('Morrow offers one repair hint after ten seconds in the junction', () => {

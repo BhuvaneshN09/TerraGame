@@ -2,7 +2,8 @@ import { ROOMS, tileAt } from '../world/ship.js';
 
 export const COLORS = { void: '#0b1215', floor: '#273639', seam: '#1d292d', hull: '#536368', mint: '#c5dc8b', amber: '#d9a16b' };
 
-export function paintEnvironment(map) {
+export function paintEnvironment(map, palette = COLORS) {
+  const colors = { ...COLORS, ...palette };
   const layer = document.createElement('canvas');
   layer.width = map.width * 16;
   layer.height = map.height * 16;
@@ -13,8 +14,8 @@ export function paintEnvironment(map) {
     const x = col * 16; const y = row * 16;
     if (tile === ' ') continue;
     if (tile === '#') {
-      rect('#141e22', x, y, 16, 16);
-      rect('#45585d', x, y, 16, 10);
+      rect(colors.void, x, y, 16, 16);
+      rect(colors.hull, x, y, 16, 10);
       rect('#718084', x, y, 16, 2);
       rect('#35454c', x + 1, y + 3, 14, 5);
       rect('#203036', x + 1, y + 11, 14, 3);
@@ -26,9 +27,9 @@ export function paintEnvironment(map) {
       }
       continue;
     }
-    rect((row + col) % 3 === 0 ? '#2b3a3d' : COLORS.floor, x, y, 16, 16);
-    rect(COLORS.seam, x, y + 15, 16, 1);
-    rect(COLORS.seam, x + 15, y, 1, 16);
+    rect((row + col) % 3 === 0 ? colors.hull : colors.floor, x, y, 16, 16);
+    rect(colors.seam, x, y + 15, 16, 1);
+    rect(colors.seam, x + 15, y, 1, 16);
     rect('#364649', x + 2, y + 2, 1, 1);
     rect('#344447', x + 13, y + 13, 1, 1);
     if (col === 30 && row > 11 && row < 30) {
@@ -47,7 +48,7 @@ export function paintEnvironment(map) {
     const x = room.x * 16; const y = room.y * 16;
     ctx.strokeStyle = '#61716a'; ctx.lineWidth = 1;
     ctx.strokeRect(x + 9.5, y + 9.5, room.width * 16 - 19, room.height * 16 - 19);
-    rect(COLORS.floor, x + 17, y + 5, Math.min(122, room.width * 16 - 40), 9);
+    rect(colors.floor, x + 17, y + 5, Math.min(122, room.width * 16 - 40), 9);
     ctx.fillStyle = '#c4d3be'; ctx.font = '10px "Fallship Pixel", "Courier New", "Lucida Console", monospace';
     ctx.fillText(room.name.toUpperCase(), x + 20, y + 12);
   }

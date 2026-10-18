@@ -1,8 +1,9 @@
-import { SHIP, SPAWN, OBJECTS, VIEW, ROOMS, roomAt } from '../world/ship.js';
+import { SPAWN, OBJECTS, VIEW, ROOMS, roomAt, mapForLevel } from '../world/ship.js';
 import { isBlocked, moveWithCollision, normalizedDirection, playerBounds } from '../world/collision.js';
 import { followCamera } from './camera.js';
 import { nearbyObject } from './interactions.js';
 import { LEVELS } from './levels.js';
+import { testPythonChallenge } from './compiler.js';
 
 export const PLAYER_SPEED = 76;
 export const LEVEL_TIME_LIMITS = Object.freeze([60, 120, 180, 180, 180]);
@@ -18,10 +19,13 @@ export function createGame(levelIndex = 0) {
   const safeLevelIndex = Math.min(levelIndex, LEVELS.length - 1);
   const level = LEVELS[safeLevelIndex];
   const levelTimeLimit = LEVEL_TIME_LIMITS[safeLevelIndex];
+  const objects = OBJECTS.map(object => object.id === 'junction'
+    ? { ...object, name: level.console.name, x: level.console.x, y: level.console.y, text: level.console.text }
+    : object);
   const state = {
     mode: 'title',
     player: { ...SPAWN, facing: 'down', moving: false, walkTime: 0 },
-    map: SHIP, objects: OBJECTS, camera: { x: 0, y: 0 },
+    map: mapForLevel(safeLevelIndex), objects, camera: { x: 0, y: 0 },
     nearby: null, inspection: null, inspected: new Set(), elapsed: 0, runTimeLeft: levelTimeLimit, levelTimeLimit,
     ejectHold: 0, ejectCooldown: 0, cornerHold: 0, cornerCooldown: 0,
     notice: '', noticeTimer: 0,
@@ -133,10 +137,10 @@ export function closeInspection(state) {
 
 export function solveChallenge(state, code) {
   if (state.mode !== 'inspecting' || state.inspection?.id !== 'junction') return false;
-  const normalized = code.trim().replace(/\r/g, '').replace(/[ \t]+$/gm, '');
-  if (normalized !== state.currentChallenge.fixed) {
+  const result = testPythonChallenge(state.currentChallenge, code);
+  if (!result.ok) {
     state.challengeAttempts += 1;
-    state.inspection = { ...state.inspection, text: state.challengeAttempts >= 2 ? `TRY AGAIN. ${state.currentChallenge.hint}` : 'TRY AGAIN. The patch did not pass validation.' };
+    state.inspection = { ...state.inspection, text: state.challengeAttempts >= 2 ? `TRY AGAIN. ${result.message} ${state.currentChallenge.hint}` : `TRY AGAIN. ${result.message}` };
     return false;
   }
   if (state.challengeIndex < state.level.machines.length - 1) {
@@ -145,12 +149,12 @@ export function solveChallenge(state, code) {
     state.challengeStarted = false;
     state.challengeIdleTime = 0;
     state.currentChallenge = state.level.machines[state.challengeIndex];
-    state.inspection = { ...state.inspection, text: `PATCH ACCEPTED. Next machine: ${state.currentChallenge.label}.` };
+    state.inspection = { ...state.inspection, text: `${result.message} Next program: ${state.currentChallenge.label}.` };
     return true;
   }
   state.challengeSolved = true;
   state.levelPassed = true;
   state.stars = state.runTimeLeft >= state.levelTimeLimit * 0.8 ? 3 : state.runTimeLeft >= state.levelTimeLimit * 0.4 ? 2 : 1;
-  state.inspection = { ...state.inspection, status: 'RESTORED', text: `PATCH ACCEPTED. All ${state.level.machines.length} machines are responding again.` };
+  state.inspection = { ...state.inspection, status: 'RESTORED', text: `${result.message} All ${state.level.machines.length} programs are responding again.` };
   return true;
 }

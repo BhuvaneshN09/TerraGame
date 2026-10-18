@@ -20,7 +20,7 @@ export function parseMap(rows) {
   return { rows, width, height: rows.length, tileSize: TILE_SIZE };
 }
 
-function authorShip() {
+function authorShip(extraCarves = []) {
   const tiles = Array.from({ length: 39 }, () => Array(60).fill(' '));
   const carve = (x, y, width, height) => {
     for (let row = y; row < y + height; row++) {
@@ -29,6 +29,7 @@ function authorShip() {
   };
   ROOMS.forEach(room => carve(room.x, room.y, room.width, room.height));
   carve(28, 10, 5, 23);
+  extraCarves.forEach(shape => carve(shape.x, shape.y, shape.width, shape.height));
   for (const x of [27, 33]) for (const y of [20, 21]) tiles[y][x] = 'D';
   // Build one tile of hull around every authored floor, including diagonals.
   const floors = tiles.map(row => [...row]);
@@ -40,7 +41,19 @@ function authorShip() {
 }
 
 export const SHIP = authorShip();
+const LEVEL_SHAPES = [
+  [],
+  [{ x: 44, y: 27, width: 5, height: 2 }, { x: 45, y: 28, width: 11, height: 7 }],
+  [{ x: 39, y: 7, width: 5, height: 3 }, { x: 40, y: 5, width: 10, height: 5 }],
+  [{ x: 11, y: 27, width: 5, height: 3 }, { x: 5, y: 28, width: 12, height: 7 }],
+  [{ x: 18, y: 11, width: 6, height: 5 }, { x: 16, y: 12, width: 10, height: 3 }],
+];
+export const LEVEL_MAPS = Object.freeze(LEVEL_SHAPES.map(shapes => authorShip(shapes)));
 export const SPAWN = Object.freeze({ x: 30.5 * TILE_SIZE, y: 22.5 * TILE_SIZE });
+
+export function mapForLevel(levelIndex = 0) {
+  return LEVEL_MAPS[Math.max(0, Math.min(levelIndex, LEVEL_MAPS.length - 1))];
+}
 
 export const OBJECTS = [
   { id: 'zombie-alien', name: 'Morrow, the stranded alien', kind: 'zombie', x: 31 * 16, y: 20 * 16, width: 18, height: 28,

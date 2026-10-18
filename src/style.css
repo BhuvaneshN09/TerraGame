@@ -140,6 +140,8 @@ button:hover:not(:disabled) {
 .mission-timer strong { float: right; color: var(--accent); font-size: 10px; }
 .code-label { display:block; margin:10px 0 5px; color:#9caf7c; font-size:14px; letter-spacing:1px; }
 .code-input { width:min(520px, 100%); border:1px solid #718363; background:#0d1718; color:#d1e796; padding:10px; font:18px var(--retro); line-height:1.45; border-radius:2px; margin-bottom:10px; resize:vertical; }
+.challenge-prompt { max-width: 900px; margin: 8px 0 12px; padding: 10px 12px; border-left: 2px solid var(--accent); background: #111e1d; color: #d8e6c4; font-size: 16px; line-height: 1.45; }
+.compiler-status { margin: 0 0 8px; color: #8ea58b; font-size: 12px; letter-spacing: 1px; }
 .level-result { color: var(--accent); line-height: 1.8; letter-spacing: 1px; }
 .confetti { color: var(--accent); font-size: 20px; letter-spacing: 12px; margin-bottom: 8px; animation: confetti-bob 900ms ease-in-out infinite alternate; }
 @keyframes confetti-bob { from { transform: translateY(-2px); } to { transform: translateY(4px); } }

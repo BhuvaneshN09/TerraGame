@@ -130,6 +130,15 @@ Approximate total active session effort: 37 minutes, including review and verifi
 - Restored the verified retro font stack, readable interaction marker, pixel focus color, and title controls text after auditing uncommitted regressions.
 - Validation: syntax checks, 26 unit tests, six Chromium browser tests, `git diff --check`, and the production build passed.
 
+## Checkpoint 31 — five level maps and program challenges (complete; ~35 minutes)
+
+- Added five authored map variants with different connected annexes and corridors, one unique palette per level, and a level-specific machine console placed on the matching map area.
+- Replaced the old exact-answer repair patches with 15 program-writing challenges based on access control, loops, sensor scans, dictionaries, string decoding, command processing, and ship-state decisions.
+- Added a small in-browser Python-shaped compiler and test checker. It reports bracket and indentation errors, checks the required structures for the current goal, and gives compile/test feedback instead of comparing against one hidden answer.
+- Expanded the repair panel with a direct prompt, starter code, larger editor, and visible `COMPILE + TEST CHECKER` label.
+- Added unit coverage for distinct maps, level palettes, console placement, challenge variety, compiler diagnostics, and the existing movement/interaction contracts.
+- Validation: syntax checks, 30 unit tests, six Chromium browser tests, `git diff --check`, and the production build passed.
+
 ## Checkpoint 20 — gravity title motion (complete; ~5 minutes)
 
 - Replaced the scripted corner loop with a small title-only physics loop. The player has horizontal velocity, gravity, wall and ceiling collisions, floor rebounds, and impact damping, so it bounces freely inside the menu.

@@ -129,7 +129,7 @@ export function createInterface(app, actions) {
         shownMode = 'morrow-hint';
         dialog.dataset.mode = 'morrow-hint';
         dialog.dataset.result = '';
-        dialog.innerHTML = '<p class="eyebrow">MORROW / MESSAGE</p><h2 id="dialog-heading">Morrow</h2><p>Need a hand? Read the function one line at a time. The machine label tells you what the finished check must return.</p><button class="primary-button" data-action="dismissMorrowHint" autofocus>BACK TO PATCH <span>↵</span></button>';
+        dialog.innerHTML = '<p class="eyebrow">MORROW / MESSAGE</p><h2 id="dialog-heading">Morrow</h2><p>Need a hand? Read the goal, then build the program one line at a time. The checker will run the ship tests after you submit.</p><button class="primary-button" data-action="dismissMorrowHint" autofocus>BACK TO PROGRAM <span>↵</span></button>';
         if (!dialog.open) dialog.showModal();
         dialog.querySelector('[autofocus]')?.focus();
       }
@@ -157,8 +157,8 @@ export function createInterface(app, actions) {
       const challenge = state.inspection.id === 'junction' && !state.levelPassed;
       const result = state.levelPassed;
       dialog.dataset.result = result ? 'passed' : '';
-      const code = state.currentChallenge?.broken ?? 'def lights_on():\n    return "LIGTHS_ON"';
-      dialog.innerHTML = `${result ? '<div class="confetti" aria-hidden="true">✦ · ✧ ✦ · ✧ ✦</div>' : ''}<p class="eyebrow">${result ? 'LEVEL PASSED / REPAIR CONFIRMED' : 'OBJECT INSPECTION / <span id="object-status"></span>'}</p><h2 id="dialog-heading">${result ? 'RESTORED' : ''}</h2><p id="object-description" class="typing-copy"></p>${challenge ? `<label class="code-label" for="patch-code">PYTHON PATCH / ${state.currentChallenge.label}</label><textarea id="patch-code" class="code-input" rows="3" spellcheck="false">${code}</textarea><button class="primary-button" data-action="solve" autofocus>Run patch <span>↵</span></button>` : result ? `<p class="level-result">LEVEL PASSED<br>${'★'.repeat(state.stars)}${'☆'.repeat(3 - state.stars)}<br>Run time ${Math.ceil(state.runTimeLeft)} seconds remaining.</p><button class="primary-button" data-action="nextLevel" autofocus>Next level <span>↵</span></button>` : '<button class="primary-button" data-action="close" autofocus>Back to exploration <span>↵</span></button>'}<p class="dialog-footnote">E OR ESC TO CLOSE</p>`;
+      const code = state.currentChallenge?.starter ?? '# write the Python program here';
+      dialog.innerHTML = `${result ? '<div class="confetti" aria-hidden="true">✦ · ✧ ✦ · ✧ ✦</div>' : ''}<p class="eyebrow">${result ? 'LEVEL PASSED / PROGRAMS CONFIRMED' : 'OBJECT INSPECTION / <span id="object-status"></span>'}</p><h2 id="dialog-heading">${result ? 'RESTORED' : ''}</h2><p id="object-description" class="typing-copy"></p>${challenge ? `<p class="challenge-prompt">${state.currentChallenge.prompt}</p><label class="code-label" for="patch-code">PYTHON PROGRAM / ${state.currentChallenge.label}</label><textarea id="patch-code" class="code-input" rows="8" spellcheck="false">${code}</textarea><p class="compiler-status">COMPILE + TEST CHECKER</p><button class="primary-button" data-action="solve" autofocus>Run tests <span>↵</span></button>` : result ? `<p class="level-result">LEVEL PASSED<br>${'★'.repeat(state.stars)}${'☆'.repeat(3 - state.stars)}<br>Run time ${Math.ceil(state.runTimeLeft)} seconds remaining.</p><button class="primary-button" data-action="nextLevel" autofocus>Next level <span>↵</span></button>` : '<button class="primary-button" data-action="close" autofocus>Back to exploration <span>↵</span></button>'}<p class="dialog-footnote">E OR ESC TO CLOSE</p>`;
       if (!result) {
         get('dialog-heading').textContent = state.inspection.name;
         get('object-status').textContent = state.inspection.status;
