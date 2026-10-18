@@ -7,7 +7,14 @@ export function paintObject(ctx, object, time) {
   rect('#85918a', 2, 1, w - 4, 2);
   rect('#344b4e', 3, 4, w - 6, h - 9);
   rect('#273b40', 2, h - 5, w - 4, 4);
-  if (kind === 'console') {
+  if (kind === 'machine') {
+    rect('#102c31', 4, 4, w - 8, h - 10);
+    rect('#81b3a0', 6, 5, w - 14, 1);
+    rect('#416c65', 6, 7, w - 12, 1);
+    rect('#d9a16b', 6, h - 5, 4, 2);
+    rect('#d9a16b', w - 10, h - 5, 4, 2);
+    rect(Math.floor(time * 2) % 2 ? '#e8bd73' : '#9a5f50', w - 6, 5, 2, 2);
+  } else if (kind === 'console') {
     rect('#102c31', 4, 4, w - 8, h - 10);
     rect('#81b3a0', 6, 5, w - 17, 1);
     rect('#416c65', 6, 7, w - 12, 1);

@@ -5,10 +5,22 @@ const REQUIRED = {
     ['ACCESS GRANTED', 'Print ACCESS GRANTED for the valid code.'],
     ['ACCESS DENIED', 'Print ACCESS DENIED for an invalid code.'],
   ],
+  lights: [
+    ['input(', 'Ask for the light command with input().'],
+    ['if ', 'Use an if/else decision for the light command.'],
+    ['LIGHTS ON', 'Print LIGHTS ON for the on command.'],
+    ['LIGHTS OFF', 'Print LIGHTS OFF for the other result.'],
+  ],
   battery: [
     ['print(', 'Print the battery after each decrease.'],
     ['battery', 'Use the battery value.'],
     ['-=', 'Subtract power from the battery inside a loop.'],
+  ],
+  coolant: [
+    ['temperature', 'Use the coolant temperature.'],
+    ['<', 'Compare the temperature with the safe limit.'],
+    ['COOLANT READY', 'Print COOLANT READY below the safe limit.'],
+    ['COOLANT HOLD', 'Print COOLANT HOLD at or above the safe limit.'],
   ],
   faults: [
     ['readings', 'Scan the readings list.'],

@@ -753,3 +753,70 @@ footer {
     padding-top: 20px;
   }
 }
+
+/* Final cockpit pass: keep controls available while giving the canvas the whole stage. */
+.viewport-heading {
+  height: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  pointer-events: none;
+}
+.viewport-heading .wordmark,
+.viewport-heading #room { display: none !important; }
+.viewport-heading .top-actions {
+  position: absolute;
+  z-index: 8;
+  top: 18px;
+  right: 24px;
+  pointer-events: auto;
+}
+.viewport { border: 0 !important; }
+.sidebar { right: 24px !important; }
+.sidebar > .deck-map,
+.mission-table {
+  width: 272px !important;
+  background: #0d181af5 !important;
+  border-color: #71866f !important;
+}
+.deck-map #minimap { width: 240px !important; height: 154px !important; image-rendering: pixelated; }
+.section-heading h2 { font-size: 12px !important; letter-spacing: 1.5px !important; }
+.section-heading span { font-size: 11px !important; }
+.map-legend, .mission-row, .mission-row > span:last-child, .mission-timer { font-size: 11px !important; line-height: 1.45; }
+.mission-row { grid-template-columns: 15px 1fr auto; gap: 8px; padding: 8px 0; }
+.mission-row > span:last-child { font-size: 10px !important; color: #b4c99c !important; }
+.mission-timer strong { font-size: 15px !important; }
+.fault-marker { display: inline-block; width: 7px; height: 7px; background: #e2a26a; margin-right: 5px; }
+.map-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: #071013d9;
+}
+.map-overlay[hidden] { display: none; }
+.map-card {
+  width: min(920px, 94vw);
+  padding: 22px;
+  border: 1px solid #9caf7c;
+  background: #101d1df7;
+  box-shadow: 0 20px 80px #000b;
+}
+.map-card .section-heading { margin-bottom: 12px; }
+.map-card .section-heading h2 { color: var(--accent); font-size: 17px !important; }
+#map-overview { display: block; width: 100%; height: auto; image-rendering: pixelated; border: 1px solid #486258; background: #0b1416; }
+.map-overview-help { margin: 12px 0 0; color: #cbd9b8; font-size: 12px; letter-spacing: 1px; line-height: 1.6; }
+.fault-key, .player-key { display: inline-block; width: 9px; height: 9px; margin: 0 4px 0 12px; }
+.fault-key { background: #e2a26a; }
+.player-key { background: #b8e7b0; }
+@media (max-width: 700px) {
+  .viewport-heading .top-actions { top: 10px; right: 12px; }
+  .sidebar { right: 12px !important; }
+  .sidebar > .deck-map, .mission-table { width: 205px !important; }
+  .deck-map #minimap { width: 180px !important; height: 116px !important; }
+  .map-card { padding: 12px; }
+  .map-overview-help { font-size: 9px; }
+}

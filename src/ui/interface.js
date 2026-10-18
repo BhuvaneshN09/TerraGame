@@ -11,10 +11,10 @@ export function createInterface(app, actions) {
         <div class="interaction-bar" aria-live="polite"><span id="interaction-text">Explore the ship. Look for objects.</span><button id="interact" class="interact-button" hidden><kbd>E</kbd> INSPECT</button></div>
       </section>
       <aside class="sidebar" aria-label="Exploration information">
-        <section class="briefing"><p class="eyebrow"><span class="accent">01</span> / RECONNAISSANCE</p><h2>Get your bearings.</h2><p>Explore the Meridian. Approach a highlighted object and inspect what remains.</p><div class="progress-heading"><span>OBJECTS INSPECTED</span><span id="inspection-count">0 / 7</span></div><div id="inspection-progress" class="progress-track" aria-hidden="true">${'<span></span>'.repeat(7)}</div><p class="scope-note">An exploration prototype.<br>Ship repairs are not available yet.</p></section>
-        <section class="deck-map"><div class="section-heading"><h2>DECK SCHEMATIC</h2><span>01</span></div><canvas id="minimap" width="196" height="126" role="img" aria-label="Map of the ship: bridge north, crew west, engineering east, cargo south. Your location is the bright marker."></canvas><div class="map-legend"><span><i class="player-marker"></i>YOU</span><span><i class="object-marker"></i>OBJECT</span></div></section>
-        <section class="mission-table" aria-label="Mission table"><div class="section-heading"><h2>MISSION TABLE</h2><span id="level-label">LEVEL 01 / 05</span></div><div class="mission-row active"><span class="mission-mark">◆</span><span id="mission-primary">Talk to Morrow</span><span id="mission-primary-status">ACTIVE</span></div><div class="mission-row"><span class="mission-mark">◇</span><span>Inspect objects</span><span id="mission-inspect-status">0 / 7</span></div><div class="mission-row"><span class="mission-mark">◇</span><span>Fix the junction issue</span><span id="mission-fix-status">LOCKED</span></div><div class="mission-timer">RUN TIME <strong id="run-timer">05:00</strong></div></section>
-        <section class="field-notes"><div class="section-heading"><h2>FIELD NOTES</h2><span>↳</span></div><p id="field-note" aria-live="polite">No observations yet.<br>The junction console is nearby.</p><div class="signal"><span class="signal-bars" aria-hidden="true">▁▁▂▁▃▁▁▂▁▁▂▁▁▃▁▁</span><span>UPLINK UNAVAILABLE</span></div></section>
+        <section class="briefing"><p class="eyebrow"><span class="accent">01</span> / RECONNAISSANCE</p><h2>Get your bearings.</h2><p>Use T to open the map. Travel to each highlighted machine and press E.</p><div class="progress-heading"><span>MACHINES REPAIRED</span><span id="inspection-count">0 / 6</span></div><div id="inspection-progress" class="progress-track" aria-hidden="true">${'<span></span>'.repeat(6)}</div><p class="scope-note">Six faults per level.<br>Write a program at every machine.</p></section>
+        <section class="deck-map"><div class="section-heading"><h2>DECK SCHEMATIC</h2><span>01</span></div><canvas id="minimap" width="220" height="142" role="img" aria-label="Map of the ship. Amber markers are machine faults. Your location is the bright marker."></canvas><div class="map-legend"><span><i class="player-marker"></i>YOU</span><span><i class="fault-marker"></i>FAULT</span></div></section>
+        <section class="mission-table" aria-label="Mission table"><div class="section-heading"><h2>MISSION TABLE</h2><span id="level-label">LEVEL 01 / 05</span></div><div class="mission-row active"><span class="mission-mark">◆</span><span id="mission-primary">Talk to Morrow</span><span id="mission-primary-status">READY</span></div><div class="mission-row"><span class="mission-mark">◇</span><span>Machines repaired</span><span id="mission-inspect-status">0 / 6</span></div><div class="mission-row"><span class="mission-mark">◇</span><span>Map faults</span><span id="mission-fix-status">PRESS T</span></div><div class="mission-timer">RUN TIME <strong id="run-timer">01:00</strong></div></section>
+        <section class="field-notes"><div class="section-heading"><h2>FIELD NOTES</h2><span>↳</span></div><p id="field-note" aria-live="polite">No observations yet.<br>Use T to open the ship map.</p><div class="signal"><span class="signal-bars" aria-hidden="true">▁▁▂▁▃▁▁▂▁▁▂▁▁▃▁▁</span><span>UPLINK UNAVAILABLE</span></div></section>
       </aside>
     </div>
     <div id="eject-notice" class="eject-notice" hidden></div>
@@ -23,9 +23,10 @@ export function createInterface(app, actions) {
       <p class="eyebrow">FALLSHIP / FIELD GUIDE</p><h2>Explore the ship.</h2>
       <p>Look for highlighted objects and press <kbd>E</kbd> to inspect them.</p>
       <p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrow keys move. <kbd>ESC</kbd> pauses.</p>
-      <p id="help-progress">Objects inspected: 0 / 7</p>
+      <p id="help-progress">Machines repaired: 0 / 6</p>
     </section>
     <footer><span>WASD / ARROWS MOVE <span class="footer-divider">·</span> E INSPECT</span><span>ESC PAUSE</span></footer>
+    <section id="map-overlay" class="map-overlay" hidden aria-label="Full ship map"><div class="map-card"><div class="section-heading"><h2>SHIP OVERVIEW</h2><span>T TO CLOSE</span></div><canvas id="map-overview" width="820" height="520" role="img" aria-label="Expanded ship map with fault machines highlighted"></canvas><p class="map-overview-help"><span class="fault-key"></span> FAULT MACHINE <span class="player-key"></span> YOU <span>·</span> TRAVEL TO EACH FAULT AND PRESS E</p></div></section>
     <dialog id="menu" aria-labelledby="dialog-heading"></dialog>`;
 
   const get = id => app.querySelector(`#${id}`);
@@ -35,6 +36,7 @@ export function createInterface(app, actions) {
   let typingTimer;
   let shootingStarTimer;
   let loadingActive = false;
+  let mapOpen = false;
   const stopTyping = () => { clearInterval(typingTimer); typingTimer = undefined; };
   const typeText = (element, text) => {
     stopTyping(); element.textContent = '';
@@ -75,6 +77,7 @@ export function createInterface(app, actions) {
   const toggleHelp = () => { get('help-panel').hidden = !get('help-panel').hidden; };
   get('help').addEventListener('click', toggleHelp);
   get('menu-button').addEventListener('click', actions.pause);
+  get('map-overlay').addEventListener('click', event => { if (event.target.id === 'map-overlay') toggleMap(); });
   get('help-close').addEventListener('click', () => { get('help-panel').hidden = true; });
   dialog.addEventListener('cancel', event => event.preventDefault()); // Escape goes through the single input action path.
   dialog.addEventListener('click', event => {
@@ -119,6 +122,12 @@ export function createInterface(app, actions) {
 
   const fadeLoading = () => dialog.classList.add('loading-exit');
 
+  function toggleMap() {
+    mapOpen = !mapOpen;
+    get('map-overlay').hidden = !mapOpen;
+    if (mapOpen) stopTyping();
+  }
+
   function showMenu(state) {
     if (loadingActive) {
       if (state.mode === 'title' || state.mode === 'inspecting') return;
@@ -137,6 +146,7 @@ export function createInterface(app, actions) {
     }
     if (shownMode === 'morrow-hint') shownMode = '';
     if (state.mode !== 'title') stopShootingStars();
+    if (state.mode !== 'playing' && mapOpen) { mapOpen = false; get('map-overlay').hidden = true; }
     if (shownMode === state.mode) return;
     shownMode = state.mode;
     dialog.dataset.mode = state.mode;
@@ -154,7 +164,7 @@ export function createInterface(app, actions) {
       dialog.innerHTML = '<p class="eyebrow">MORROW / BRIEFING</p><h2 id="dialog-heading">Morrow</h2><p id="object-description" class="typing-copy"></p><button class="primary-button" data-action="briefingNext" autofocus>NEXT <span>→</span></button>';
       typeText(get('object-description'), state.inspection.text);
     } else if (state.mode === 'inspecting') {
-      const challenge = state.inspection.id === 'junction' && !state.levelPassed;
+      const challenge = state.inspection.kind === 'machine' && !state.levelPassed && !state.repairedMachines.has(state.inspection.id);
       const result = state.levelPassed;
       dialog.dataset.result = result ? 'passed' : '';
       const code = state.currentChallenge?.starter ?? '# write the Python program here';
@@ -182,13 +192,13 @@ export function createInterface(app, actions) {
     const remaining = Math.ceil(state.runTimeLeft);
     setText('run-timer', `${Math.floor(remaining / 60).toString().padStart(2, '0')}:${(remaining % 60).toString().padStart(2, '0')}`);
     setText('game-mode', { title: 'AWAITING INPUT', playing: 'EXPLORING', paused: 'PAUSED', inspecting: 'INSPECTING' }[state.mode]);
-    setText('inspection-count', `${state.inspected.size} / ${state.objects.length}`);
-    setText('help-progress', `Objects inspected: ${state.inspected.size} / ${state.objects.length}`);
-    setText('mission-primary', state.talkedToAlien ? 'Find the broken circuit' : 'Talk to Morrow');
+    setText('inspection-count', `${state.repairedMachines.size} / ${state.level.machines.length}`);
+    setText('help-progress', `Machines repaired: ${state.repairedMachines.size} / ${state.level.machines.length}`);
+    setText('mission-primary', state.talkedToAlien ? 'Find the machine faults' : 'Talk to Morrow');
     setText('level-label', `LEVEL ${String(state.levelIndex + 1).padStart(2, '0')} / 05`);
-    setText('mission-primary-status', state.talkedToAlien ? 'COMPLETE' : 'ACTIVE');
-    setText('mission-inspect-status', `${state.inspected.size} / ${state.objects.length}`);
-    setText('mission-fix-status', state.talkedToAlien ? 'READY' : 'LOCKED');
+    setText('mission-primary-status', state.talkedToAlien ? 'COMPLETE' : 'READY');
+    setText('mission-inspect-status', `${state.repairedMachines.size} / ${state.level.machines.length}`);
+    setText('mission-fix-status', state.levelPassed ? 'COMPLETE' : 'PRESS T');
     const notice = get('eject-notice');
     if (state.notice) { notice.textContent = state.notice; notice.hidden = false; } else notice.hidden = true;
     get('pause').disabled = state.mode !== 'playing';
@@ -199,13 +209,13 @@ export function createInterface(app, actions) {
       ? greeting.slice(0, Math.max(1, Math.floor(state.elapsed * 32)))
       : 'Explore the ship. Look for objects.';
     setText('interaction-text', canInspect ? state.nearby.name : openingText);
-    [...get('inspection-progress').children].forEach((segment, i) => segment.classList.toggle('filled', i < state.inspected.size));
+    [...get('inspection-progress').children].forEach((segment, i) => segment.classList.toggle('filled', i < state.repairedMachines.size));
     const note = [...state.inspected].at(-1);
     if (note !== lastNote) {
       lastNote = note;
       const object = state.objects.find(object => object.id === note);
-      setText('field-note', object ? `${object.name}: ${object.status.toLowerCase()}. Observation recorded.` : 'No observations yet. The junction console is nearby.');
+      setText('field-note', object ? `${object.name}: ${object.status.toLowerCase()}. Observation recorded.` : 'No observations yet. Use T to open the ship map.');
     }
   }
-  return { canvas, minimap: get('minimap'), render, refresh: state => { shownMode = ''; render(state); }, showLoading, fadeLoading, toggleHelp, destroy: () => { stopShootingStars(); resize.disconnect(); cancelAnimationFrame(resizeFrame); } };
+  return { canvas, minimap: get('minimap'), mapOverview: get('map-overview'), render, refresh: state => { shownMode = ''; render(state); }, showLoading, fadeLoading, toggleHelp, toggleMap, isMapOpen: () => mapOpen, destroy: () => { stopShootingStars(); resize.disconnect(); cancelAnimationFrame(resizeFrame); } };
 }

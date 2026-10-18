@@ -38,3 +38,12 @@ test('M opens the menu action once per press', () => {
   input.press('KeyM');
   assert.equal(input.consume('menu'), true);
 });
+
+test('T opens the expanded ship map action once per press', () => {
+  const input = new InputState();
+  input.press('KeyT');
+  assert.equal(input.consume('map'), true);
+  assert.equal(input.consume('map'), false);
+  input.press('KeyT', true);
+  assert.equal(input.consume('map'), false);
+});

@@ -19,14 +19,25 @@ export function createGame(levelIndex = 0) {
   const safeLevelIndex = Math.min(levelIndex, LEVELS.length - 1);
   const level = LEVELS[safeLevelIndex];
   const levelTimeLimit = LEVEL_TIME_LIMITS[safeLevelIndex];
-  const objects = OBJECTS.map(object => object.id === 'junction'
-    ? { ...object, name: level.console.name, x: level.console.x, y: level.console.y, text: level.console.text }
-    : object);
+  const scenery = OBJECTS;
+  const machines = level.machines.map((machine, index) => ({
+    id: `machine-${machine.id}`,
+    name: machine.machineName,
+    kind: 'machine',
+    x: machine.x,
+    y: machine.y,
+    width: machine.width,
+    height: machine.height,
+    status: 'FAULT',
+    text: machine.text,
+    challengeIndex: index,
+  }));
+  const objects = [...scenery, ...machines];
   const state = {
     mode: 'title',
     player: { ...SPAWN, facing: 'down', moving: false, walkTime: 0 },
     map: mapForLevel(safeLevelIndex), objects, camera: { x: 0, y: 0 },
-    nearby: null, inspection: null, inspected: new Set(), elapsed: 0, runTimeLeft: levelTimeLimit, levelTimeLimit,
+    nearby: null, inspection: null, inspected: new Set(), repairedMachines: new Set(), elapsed: 0, runTimeLeft: levelTimeLimit, levelTimeLimit,
     ejectHold: 0, ejectCooldown: 0, cornerHold: 0, cornerCooldown: 0,
     notice: '', noticeTimer: 0,
     challengeIdleTime: 0, challengeStarted: false, morrowHintShown: false, morrowHint: '',
@@ -48,9 +59,9 @@ export function beginBriefing(state) {
 
 export function advanceBriefing(state) {
   if (state.mode !== 'briefing') return;
-  if (state.levelIndex === 0 && state.briefingStep === 0) {
+  if (state.briefingStep === 0) {
     state.briefingStep = 1;
-    state.inspection.text = `LEVEL 1: repair ${state.level.machines.length} machine. Start at the junction console.`;
+    state.inspection.text = `LEVEL ${state.levelIndex + 1}: repair all ${state.level.machines.length} machines. Morrow marked every fault on the ship map. Press T to open the centered map overview, then travel to each machine and press E.`;
     return;
   }
   state.inspection = null;
@@ -58,9 +69,10 @@ export function advanceBriefing(state) {
 }
 
 function levelBriefing(state) {
+  const targets = state.level.machines.map(machine => machine.label).join(', ');
   return state.levelIndex === 0
-    ? 'Hello there traveler. This is the Meridian. Talk to me, find broken machines, and repair them with Python.'
-    : `LEVEL ${state.levelIndex + 1}: ${state.level.name}. Morrow needs ${state.level.machines.length} machines repaired.`;
+    ? `Hello there traveler. This is the Meridian. Talk to me, find the six broken machines, and write a Python program at each one. Repair list: ${targets}. Press T for the map overview.`
+    : `LEVEL ${state.levelIndex + 1}: ${state.level.name}. Morrow needs all six machines repaired: ${targets}. Press T for the map overview and travel to each fault.`;
 }
 
 function refreshState(state) {
@@ -70,7 +82,7 @@ function refreshState(state) {
 }
 
 export function updateGame(state, input, dt) {
-  if (state.mode === 'inspecting' && state.inspection?.id === 'junction' && !state.levelPassed && !state.challengeStarted && !state.morrowHintShown) {
+  if (state.mode === 'inspecting' && state.inspection?.kind === 'machine' && !state.levelPassed && !state.challengeStarted && !state.morrowHintShown) {
     state.challengeIdleTime += dt;
     if (state.challengeIdleTime >= 10) {
       state.morrowHintShown = true;
@@ -119,11 +131,15 @@ export function inspectNearby(state) {
   state.inspection = state.nearby;
   state.inspected.add(state.nearby.id);
   if (state.nearby.id === 'zombie-alien') state.talkedToAlien = true;
-  if (state.nearby.id === 'junction') {
+  if (state.nearby.kind === 'machine') {
+    state.challengeIndex = state.nearby.challengeIndex;
     state.currentChallenge = state.level.machines[state.challengeIndex];
     state.challengeIdleTime = 0;
     state.challengeStarted = false;
-    state.inspection = { ...state.nearby, text: `MACHINE ${state.challengeIndex + 1} / ${state.level.machines.length}: ${state.currentChallenge.label}. GOAL: ${state.currentChallenge.goal} Fix the broken Python patch below.` };
+    const repaired = state.repairedMachines.has(state.nearby.id);
+    state.inspection = { ...state.nearby, status: repaired ? 'RESTORED' : 'FAULT', text: repaired
+      ? `${state.currentChallenge.label} is already restored. Find the next highlighted fault.`
+      : `MACHINE ${state.challengeIndex + 1} / ${state.level.machines.length}: ${state.currentChallenge.label}. GOAL: ${state.currentChallenge.goal} Write the Python program here.` };
   }
   state.mode = 'inspecting';
   return true;
@@ -136,20 +152,22 @@ export function closeInspection(state) {
 }
 
 export function solveChallenge(state, code) {
-  if (state.mode !== 'inspecting' || state.inspection?.id !== 'junction') return false;
+  if (state.mode !== 'inspecting' || state.inspection?.kind !== 'machine' || state.repairedMachines.has(state.inspection.id)) return false;
   const result = testPythonChallenge(state.currentChallenge, code);
   if (!result.ok) {
     state.challengeAttempts += 1;
     state.inspection = { ...state.inspection, text: state.challengeAttempts >= 2 ? `TRY AGAIN. ${result.message} ${state.currentChallenge.hint}` : `TRY AGAIN. ${result.message}` };
     return false;
   }
-  if (state.challengeIndex < state.level.machines.length - 1) {
+  state.repairedMachines.add(state.inspection.id);
+  if (state.repairedMachines.size < state.level.machines.length) {
     state.challengeSolved = false;
-    state.challengeIndex += 1;
     state.challengeStarted = false;
     state.challengeIdleTime = 0;
-    state.currentChallenge = state.level.machines[state.challengeIndex];
-    state.inspection = { ...state.inspection, text: `${result.message} Next program: ${state.currentChallenge.label}.` };
+    state.notice = `${result.message} // ${state.currentChallenge.label} RESTORED. FIND THE NEXT FAULT.`;
+    state.noticeTimer = 3;
+    state.inspection = null;
+    state.mode = 'playing';
     return true;
   }
   state.challengeSolved = true;

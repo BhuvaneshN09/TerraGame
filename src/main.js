@@ -50,14 +50,16 @@ const actions = {
 const ui = createInterface(app, actions);
 const binding = bindInput(window, () => { actions.pause(); loop?.reset(); });
 const { input } = binding;
-const render = createRenderer(ui.canvas, state.map, ui.minimap);
+const render = createRenderer(ui.canvas, state.map, ui.minimap, ui.mapOverview);
 
 loop = startLoop(dt => {
   if (input.consume('pause')) {
-    if (state.mode === 'playing') actions.pause();
+    if (ui.isMapOpen()) ui.toggleMap();
+    else if (state.mode === 'playing') actions.pause();
     else if (state.mode === 'paused') actions.resume();
     else if (state.mode === 'inspecting') actions.close();
   }
+  if (input.consume('map') && state.mode === 'playing') ui.toggleMap();
   const interacted = input.consume('interact');
   if (interacted && state.mode === 'briefing') actions.briefingNext();
   if (input.consume('menu')) actions.pause();
@@ -65,7 +67,7 @@ loop = startLoop(dt => {
     if (state.mode === 'inspecting') actions.close();
     else actions.inspect();
   }
-  updateGame(state, input.direction(), dt);
+  if (!ui.isMapOpen()) updateGame(state, input.direction(), dt);
 }, () => { render(state); ui.render(state); });
 
 ui.render(state);

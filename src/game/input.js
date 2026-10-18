@@ -1,5 +1,5 @@
 const MOVEMENT = new Set(['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight']);
-const ACTIONS = new Map([['KeyE', 'interact'], ['Escape', 'pause'], ['KeyM', 'menu']]);
+const ACTIONS = new Map([['KeyE', 'interact'], ['Escape', 'pause'], ['KeyM', 'menu'], ['KeyT', 'map']]);
 
 // input state is seperate from the browser listeners lol ::::::(
 export class InputState {
