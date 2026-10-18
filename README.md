@@ -19,6 +19,8 @@ npm run build
 npm run test:browser
 ```
 
+There is also a hosted build at [fallship.vercel.app](https://fallship.vercel.app) when the deployment is available.
+
 `npm run check` runs the syntax checks, unit tests, and production build. The browser suite uses Playwright and may need `npm run test:browser:install` once on a new machine.
 
 ## Play
