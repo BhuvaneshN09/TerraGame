@@ -159,6 +159,8 @@ export function createInterface(app, actions) {
       startShootingStars();
     } else if (state.mode === 'paused') {
       dialog.innerHTML = '<p class="eyebrow">EXPLORATION SUSPENDED</p><h2 id="dialog-heading">PAUSED</h2><p>Your position is held. Resume when you’re ready to continue the survey.</p><button class="primary-button" data-action="resume" autofocus>Resume exploration <span>→</span></button><button class="secondary-button" data-action="title">Return to title</button><p class="dialog-footnote">ESC TO RESUME · RETURNING TO TITLE RESETS THE SESSION</p>';
+    } else if (state.mode === 'expired') {
+      dialog.innerHTML = '<p class="eyebrow">MERIDIAN / TIME LIMIT</p><h2 id="dialog-heading">RUN EXPIRED</h2><p>The repair window closed before all machines were restored. Start this level again to try the route.</p><button class="primary-button" data-action="retryLevel" autofocus>Retry level <span>↵</span></button><button class="secondary-button" data-action="title">Return to title</button><p class="dialog-footnote">YOUR REPAIRS RESET FOR THIS RUN</p>';
     } else if (state.mode === 'briefing') {
       dialog.dataset.result = '';
       dialog.innerHTML = '<p class="eyebrow">MORROW / BRIEFING</p><h2 id="dialog-heading">Morrow</h2><p id="object-description" class="typing-copy"></p><button class="primary-button" data-action="briefingNext" autofocus>NEXT <span>→</span></button>';
@@ -191,7 +193,7 @@ export function createInterface(app, actions) {
     setText('session-time', `${Math.floor(seconds / 60).toString().padStart(2, '0')}:${(seconds % 60).toString().padStart(2, '0')}`);
     const remaining = Math.ceil(state.runTimeLeft);
     setText('run-timer', `${Math.floor(remaining / 60).toString().padStart(2, '0')}:${(remaining % 60).toString().padStart(2, '0')}`);
-    setText('game-mode', { title: 'AWAITING INPUT', playing: 'EXPLORING', paused: 'PAUSED', inspecting: 'INSPECTING' }[state.mode]);
+    setText('game-mode', { title: 'AWAITING INPUT', playing: 'EXPLORING', paused: 'PAUSED', expired: 'RUN EXPIRED', inspecting: 'INSPECTING' }[state.mode]);
     setText('inspection-count', `${state.repairedMachines.size} / ${state.level.machines.length}`);
     setText('help-progress', `Machines repaired: ${state.repairedMachines.size} / ${state.level.machines.length}`);
     setText('mission-primary', state.talkedToAlien ? 'Find the machine faults' : 'Talk to Morrow');

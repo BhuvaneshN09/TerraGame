@@ -154,6 +154,18 @@ test('repair runs use one minute, two minutes, then three minutes', () => {
   });
 });
 
+test('a repair run stops when its timer reaches zero', () => {
+  const state = createGame();
+  state.mode = 'playing';
+  updateGame(state, { x: 0, y: 0 }, LEVEL_TIME_LIMITS[0] + 0.1);
+  assert.equal(state.runTimeLeft, 0);
+  assert.equal(state.mode, 'expired');
+  const elapsed = state.elapsed;
+  updateGame(state, { x: 1, y: 0 }, 1);
+  assert.equal(state.elapsed, elapsed);
+  assert.equal(state.mode, 'expired');
+});
+
 test('every repair patch gives a goal and later levels teach varied Python shapes', () => {
   const puzzles = LEVELS.flatMap(level => level.machines);
   assert.ok(puzzles.every(puzzle => puzzle.goal.length > 12 && puzzle.prompt.length > 12 && puzzle.starter.length > 12));

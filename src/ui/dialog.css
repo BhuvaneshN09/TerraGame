@@ -18,7 +18,8 @@ dialog[open] {
 }
 
 dialog[open][data-mode="title"],
-dialog[open][data-mode="paused"] {
+dialog[open][data-mode="paused"],
+dialog[open][data-mode="expired"] {
   inset: 50% auto auto 50%;
   width: min(440px, calc(100vw - 32px));
   max-height: calc(100dvh - 32px);

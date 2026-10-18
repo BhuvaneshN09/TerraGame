@@ -1,34 +1,38 @@
 # FALLSHIP
 
-FALLSHIP is a small browser game about waking up on the derelict USS Meridian. You play as an engineer moving through a quiet ship, meeting Morrow, a stranded zombie alien, and figuring out what still has power. The current build focuses on exploration: pixel-art rooms, collision, a following camera, readable menus, a minimap, simple objects to inspect, and a five-minute repair run at the junction console. There is also a small corner easter egg and an ejection gag hidden in the ship.
+FALLSHIP is a small browser game set aboard the damaged Meridian. You play an engineer, meet Morrow, and travel through five ship maps to bring six machines back online on each level. Every machine gives you a clear Python goal and a starter program. Write the program, run the local checker, then travel to the next fault.
 
-## Running it
+## Run it locally
 
-Use Node.js 22.12 or newer. From the project directory, install the packages and start Vite:
+The project uses Node.js, Vite, native Canvas, and ES modules. From this directory:
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Open the local address Vite prints, usually `http://127.0.0.1:5173`. The same commands are available through the tasks in `.vscode/tasks.json`. `npm run build` creates the production bundle, `npm run preview` serves that bundle locally, and `npm run check` runs the syntax checks, unit tests, and build together.
+Open the local URL printed by Vite. Useful checks are:
 
-The browser tests use Playwright and Chromium. Run `npm run test:browser:install` once if the browser binary is not present, then use `npm run test:browser` to build the game and exercise it in a real browser.
+```sh
+npm test
+npm run build
+npm run test:browser
+```
 
-## Playing
+`npm run check` runs the syntax checks, unit tests, and production build. The browser suite uses Playwright and may need `npm run test:browser:install` once on a new machine.
 
-Move with WASD or the arrow keys. Press E when a highlighted object is close enough to inspect it. Escape pauses the run or closes an inspection, while the MENU button opens the pause menu and the question-mark button opens the field guide. A new run begins with Morrow near the spawn and a five-minute timer. After speaking with him, find the junction console and repair the function shown in its editor. The first failed patch asks you to try again; a later failure provides a hint. A successful repair confirms `RESTORED`, shows a level-passed screen, and awards stars based on the time remaining.
+## Play
 
-## How the code is arranged
+Use WASD or the arrow keys to move. Press E near Morrow or a machine. Press T to open the large ship map; orange markers are unrepaired machines. M or the MENU button pauses the run. Escape closes a panel or pauses. Each level has its own timer: 60 seconds for level 1, 120 seconds for level 2, and 180 seconds for levels 3 to 5. When time runs out, the run ends and you can retry that level.
 
-The browser entry point is `index.html`, with `src/main.js` connecting the game state, input, renderer, and interface. The authored ship, rooms, objects, and spawn live in `src/world/ship.js`. Collision and movement rules are kept in `src/world/collision.js`, while `src/game/simulation.js` owns the run timer, player updates, inspections, easter eggs, and repair challenge. `src/game/input.js` translates keyboard events into held movement and one-shot actions.
+The first briefing tells you what to repair. At a machine, read the GOAL before editing the Python starter. The checker reports syntax and goal problems. A successful program restores that machine, closes the editor, and sends you back to the ship so you can find the next one.
 
-Rendering is split between the procedural environment, pixel sprites, camera, and minimap under `src/render/`. The HTML menus, HUD, dialogue editor, and responsive layout are under `src/ui/`. Unit tests cover the pure movement, collision, map, input, timer, and interaction rules. The Playwright suite in `tests/browser/` checks the important browser journeys against the production build.
+## Code layout
 
-The game uses a 480×288 logical canvas, 16-pixel map tiles, and a fixed 60 Hz simulation behind `requestAnimationFrame`. The browser scales that canvas to the available screen. Collision geometry is kept separate from the artwork so the pixel sprites can change without changing movement behavior.
+`src/main.js` connects the loop, simulation, renderer, and interface. `src/game/` contains input, timing, level data, the simulation, and the small static Python checker. `src/world/` contains the tile maps, objects, and collision rules. `src/render/` draws the pixel environment, sprites, camera view, and minimaps. `src/ui/` contains the DOM panels and styles. Tests live in `tests/unit/` and `tests/browser/`.
 
-## Current status
+The game uses a 480×288 logical canvas and 16-pixel tiles. The simulation runs at a capped fixed step; the renderer rounds positions to keep the pixel art sharp. The level maps and machine placements are data, so new rooms and challenges can be added without putting game rules in the renderer.
 
-The current foundation has been tested with the Node test runner, a Vite production build, and Chromium browser tests. It is designed to stay easy to extend: new rooms and objects are authored in the ship data, new interactions live in the simulation, and future repair systems can be added without putting game rules inside the renderer.
+## Current scope
 
-The longer development plan, decisions, and verification notes are in `docs/PLAN.md`, `docs/DEVELOPMENT_LOG.md`, and `docs/VERIFICATION.md`.
+The current build covers exploration, collision, camera tracking, physical machine interactions, map navigation, timed runs, menus, and the first set of program challenges. It does not include a general Python interpreter, audio, touch controls, or a larger campaign beyond the five authored levels.

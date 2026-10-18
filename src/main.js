@@ -38,6 +38,7 @@ const actions = {
   briefingNext: () => transition(() => advanceBriefing(state)),
   nextLevel: () => loadLevel(Math.min(state.levelIndex + 1, 4)),
   resume: () => { if (state.mode === 'paused') transition(() => { state.mode = 'playing'; }); },
+  retryLevel: () => loadLevel(state.levelIndex),
   pause: () => { if (state.mode === 'playing') transition(() => { state.mode = 'paused'; state.player.moving = false; }); },
   title: () => transition(() => { state = createGame(); }),
   inspect: () => { if (state.mode === 'playing' && state.nearby) transition(() => inspectNearby(state)); },
@@ -62,7 +63,7 @@ loop = startLoop(dt => {
   if (input.consume('map') && state.mode === 'playing') ui.toggleMap();
   const interacted = input.consume('interact');
   if (interacted && state.mode === 'briefing') actions.briefingNext();
-  if (input.consume('menu')) actions.pause();
+  if (input.consume('menu') && state.mode === 'playing') actions.pause();
   if (interacted && state.mode !== 'briefing') {
     if (state.mode === 'inspecting') actions.close();
     else actions.inspect();

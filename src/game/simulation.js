@@ -99,6 +99,13 @@ export function updateGame(state, input, dt) {
   if (state.player.moving) state.player.walkTime += dt;
   state.elapsed += dt;
   state.runTimeLeft = Math.max(0, state.runTimeLeft - dt);
+  if (state.runTimeLeft === 0 && !state.levelPassed) {
+    state.mode = 'expired';
+    state.player.moving = false;
+    state.notice = 'RUN EXPIRED';
+    state.noticeTimer = 0;
+    return;
+  }
   state.ejectCooldown = Math.max(0, state.ejectCooldown - dt);
   state.cornerCooldown = Math.max(0, state.cornerCooldown - dt);
   state.noticeTimer = Math.max(0, state.noticeTimer - dt);
