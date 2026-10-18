@@ -51,7 +51,7 @@ const LEVEL_SHAPES = [
   // Reactor Wake fans into two left-side rooms instead of the right-hand hook.
   [{ x: 11, y: 27, width: 5, height: 3 }, { x: 5, y: 28, width: 12, height: 7 }, { x: 1, y: 28, width: 4, height: 7 }, { x: 1, y: 16, width: 5, height: 8 }],
   // Meridian Core forms a tall central neck with wings on both sides.
-  [{ x: 18, y: 11, width: 6, height: 5 }, { x: 16, y: 12, width: 10, height: 3 }, { x: 18, y: 5, width: 4, height: 7 }, { x: 54, y: 15, width: 5, height: 12 }, { x: 44, y: 28, width: 10, height: 5 }],
+  [{ x: 18, y: 11, width: 6, height: 5 }, { x: 16, y: 12, width: 10, height: 3 }, { x: 18, y: 5, width: 4, height: 7 }, { x: 54, y: 15, width: 5, height: 12 }, { x: 44, y: 28, width: 10, height: 5 }, { x: 56, y: 27, width: 3, height: 6 }],
 ];
 export const LEVEL_MAPS = Object.freeze(LEVEL_SHAPES.map(shapes => authorShip(shapes)));
 export const SPAWN = Object.freeze({ x: 30.5 * TILE_SIZE, y: 22.5 * TILE_SIZE });
