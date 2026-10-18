@@ -2,6 +2,18 @@
 
 Date: 2026-10-14 (America/Toronto). Effort estimates below are approximate active session time, separate from the 120-hour planning budget. No historical project time is assumed.
 
+## Current project record — FALLSHIP foundation and first repair campaign
+
+FALLSHIP started as an empty project and was built into a browser game foundation using native Canvas, ES modules, Vite, and Playwright. The ship is rendered as a crisp pixel environment with authored rooms, connected walkable tiles, collision-safe objects, a follow camera, a minimap, and a player who moves with WASD, arrow keys, and edge-triggered interaction input. Movement is normalized, collisions are resolved one axis at a time, focus loss clears held input, and the simulation uses a capped fixed-step clock so movement stays consistent across different frame rates.
+
+The interface was shaped around the requested retro presentation. The local VT323 font is bundled in the project and used for the floor labels, canvas text, HUD, menus, briefings, buttons, inspection panels, repair editor, and mission table. The game fills the browser, keeps the ship visible behind the UI, places the deck map and mission table over the play view, and uses a black FALLSHIP title screen with a moving starfield and two randomized shooting stars per burst. The title, pause, help, briefing, inspection, repair, level-passed, and loading states all use the same pixel language. Starting a new game, continuing a save, or moving to the next level now shows a button-free loading screen: the FALLSHIP mark enters from above, settles in the center, fades, and hands control to Morrow’s briefing.
+
+The first campaign now has five levels with one, two, three, four, and five machines respectively. The opening mission is to meet Morrow near the spawn, learn the ship’s situation, find the junction console, and repair each machine by editing a broken Python patch. Every machine includes a visible `GOAL:` statement that explains the machine’s job, its input, and the exact result required. The challenge set progresses from a simple return-value correction through comparisons, boolean checks, an `if` block, `sum()` over a list, dictionary `.get()`, and list membership. Morrow’s idle hint appears once only when the player is not editing, and retry feedback gives a general retry message before a more specific hint after repeated failures. A successful run confirms the patch, says RESTORED, shows the level-passed panel and stars, and offers the next level.
+
+Each repair run has its own time limit: 60 seconds for level 1, 120 seconds for level 2, and 180 seconds for levels 3 through 5. Star ratings are proportional to the active level’s limit. Harmless corner notices trigger across authored room corners, and the cargo-edge easter egg ejects the player back to spawn without changing progress. These interactions are isolated from the repair state so exploration surprises do not corrupt a run.
+
+The current verification baseline is 26 deterministic unit tests, six Chromium browser tests, JavaScript syntax checks, a production Vite build, and `git diff --check`. The browser tests cover title focus and canvas pixels, movement through walls and doorways, inspection freezing and repeat input, pause and focus loss, the loading screen, responsive layout, and the absence of browser errors on those paths. The next recommended work is a visual pass on the five repair levels and then a deeper repair interaction layer with clearer test fixtures for each Python patch.
+
 ## Checkpoint 1 — inspection and setup (complete; ~5 minutes)
 
 - Inspected `/home/bhuvaneshnallapati/fallship`: empty directory; no Git repository, source, configuration, or local instructions.
