@@ -7,6 +7,7 @@ import { testPythonChallenge } from './compiler.js';
 
 export const PLAYER_SPEED = 76;
 export const LEVEL_TIME_LIMITS = Object.freeze([60, 120, 180, 180, 180]);
+export const LEVEL_REPAIR_COUNTS = Object.freeze([1, 2, 3, 4, 5]);
 export const EJECT_ZONE = Object.freeze({ x: 41 * 16, y: 33 * 16, width: 3 * 16, height: 3 * 16 });
 export const CORNER_ZONES = Object.freeze(ROOMS.flatMap(room => [
   { x: room.x * 16, y: room.y * 16 },
@@ -18,6 +19,7 @@ export const CORNER_ZONES = Object.freeze(ROOMS.flatMap(room => [
 export function createGame(levelIndex = 0) {
   const safeLevelIndex = Math.min(levelIndex, LEVELS.length - 1);
   const level = LEVELS[safeLevelIndex];
+  const requiredMachines = LEVEL_REPAIR_COUNTS[safeLevelIndex] ?? level.requiredMachines;
   const levelTimeLimit = LEVEL_TIME_LIMITS[safeLevelIndex];
   const scenery = OBJECTS;
   const machines = level.machines.map((machine, index) => ({
@@ -28,8 +30,9 @@ export function createGame(levelIndex = 0) {
     y: machine.y,
     width: machine.width,
     height: machine.height,
-    status: 'FAULT',
-    text: machine.text,
+    status: index < requiredMachines ? 'FAULT' : 'STANDBY',
+    text: index < requiredMachines ? machine.text : `${machine.machineName} is on standby on this deck.`,
+    faulty: index < requiredMachines,
     challengeIndex: index,
   }));
   const objects = [...scenery, ...machines];
@@ -43,7 +46,7 @@ export function createGame(levelIndex = 0) {
     challengeIdleTime: 0, challengeStarted: false, morrowHintShown: false, morrowHint: '',
     talkedToAlien: false, challengeSolved: false, levelPassed: false,
     stars: 0, challengeAttempts: 0, levelIndex: Math.min(levelIndex, LEVELS.length - 1), challengeIndex: 0,
-    level, currentChallenge: level.machines[0],
+    level, requiredMachines, currentChallenge: level.machines[0],
     room: roomAt(SPAWN.x, SPAWN.y),
   };
   if (isBlocked(playerBounds(state.player), state.map, state.objects)) throw new Error('Player spawn is blocked.');
@@ -61,7 +64,7 @@ export function advanceBriefing(state) {
   if (state.mode !== 'briefing') return;
   if (state.briefingStep === 0) {
     state.briefingStep = 1;
-    state.inspection.text = `LEVEL ${state.levelIndex + 1}: repair all ${state.level.machines.length} machines. Morrow marked every fault on the ship map. Press T to open the centered map overview, then travel to each machine and press E.`;
+    state.inspection.text = `LEVEL ${state.levelIndex + 1}: repair ${state.requiredMachines} machine${state.requiredMachines === 1 ? '' : 's'}. Morrow marked the active faults on the ship map. Press T to open the centered map overview, then travel to each fault and press E.`;
     return;
   }
   state.inspection = null;
@@ -69,10 +72,10 @@ export function advanceBriefing(state) {
 }
 
 function levelBriefing(state) {
-  const targets = state.level.machines.map(machine => machine.label).join(', ');
+  const targets = state.level.machines.slice(0, state.requiredMachines).map(machine => machine.label).join(', ');
   return state.levelIndex === 0
-    ? `Hello there traveler. This is the Meridian. Talk to me, find the six broken machines, and write a Python program at each one. Repair list: ${targets}. Press T for the map overview.`
-    : `LEVEL ${state.levelIndex + 1}: ${state.level.name}. Morrow needs all six machines repaired: ${targets}. Press T for the map overview and travel to each fault.`;
+    ? `Hello there traveler. This is the Meridian. Talk to me, find the broken machine, and write its Python program. Repair list: ${targets}. Press T for the map overview.`
+    : `LEVEL ${state.levelIndex + 1}: ${state.level.name}. Morrow needs ${state.requiredMachines} machines repaired: ${targets}. Press T for the map overview and travel to each active fault.`;
 }
 
 function refreshState(state) {
@@ -82,7 +85,7 @@ function refreshState(state) {
 }
 
 export function updateGame(state, input, dt) {
-  if (state.mode === 'inspecting' && state.inspection?.kind === 'machine' && !state.levelPassed && !state.challengeStarted && !state.morrowHintShown) {
+  if (state.mode === 'inspecting' && state.inspection?.kind === 'machine' && state.inspection.faulty && !state.levelPassed && !state.challengeStarted && !state.morrowHintShown) {
     state.challengeIdleTime += dt;
     if (state.challengeIdleTime >= 10) {
       state.morrowHintShown = true;
@@ -138,7 +141,7 @@ export function inspectNearby(state) {
   state.inspection = state.nearby;
   state.inspected.add(state.nearby.id);
   if (state.nearby.id === 'zombie-alien') state.talkedToAlien = true;
-  if (state.nearby.kind === 'machine') {
+  if (state.nearby.kind === 'machine' && state.nearby.faulty) {
     state.challengeIndex = state.nearby.challengeIndex;
     state.currentChallenge = state.level.machines[state.challengeIndex];
     state.challengeIdleTime = 0;
@@ -146,7 +149,7 @@ export function inspectNearby(state) {
     const repaired = state.repairedMachines.has(state.nearby.id);
     state.inspection = { ...state.nearby, status: repaired ? 'RESTORED' : 'FAULT', text: repaired
       ? `${state.currentChallenge.label} is already restored. Find the next highlighted fault.`
-      : `MACHINE ${state.challengeIndex + 1} / ${state.level.machines.length}: ${state.currentChallenge.label}. GOAL: ${state.currentChallenge.goal} Write the Python program here.` };
+      : `FAULT ${state.challengeIndex + 1} / ${state.requiredMachines}: ${state.currentChallenge.label}. GOAL: ${state.currentChallenge.goal} Write the Python program here.` };
   }
   state.mode = 'inspecting';
   return true;
@@ -159,7 +162,7 @@ export function closeInspection(state) {
 }
 
 export function solveChallenge(state, code) {
-  if (state.mode !== 'inspecting' || state.inspection?.kind !== 'machine' || state.repairedMachines.has(state.inspection.id)) return false;
+  if (state.mode !== 'inspecting' || state.inspection?.kind !== 'machine' || !state.inspection.faulty || state.repairedMachines.has(state.inspection.id)) return false;
   const result = testPythonChallenge(state.currentChallenge, code);
   if (!result.ok) {
     state.challengeAttempts += 1;
@@ -167,7 +170,7 @@ export function solveChallenge(state, code) {
     return false;
   }
   state.repairedMachines.add(state.inspection.id);
-  if (state.repairedMachines.size < state.level.machines.length) {
+  if (state.repairedMachines.size < state.requiredMachines) {
     state.challengeSolved = false;
     state.challengeStarted = false;
     state.challengeIdleTime = 0;
@@ -180,6 +183,6 @@ export function solveChallenge(state, code) {
   state.challengeSolved = true;
   state.levelPassed = true;
   state.stars = state.runTimeLeft >= state.levelTimeLimit * 0.8 ? 3 : state.runTimeLeft >= state.levelTimeLimit * 0.4 ? 2 : 1;
-  state.inspection = { ...state.inspection, status: 'RESTORED', text: `${result.message} All ${state.level.machines.length} programs are responding again.` };
+  state.inspection = { ...state.inspection, status: 'RESTORED', text: `${result.message} All ${state.requiredMachines} required program${state.requiredMachines === 1 ? '' : 's'} are responding again.` };
   return true;
 }

@@ -11,9 +11,9 @@ export function createInterface(app, actions) {
         <div class="interaction-bar" aria-live="polite"><span id="interaction-text">Explore the ship. Look for objects.</span><button id="interact" class="interact-button" hidden><kbd>E</kbd> INSPECT</button></div>
       </section>
       <aside class="sidebar" aria-label="Exploration information">
-        <section class="briefing"><p class="eyebrow"><span class="accent">01</span> / RECONNAISSANCE</p><h2>Get your bearings.</h2><p>Use T to open the map. Travel to each highlighted machine and press E.</p><div class="progress-heading"><span>MACHINES REPAIRED</span><span id="inspection-count">0 / 6</span></div><div id="inspection-progress" class="progress-track" aria-hidden="true">${'<span></span>'.repeat(6)}</div><p class="scope-note">Six faults per level.<br>Write a program at every machine.</p></section>
+        <section class="briefing"><p class="eyebrow"><span class="accent">01</span> / RECONNAISSANCE</p><h2>Get your bearings.</h2><p>Use T to open the map. Travel to each highlighted machine and press E.</p><div class="progress-heading"><span>MACHINES REPAIRED</span><span id="inspection-count">0 / 1</span></div><div id="inspection-progress" class="progress-track" aria-hidden="true">${'<span></span>'.repeat(6)}</div><p id="scope-note" class="scope-note">Repair the active fault on this level.<br>Write its program at the machine.</p></section>
         <section class="deck-map"><div class="section-heading"><h2>DECK SCHEMATIC</h2><span>01</span></div><canvas id="minimap" width="220" height="142" role="img" aria-label="Map of the ship. Amber markers are machine faults. Your location is the bright marker."></canvas><div class="map-legend"><span><i class="player-marker"></i>YOU</span><span><i class="fault-marker"></i>FAULT</span></div></section>
-        <section class="mission-table" aria-label="Mission table"><div class="section-heading"><h2>MISSION TABLE</h2><span id="level-label">LEVEL 01 / 05</span></div><div class="mission-row active"><span class="mission-mark">◆</span><span id="mission-primary">Talk to Morrow</span><span id="mission-primary-status">READY</span></div><div class="mission-row"><span class="mission-mark">◇</span><span>Machines repaired</span><span id="mission-inspect-status">0 / 6</span></div><div class="mission-row"><span class="mission-mark">◇</span><span>Map faults</span><span id="mission-fix-status">PRESS T</span></div><div class="mission-timer">RUN TIME <strong id="run-timer">01:00</strong></div></section>
+        <section class="mission-table" aria-label="Mission table"><div class="section-heading"><h2>MISSION TABLE</h2><span id="level-label">LEVEL 01 / 05</span></div><div class="mission-row active"><span class="mission-mark">◆</span><span id="mission-primary">Talk to Morrow</span><span id="mission-primary-status">READY</span></div><div class="mission-row"><span class="mission-mark">◇</span><span>Machines repaired</span><span id="mission-inspect-status">0 / 1</span></div><div class="mission-row"><span class="mission-mark">◇</span><span>Map faults</span><span id="mission-fix-status">PRESS T</span></div><div class="mission-timer">RUN TIME <strong id="run-timer">01:00</strong></div></section>
         <section class="field-notes"><div class="section-heading"><h2>FIELD NOTES</h2><span>↳</span></div><p id="field-note" aria-live="polite">No observations yet.<br>Use T to open the ship map.</p><div class="signal"><span class="signal-bars" aria-hidden="true">▁▁▂▁▃▁▁▂▁▁▂▁▁▃▁▁</span><span>UPLINK UNAVAILABLE</span></div></section>
       </aside>
     </div>
@@ -23,7 +23,7 @@ export function createInterface(app, actions) {
       <p class="eyebrow">FALLSHIP / FIELD GUIDE</p><h2>Explore the ship.</h2>
       <p>Look for highlighted objects and press <kbd>E</kbd> to inspect them.</p>
       <p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrow keys move. <kbd>ESC</kbd> pauses.</p>
-      <p id="help-progress">Machines repaired: 0 / 6</p>
+      <p id="help-progress">Machines repaired: 0 / 1</p>
     </section>
     <footer><span>WASD / ARROWS MOVE <span class="footer-divider">·</span> E INSPECT</span><span>ESC PAUSE</span></footer>
     <section id="map-overlay" class="map-overlay" hidden aria-label="Full ship map"><div class="map-card"><div class="section-heading"><h2>SHIP OVERVIEW</h2><span>T TO CLOSE</span></div><canvas id="map-overview" width="820" height="520" role="img" aria-label="Expanded ship map with fault machines highlighted"></canvas><p class="map-overview-help"><span class="fault-key"></span> FAULT MACHINE <span class="player-key"></span> YOU <span>·</span> TRAVEL TO EACH FAULT AND PRESS E</p></div></section>
@@ -166,7 +166,7 @@ export function createInterface(app, actions) {
       dialog.innerHTML = '<p class="eyebrow">MORROW / BRIEFING</p><h2 id="dialog-heading">Morrow</h2><p id="object-description" class="typing-copy"></p><button class="primary-button" data-action="briefingNext" autofocus>NEXT <span>→</span></button>';
       typeText(get('object-description'), state.inspection.text);
     } else if (state.mode === 'inspecting') {
-      const challenge = state.inspection.kind === 'machine' && !state.levelPassed && !state.repairedMachines.has(state.inspection.id);
+      const challenge = state.inspection.kind === 'machine' && state.inspection.faulty && !state.levelPassed && !state.repairedMachines.has(state.inspection.id);
       const result = state.levelPassed;
       dialog.dataset.result = result ? 'passed' : '';
       const code = state.currentChallenge?.starter ?? '# write the Python program here';
@@ -194,12 +194,13 @@ export function createInterface(app, actions) {
     const remaining = Math.ceil(state.runTimeLeft);
     setText('run-timer', `${Math.floor(remaining / 60).toString().padStart(2, '0')}:${(remaining % 60).toString().padStart(2, '0')}`);
     setText('game-mode', { title: 'AWAITING INPUT', playing: 'EXPLORING', paused: 'PAUSED', expired: 'RUN EXPIRED', inspecting: 'INSPECTING' }[state.mode]);
-    setText('inspection-count', `${state.repairedMachines.size} / ${state.level.machines.length}`);
-    setText('help-progress', `Machines repaired: ${state.repairedMachines.size} / ${state.level.machines.length}`);
+    setText('inspection-count', `${state.repairedMachines.size} / ${state.requiredMachines}`);
+    setText('help-progress', `Machines repaired: ${state.repairedMachines.size} / ${state.requiredMachines}`);
+    setText('scope-note', `Repair ${state.requiredMachines} active machine${state.requiredMachines === 1 ? '' : 's'} on this level. Write ${state.requiredMachines === 1 ? 'its' : 'each machine’s'} program at the fault.`);
     setText('mission-primary', state.talkedToAlien ? 'Find the machine faults' : 'Talk to Morrow');
     setText('level-label', `LEVEL ${String(state.levelIndex + 1).padStart(2, '0')} / 05`);
     setText('mission-primary-status', state.talkedToAlien ? 'COMPLETE' : 'READY');
-    setText('mission-inspect-status', `${state.repairedMachines.size} / ${state.level.machines.length}`);
+    setText('mission-inspect-status', `${state.repairedMachines.size} / ${state.requiredMachines}`);
     setText('mission-fix-status', state.levelPassed ? 'COMPLETE' : 'PRESS T');
     const notice = get('eject-notice');
     if (state.notice) { notice.textContent = state.notice; notice.hidden = false; } else notice.hidden = true;

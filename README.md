@@ -1,6 +1,6 @@
 # FALLSHIP
 
-FALLSHIP is a small browser game set aboard the damaged Meridian. You play an engineer, meet Morrow, and travel through five ship maps to bring six machines back online on each level. Every machine gives you a clear Python goal and a starter program. Write the program, run the local checker, then travel to the next fault.
+FALLSHIP is a small browser game set aboard the damaged Meridian. You play an engineer, meet Morrow, and travel through five ship maps with one to five active faults as the levels get harder. Each deck has six physical units, but only the highlighted faults need a Python program; walk up to a faulty unit and press E to open its checker.
 
 ## Run it locally
 
@@ -23,7 +23,7 @@ npm run test:browser
 
 ## Play
 
-Use WASD or the arrow keys to move. Press E near Morrow or a machine. Press T to open the large ship map; orange markers are unrepaired machines. M or the MENU button pauses the run. Escape closes a panel or pauses. Each level has its own timer: 60 seconds for level 1, 120 seconds for level 2, and 180 seconds for levels 3 to 5. When time runs out, the run ends and you can retry that level.
+Use WASD or the arrow keys to move. Press E near Morrow or a machine. Press T to open the large ship map; orange markers are active faults. M or the MENU button pauses the run. Escape closes a panel or pauses. Each level has its own timer: 60 seconds for level 1, 120 seconds for level 2, and 180 seconds for levels 3 to 5. When time runs out, the run ends and you can retry that level.
 
 The first briefing tells you what to repair. At a machine, read the GOAL before editing the Python starter. The checker reports syntax and goal problems. A successful program restores that machine, closes the editor, and sends you back to the ship so you can find the next one.
 

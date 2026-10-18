@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { followCamera } from '../../src/game/camera.js';
 import { createClock } from '../../src/game/loop.js';
-import { createGame, updateGame, inspectNearby, closeInspection, solveChallenge, EJECT_ZONE, CORNER_ZONES, LEVEL_TIME_LIMITS } from '../../src/game/simulation.js';
+import { createGame, updateGame, inspectNearby, closeInspection, solveChallenge, EJECT_ZONE, CORNER_ZONES, LEVEL_TIME_LIMITS, LEVEL_REPAIR_COUNTS } from '../../src/game/simulation.js';
 import { LEVELS } from '../../src/game/levels.js';
 import { LEVEL_MAPS } from '../../src/world/ship.js';
 import { compilePython, testPythonChallenge } from '../../src/game/compiler.js';
@@ -100,6 +100,8 @@ test('each level has its own map and six positioned repair machines', () => {
   assert.ok(LEVELS.every(level => new Set(level.machines.map(puzzle => puzzle.id)).size === level.machines.length));
   assert.equal(new Set(LEVEL_MAPS.map(map => map.rows.join('\n'))).size, 5);
   assert.deepEqual(LEVELS.map(level => level.machines.length), [6, 6, 6, 6, 6]);
+  assert.deepEqual(LEVELS.map(level => level.requiredMachines), [1, 2, 3, 4, 5]);
+  assert.deepEqual(LEVEL_REPAIR_COUNTS, [1, 2, 3, 4, 5]);
   assert.ok(puzzles.every(puzzle => Number.isFinite(puzzle.x) && Number.isFinite(puzzle.y) && puzzle.machineName));
 });
 
@@ -169,7 +171,7 @@ test('a repair run stops when its timer reaches zero', () => {
 test('every repair patch gives a goal and later levels teach varied Python shapes', () => {
   const puzzles = LEVELS.flatMap(level => level.machines);
   assert.ok(puzzles.every(puzzle => puzzle.goal.length > 12 && puzzle.prompt.length > 12 && puzzle.starter.length > 12));
-  assert.ok(new Set(puzzles.map(puzzle => puzzle.kind)).size >= 15);
+  assert.deepEqual([...new Set(puzzles.map(puzzle => puzzle.kind))].sort(), ['access', 'battery', 'commands', 'computer', 'damage', 'decoder', 'faults', 'manifest', 'oxygen', 'scanner']);
   assert.ok(puzzles.some(puzzle => puzzle.kind === 'commands'));
   assert.ok(puzzles.some(puzzle => puzzle.starter.includes('{')));
 });
@@ -190,9 +192,34 @@ test('a program is tested against the active machine goal instead of an exact pa
   assert.match(state.inspection.text, /TEST FAILED/);
   const program = 'code = input("ACCESS CODE: ")\nif code == "MERIDIAN":\n    print("ACCESS GRANTED")\nelse:\n    print("ACCESS DENIED")';
   assert.equal(solveChallenge(state, program), true);
-  assert.equal(state.levelPassed, false);
+  assert.equal(state.levelPassed, true);
   assert.equal(state.repairedMachines.size, 1);
-  assert.equal(state.mode, 'playing');
+  assert.equal(state.mode, 'inspecting');
+});
+
+test('standby machines can be inspected but do not open a coding challenge', () => {
+  const state = createGame();
+  state.mode = 'playing';
+  state.nearby = state.objects.find(object => object.kind === 'machine' && !object.faulty);
+  assert.equal(inspectNearby(state), true);
+  assert.equal(state.inspection.faulty, false);
+  assert.equal(state.inspection.status, 'STANDBY');
+  assert.equal(state.repairedMachines.size, 0);
+});
+
+test('level two waits for both active faults before passing', () => {
+  const state = createGame(1);
+  state.mode = 'playing';
+  const faults = state.objects.filter(object => object.kind === 'machine' && object.faulty);
+  state.nearby = faults[0];
+  inspectNearby(state);
+  assert.equal(solveChallenge(state, 'battery = 12\nusage = 3\nwhile battery > 0:\n    battery -= usage\n    print(battery)'), true);
+  assert.equal(state.levelPassed, false);
+  state.nearby = faults[1];
+  closeInspection(state);
+  inspectNearby(state);
+  assert.equal(solveChallenge(state, 'readings = [42, 55, 61]\nsafe_limit = 60\nif any(reading > safe_limit for reading in readings):\n    print("FAULT DETECTED")\nelse:\n    print("ALL SYSTEMS NORMAL")'), true);
+  assert.equal(state.levelPassed, true);
 });
 
 test('Morrow offers one repair hint after ten seconds at a machine', () => {

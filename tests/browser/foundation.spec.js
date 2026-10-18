@@ -90,8 +90,8 @@ test('inspection is edge-triggered, freezes movement, and records one observatio
   await page.keyboard.up('e');
   await page.keyboard.press('Escape');
   await expect(page.getByRole('dialog')).not.toBeVisible();
-  await expect(page.locator('#inspection-count')).toHaveText('0 / 6');
-  await expect(page.locator('#inspection-count')).toHaveText('0 / 6');
+  await expect(page.locator('#inspection-count')).toHaveText('0 / 1');
+  await expect(page.locator('#inspection-count')).toHaveText('0 / 1');
 });
 
 test('pause, focus loss, resume, and return to title never retain movement', async ({ page }) => {
@@ -117,7 +117,7 @@ test('pause, focus loss, resume, and return to title never retain movement', asy
   await page.getByRole('button', { name: 'Return to title' }).click();
   await start(page);
   expect(await position(page)).toEqual({ x: 488, y: 360 });
-  await expect(page.locator('#inspection-count')).toHaveText('0 / 6');
+  await expect(page.locator('#inspection-count')).toHaveText('0 / 1');
 });
 
 test('small viewports keep menus and game within the page and explain keyboard requirement', async ({ page }) => {

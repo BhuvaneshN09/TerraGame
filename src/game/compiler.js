@@ -5,22 +5,10 @@ const REQUIRED = {
     ['ACCESS GRANTED', 'Print ACCESS GRANTED for the valid code.'],
     ['ACCESS DENIED', 'Print ACCESS DENIED for an invalid code.'],
   ],
-  lights: [
-    ['input(', 'Ask for the light command with input().'],
-    ['if ', 'Use an if/else decision for the light command.'],
-    ['LIGHTS ON', 'Print LIGHTS ON for the on command.'],
-    ['LIGHTS OFF', 'Print LIGHTS OFF for the other result.'],
-  ],
   battery: [
     ['print(', 'Print the battery after each decrease.'],
     ['battery', 'Use the battery value.'],
     ['-=', 'Subtract power from the battery inside a loop.'],
-  ],
-  coolant: [
-    ['temperature', 'Use the coolant temperature.'],
-    ['<', 'Compare the temperature with the safe limit.'],
-    ['COOLANT READY', 'Print COOLANT READY below the safe limit.'],
-    ['COOLANT HOLD', 'Print COOLANT HOLD at or above the safe limit.'],
   ],
   faults: [
     ['readings', 'Scan the readings list.'],
@@ -62,41 +50,6 @@ const REQUIRED = {
     ['scan', 'Handle the scan command.'],
     ['power', 'Handle the power command.'],
     ['quit', 'Stop when the crew enters quit.'],
-  ],
-  reactor: [
-    ['power', 'Use the power reading.'],
-    ['oxygen', 'Use the oxygen reading.'],
-    ['temperature', 'Use the reactor temperature.'],
-    ['damaged', 'Use the damaged-system count.'],
-    ['crew', 'Use the crew count.'],
-    ['NORMAL', 'Print NORMAL for a safe ship.'],
-    ['EMERGENCY', 'Print EMERGENCY for a recoverable fault.'],
-    ['EVACUATE', 'Print EVACUATE for a critical fault.'],
-  ],
-  shield: [
-    ['nodes', 'Scan the shield node list.'],
-    ['True', 'Count online nodes.'],
-    ['SHIELD UP', 'Print SHIELD UP when four nodes are online.'],
-    ['SHIELD DOWN', 'Print SHIELD DOWN otherwise.'],
-  ],
-  engine: [
-    ['fuel', 'Use the fuel reading.'],
-    ['temperature', 'Use the reactor temperature.'],
-    ['and', 'Require both engine safety conditions.'],
-    ['ENGINE READY', 'Print ENGINE READY when safe.'],
-    ['ENGINE HOLD', 'Print ENGINE HOLD otherwise.'],
-  ],
-  signal: [
-    ['packet', 'Read the packet dictionary.'],
-    ['MERIDIAN', 'Compare the code with MERIDIAN.'],
-    ['LINKED', 'Print LINKED for a matching code.'],
-    ['SEARCHING', 'Print SEARCHING otherwise.'],
-  ],
-  door: [
-    ['keys', 'Read the key list.'],
-    [' in ', 'Use membership to find FOUND.'],
-    ['DOOR OPEN', 'Print DOOR OPEN when the key is present.'],
-    ['DOOR LOCKED', 'Print DOOR LOCKED otherwise.'],
   ],
   computer: [
     ['power', 'Use the power reading.'],
@@ -142,6 +95,6 @@ export function testPythonChallenge(challenge, source) {
   if (challenge.kind === 'manifest' && !/get\(|\bcargo\s*\[/.test(source)) return { ok: false, message: 'TEST FAILED. Look up the requested item in the cargo dictionary.' };
   if (challenge.kind === 'battery' && !/(while|for\s+)/.test(source)) return { ok: false, message: 'TEST FAILED. Drain the battery inside a loop.' };
   if (challenge.kind === 'commands' && !/break/.test(source)) return { ok: false, message: 'TEST FAILED. The command loop needs a quit exit.' };
-  if ((challenge.kind === 'reactor' || challenge.kind === 'computer') && !/(if|elif)/.test(source)) return { ok: false, message: 'TEST FAILED. Add decision branches for the ship states.' };
+  if (challenge.kind === 'computer' && !/(if|elif)/.test(source)) return { ok: false, message: 'TEST FAILED. Add decision branches for the ship states.' };
   return { ok: true, message: 'COMPILE OK. TESTS PASSED. Program behavior matches the ship goal.' };
 }

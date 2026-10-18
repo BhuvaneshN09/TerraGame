@@ -1,74 +1,135 @@
-const challenge = (id, label, kind, goal, prompt, starter, hint, machine) => Object.freeze({
-  id, label, kind, goal, prompt, starter, hint,
-  machineName: machine.name,
-  x: machine.x * 16,
-  y: machine.y * 16,
-  width: machine.width ?? 28,
-  height: machine.height ?? 20,
-  text: machine.text,
-});
+const machine = (id, x, y) => ({ id, x: x * 16, y: y * 16, width: 28, height: 20 });
 
-const machine = (name, x, y, text) => ({ name, x, y, text });
-
-export const LEVELS = Object.freeze([
+const RAW_LEVELS = Object.freeze([
   {
     name: 'FIRST SIGNAL',
     palette: { void: '#0b1215', floor: '#273639', seam: '#1d292d', hull: '#536368', mint: '#c5dc8b', amber: '#d9a16b' },
     machines: [
-      challenge('access', 'CREW ACCESS', 'access', 'Ask for the access code. Print ACCESS GRANTED for the correct code; print ACCESS DENIED for anything else.', 'Write a program that asks for an access code and prints the correct result for both a valid and invalid code.', 'code = input("ACCESS CODE: ")\n# write your if statement and print the result', 'Use input(), an if/else branch, and both required output phrases.', machine('Crew access terminal', 23, 6, 'The crew access terminal rejects every code. Ask for the code and report whether the crew may enter.')),
-      challenge('lights', 'LIGHTS CONTROL', 'lights', 'Ask whether the emergency lights should be on and print LIGHTS ON for yes, otherwise print LIGHTS OFF.', 'Write a program that reads a light command and prints the matching ship status.', 'command = input("LIGHTS: ")\n# accept ON and choose the other result', 'Use input(), an if/else branch, and both light status phrases.', machine('Lights control', 36, 9, 'The bridge lights are dark. Read the crew command and report the light status.')),
-      challenge('battery-first', 'BATTERY DRAIN', 'battery', 'Start with a battery level, subtract power used until it reaches zero, and print every level after a decrease.', 'Write a loop that drains the battery and prints the remaining level after each use.', 'battery = 12\nusage = 3\n# write the drain loop', 'Use a while or for loop, subtract from battery, and print inside the loop.', machine('Battery rack', 8, 19, 'The battery rack is losing charge. Drain it one use at a time and show the remaining level.')),
-      challenge('oxygen-first', 'OXYGEN CHECK', 'oxygen', 'Count how many oxygen readings are below the safe level and print that count.', 'Write a program that checks each section reading and counts unsafe oxygen levels.', 'oxygen = [21, 18, 20, 22]\nsafe = 19\ncount = 0\n# count readings below safe', 'Use a counter, a loop, a less-than check, and print the final count.', machine('Oxygen monitor', 20, 24, 'The oxygen monitor has stale readings. Count every section below the safe level.')),
-      challenge('signal-first', 'SIGNAL RELAY', 'signal', 'Read the code from a packet dictionary and print LINKED only when it equals MERIDIAN.', 'Write a dictionary lookup and comparison for the first ship handshake.', 'packet = {"code": "MERIDIAN"}\n# print LINKED or SEARCHING', 'Use packet.get() or packet["code"] and compare it with MERIDIAN.', machine('Signal relay', 39, 17, 'The signal relay has one packet waiting. Check its code and report whether the link is live.')),
-      challenge('door-first', 'AIRLOCK KEY', 'door', 'Open the door only when FOUND is present in the key list.', 'Write a membership check for the crew access key.', 'keys = ["FOUND", "BACKUP"]\n# print DOOR OPEN or DOOR LOCKED', 'Use in with an if/else branch and both door messages.', machine('Airlock key panel', 27, 32, 'The airlock key panel cannot find its access key. Check the list before opening it.')),
+      machine('access', 23, 6), machine('battery', 36, 9), machine('faults', 8, 19),
+      machine('oxygen', 20, 24), machine('manifest', 39, 17), machine('damage', 27, 32),
     ],
   },
   {
     name: 'COLD DECK',
     palette: { void: '#08131b', floor: '#243946', seam: '#182a35', hull: '#4c6875', mint: '#a9d9d3', amber: '#d5aa74' },
     machines: [
-      challenge('battery', 'EMERGENCY BATTERY', 'battery', 'Start with a battery level, subtract power used until it reaches zero, and print every level after a decrease.', 'Write a loop that drains the battery and prints the remaining level after each use.', 'battery = 12\nusage = 3\n# write the drain loop', 'Use a while or for loop, subtract from battery, and print inside the loop.', machine('Emergency battery', 47, 30, 'The emergency battery is draining. Print each remaining level while the power is used.')),
-      challenge('faults', 'FAULT DETECTOR', 'faults', 'Check every sensor reading. Print FAULT DETECTED if any value is above the safe limit; otherwise print ALL SYSTEMS NORMAL.', 'Write a program that scans a list and reports whether any reading is unsafe.', 'readings = [42, 55, 61]\nsafe_limit = 60\n# scan the readings', 'Use a list, a loop or any(), a greater-than check, and both report phrases.', machine('Fault detector', 51, 32, 'The cold-deck sensors disagree. Scan every reading and print the correct ship report.')),
-      challenge('coolant', 'COOLANT PUMP', 'coolant', 'Print COOLANT READY only when the temperature is below 90. Otherwise print COOLANT HOLD.', 'Write a temperature check for the coolant pump. The goal is to keep the pump running only below the safe limit.', 'temperature = 84\n# print the correct pump status', 'Compare temperature with 90 using an if/else branch and print both status words.', machine('Coolant pump', 46, 28, 'The coolant pump needs a clear temperature decision before it can start.')),
-      challenge('manifest-cold', 'CARGO MANIFEST', 'manifest', 'Store cargo items and quantities in a dictionary, ask for an item, and print its quantity.', 'Write a program that looks up a requested item in a cargo dictionary.', 'cargo = {"water": 8, "medkits": 3, "parts": 12}\nitem = input("ITEM: ")\n# print the quantity', 'Use a dictionary, input(), and a key lookup with [] or get().', machine('Cold-deck manifest', 52, 25, 'The cold-deck cargo list is incomplete. Ask for an item and report its stored quantity.')),
-      challenge('scanner-cold', 'DECK SCANNER', 'scanner', 'Find the closest object that is still farther away than the ship minimum safe distance.', 'Write a program that filters unsafe-close distances and prints the nearest remaining object.', 'distances = [4, 18, 31, 12]\nsafe_distance = 10\n# find the closest safe distance', 'Use a loop or comprehension, filter with >, and choose the smallest safe value.', machine('Deck scanner', 43, 23, 'The deck scanner sees debris. Ignore unsafe distances and report the closest safe object.')),
-      challenge('damage-cold', 'DAMAGE REPORT', 'damage', 'Count how many times each damaged system appears and print a report from the counts dictionary.', 'Write a program that turns a list of repeated damage names into a frequency report.', 'damaged = ["pump", "relay", "pump", "door"]\nreport = {}\n# count each system', 'Use a dictionary and a loop; update a count for every system.', machine('Damage report', 49, 33, 'The cold-deck report repeats some system names. Build a frequency report before dispatching repairs.')),
+      machine('battery', 47, 30), machine('faults', 51, 32), machine('oxygen', 46, 28),
+      machine('manifest', 52, 25), machine('damage', 43, 23), machine('scanner', 49, 33),
     ],
   },
   {
     name: 'LOCKED AIR',
     palette: { void: '#120e1b', floor: '#332b46', seam: '#241d35', hull: '#66587d', mint: '#d4b8ed', amber: '#e0a97d' },
     machines: [
-      challenge('oxygen', 'LIFE-SUPPORT MONITOR', 'oxygen', 'Count how many oxygen readings are below the safe level and print that count.', 'Write a program that checks each section reading and counts unsafe oxygen levels.', 'oxygen = [21, 18, 20, 22]\nsafe = 19\ncount = 0\n# count readings below safe', 'Use a counter, a loop, a less-than check, and print the final count.', machine('Life-support monitor', 43, 7, 'The life-support monitor cannot count its weak sections. Count readings below the safe level.')),
-      challenge('manifest', 'CARGO MANIFEST', 'manifest', 'Store cargo items and quantities in a dictionary, ask for an item, and print its quantity.', 'Write a program that looks up a requested item in a cargo dictionary.', 'cargo = {"water": 8, "medkits": 3, "parts": 12}\nitem = input("ITEM: ")\n# print the quantity', 'Use a dictionary, input(), and a key lookup with [] or get().', machine('Air cargo manifest', 37, 19, 'The air-system stores need a quick cargo lookup. Ask for one item and print its quantity.')),
-      challenge('damage', 'DAMAGE REPORT', 'damage', 'Count how many times each damaged system appears and print a report from the counts dictionary.', 'Write a program that turns a list of repeated damage names into a frequency report.', 'damaged = ["pump", "relay", "pump", "door"]\nreport = {}\n# count each system', 'Use a dictionary and a loop; update a count for every system.', machine('Damage report', 45, 22, 'The air locks list the same damage more than once. Count each damaged system.')),
-      challenge('scanner', 'NAVIGATION SCANNER', 'scanner', 'Find the closest object that is still farther away than the ship minimum safe distance.', 'Write a program that filters unsafe-close distances and prints the nearest remaining object.', 'distances = [4, 18, 31, 12]\nsafe_distance = 10\n# find the closest safe distance', 'Use a loop or comprehension, filter with >, and choose the smallest safe value.', machine('Navigation scanner', 47, 6, 'The navigation scanner has a noisy distance list. Find the closest safe object.')),
-      challenge('decoder', 'COMMUNICATIONS DECODER', 'decoder', 'Decode a transmission by shifting each letter backward by the supplied shift value.', 'Write a program that loops through encoded letters and builds the decoded message.', 'encoded = "KHOOR"\nshift = 3\n# build the decoded message', 'Use a loop, a result string, and ord()/chr() or an equivalent character shift.', machine('Communications decoder', 36, 25, 'A message is trapped in the air system. Shift each encoded letter backward to read it.')),
-      challenge('airlock', 'AIRLOCK STATUS', 'door', 'Open the airlock only when FOUND is present in the key list.', 'Write a membership check that keeps the airlock locked until the correct key is present.', 'keys = ["FOUND", "BACKUP"]\n# print DOOR OPEN or DOOR LOCKED', 'Use in with an if/else branch and both door messages.', machine('Airlock status', 35, 33, 'The airlock will not confirm its key list. Check for FOUND before opening it.')),
+      machine('oxygen', 43, 7), machine('manifest', 37, 19), machine('damage', 45, 22),
+      machine('scanner', 47, 6), machine('decoder', 36, 25), machine('commands', 35, 33),
     ],
   },
   {
     name: 'REACTOR WAKE',
     palette: { void: '#17100b', floor: '#40322a', seam: '#2e231f', hull: '#806455', mint: '#e0c58d', amber: '#e39a5b' },
     machines: [
-      challenge('scanner', 'NAVIGATION SCANNER', 'scanner', 'Find the closest object that is still farther away than the ship minimum safe distance.', 'Write a program that filters unsafe-close distances and prints the nearest remaining object.', 'distances = [4, 18, 31, 12]\nsafe_distance = 10\n# find the closest safe distance', 'Use a loop or comprehension, filter with >, and choose the smallest safe value.', machine('Navigation scanner', 10, 31, 'The reactor route is cluttered. Find the closest object that remains a safe distance away.')),
-      challenge('decoder', 'COMMUNICATIONS DECODER', 'decoder', 'Decode a transmission by shifting each letter backward by the supplied shift value.', 'Write a program that loops through encoded letters and builds the decoded message.', 'encoded = "KHOOR"\nshift = 3\n# build the decoded message', 'Use a loop, a result string, and ord()/chr() or an equivalent character shift.', machine('Communications decoder', 14, 33, 'The reactor crew left an encoded instruction. Shift each letter backward to read it.')),
-      challenge('commands', 'SHIP COMMAND PROCESSOR', 'commands', 'Keep asking for commands until quit. Respond to status, scan, and power with a message.', 'Write a command loop that keeps running until the crew enters quit.', 'command = input("COMMAND: ")\n# continue the loop and handle commands', 'Use while, input(), branches for status/scan/power, and break when command is quit.', machine('Command processor', 8, 20, 'The reactor accepts text commands. Keep responding until the crew enters quit.')),
-      challenge('reactor', 'REACTOR STATUS', 'reactor', 'Use power, oxygen, temperature, damage, and crew status to print NORMAL, EMERGENCY, or EVACUATE.', 'Write a status decision program with an emergency branch and an evacuation branch.', 'power = 80\noxygen = 21\ntemperature = 64\ndamaged = 0\ncrew = 4\n# decide the ship status', 'Use several inputs, if/elif/else, and all three status words.', machine('Reactor status', 31, 25, 'The reactor wake-up needs a full status decision. Use every reading before choosing a ship state.')),
-      challenge('shield', 'SHIELD GRID', 'shield', 'Raise the shield only when at least four shield nodes report online.', 'Write a program that counts online nodes and prints SHIELD UP or SHIELD DOWN.', 'nodes = [True, True, False, True, True]\n# count online nodes', 'Count the True values and compare the total with 4.', machine('Shield grid', 42, 23, 'The reactor needs its shield grid online. Count the nodes before raising the shield.')),
-      challenge('engine', 'ION ENGINE', 'engine', 'Start the engine only when fuel is positive and the reactor temperature is below 80.', 'Write a program that checks both engine safety conditions.', 'fuel = 14\ntemperature = 72\n# print ENGINE READY or ENGINE HOLD', 'Use and to require both conditions before printing the ready message.', machine('Ion engine', 52, 24, 'The ion engine has two safety readings. Require both before starting it.')),
+      machine('scanner', 10, 31), machine('decoder', 14, 33), machine('commands', 8, 20),
+      machine('computer', 31, 25), machine('damage', 42, 23), machine('manifest', 52, 24),
     ],
   },
   {
     name: 'MERIDIAN CORE',
     palette: { void: '#091915', floor: '#263e3a', seam: '#18302b', hull: '#527a70', mint: '#b8e7b0', amber: '#e1c16d' },
     machines: [
-      challenge('shield', 'SHIELD GRID', 'shield', 'Raise the shield only when at least four shield nodes report online.', 'Write a program that counts online nodes and prints SHIELD UP or SHIELD DOWN.', 'nodes = [True, True, False, True, True]\n# count online nodes', 'Count the True values and compare the total with 4.', machine('Shield grid', 20, 13, 'The core shield grid is waiting. Count online nodes and choose its safe state.')),
-      challenge('engine', 'ION ENGINE', 'engine', 'Start the engine only when fuel is positive and the reactor temperature is below 80.', 'Write a program that checks both engine safety conditions.', 'fuel = 14\ntemperature = 72\n# print ENGINE READY or ENGINE HOLD', 'Use and to require both conditions before printing the ready message.', machine('Ion engine', 22, 13, 'The core engine has fuel and temperature readings. Require both safe conditions.')),
-      challenge('signal', 'CORE SIGNAL', 'signal', 'Read the code from a packet dictionary and print LINKED only when it equals MERIDIAN.', 'Write a dictionary lookup and comparison for the final handshake.', 'packet = {"code": "MERIDIAN"}\n# print LINKED or SEARCHING', 'Use packet.get() or packet["code"] and compare it with MERIDIAN.', machine('Core signal', 31, 16, 'The core handshake packet is waiting. Check its code before linking the ship.')),
-      challenge('door', 'CORE DOOR', 'door', 'Open the door only when FOUND is present in the key list.', 'Write a membership check for the final access key.', 'keys = ["FOUND", "BACKUP"]\n# print DOOR OPEN or DOOR LOCKED', 'Use in with an if/else branch and both door messages.', machine('Core door', 38, 18, 'The core door needs the FOUND key. Check the list before unlocking it.')),
-      challenge('computer', 'MAIN SHIP COMPUTER', 'computer', 'Combine power, oxygen, reactor temperature, damage, and crew status into a complete ship decision report.', 'Write the final monitor using several values and choose normal, emergency, or evacuation.', 'power = 82\noxygen = 21\ntemperature = 65\ndamaged = []\ncrew = 4\n# print a full status report', 'Use all five readings, multiple branches, and print a readable report with NORMAL, EMERGENCY, or EVACUATE.', machine('Main ship computer', 47, 19, 'The main computer needs the final status report. Combine every reading and choose a ship state.')),
-      challenge('commands-core', 'CORE COMMAND LOOP', 'commands', 'Keep asking for commands until quit. Respond to status, scan, and power with a message.', 'Write the final command loop for the core computer.', 'command = input("COMMAND: ")\n# continue the loop and handle commands', 'Use while, input(), branches for status/scan/power, and break when command is quit.', machine('Core command loop', 10, 22, 'The core computer will not stop accepting commands. Continue until quit is entered.')),
+      machine('manifest', 20, 13), machine('damage', 22, 13), machine('scanner', 31, 16),
+      machine('decoder', 38, 18), machine('commands', 47, 19), machine('computer', 10, 22),
     ],
   },
 ]);
+
+// These are the ten small Python programs used by the game. Keeping the
+// wording in one place means a machine name and its goal cannot drift apart.
+const PROGRAMS = Object.freeze({
+  access: {
+    label: 'CREW ACCESS SYSTEM', machineName: 'Crew Access System',
+    goal: 'Write a program that asks for an access code and prints ACCESS GRANTED if the code is correct, otherwise print ACCESS DENIED.',
+    starter: 'code = input("ACCESS CODE: ")\n# check the code and print the result',
+    hint: 'Ask for the code, compare it in an if/else branch, and print both required messages.',
+  },
+  battery: {
+    label: 'EMERGENCY BATTERY DRAIN', machineName: 'Emergency Battery Drain',
+    goal: 'Write a program that starts with a battery level and repeatedly subtracts the amount of power being used until the battery reaches zero. Print the battery level after each decrease.',
+    starter: 'battery = 12\nusage = 3\n# drain the battery until it reaches zero',
+    hint: 'Use a loop, subtract usage from battery each time, and print after every decrease.',
+  },
+  faults: {
+    label: 'FAULT DETECTOR', machineName: 'Fault Detector',
+    goal: 'Write a program that checks a list of ship sensor readings and prints FAULT DETECTED if any reading is above the safe limit. Otherwise, print ALL SYSTEMS NORMAL.',
+    starter: 'readings = [42, 55, 61]\nsafe_limit = 60\n# scan the readings and print the ship report',
+    hint: 'Scan the list, compare each reading with safe_limit, and print one of the two report phrases.',
+  },
+  oxygen: {
+    label: 'LIFE-SUPPORT MONITOR', machineName: 'Life-Support Monitor',
+    goal: 'Write a program that checks a list of oxygen readings and counts how many sections of the ship are below the safe oxygen level.',
+    starter: 'oxygen = [21, 18, 20, 22]\nsafe = 19\ncount = 0\n# count readings below safe',
+    hint: 'Keep a counter, loop through oxygen, compare with safe, and print the final count.',
+  },
+  manifest: {
+    label: 'CARGO MANIFEST', machineName: 'Cargo Manifest',
+    goal: 'Write a program that stores cargo items and their quantities in a dictionary, asks the user for an item, and prints how many of that item are on the ship.',
+    starter: 'cargo = {"water": 8, "medkits": 3, "parts": 12}\nitem = input("ITEM: ")\n# look up and print the quantity',
+    hint: 'Store the quantities in cargo, ask for a key with input(), then look it up and print it.',
+  },
+  damage: {
+    label: 'DAMAGE REPORT', machineName: 'Damage Report',
+    goal: 'Write a program that receives a list of damaged ship systems and creates a report showing how many times each system appears in the list.',
+    starter: 'damaged = ["pump", "relay", "pump", "door"]\nreport = {}\n# count each system in the report',
+    hint: 'Loop over damaged and update a count in the report dictionary for each system.',
+  },
+  scanner: {
+    label: 'NAVIGATION SCANNER', machineName: 'Navigation Scanner',
+    goal: 'Write a program that checks a list of object distances and finds the closest object that is still a safe distance away from the ship.',
+    starter: 'distances = [4, 18, 31, 12]\nsafe_distance = 10\n# find the closest safe distance',
+    hint: 'Filter out distances at or below safe_distance, then choose and print the smallest remaining value.',
+  },
+  decoder: {
+    label: 'COMMUNICATIONS DECODER', machineName: 'Communications Decoder',
+    goal: 'Write a program that takes an encoded ship transmission and a shift value, then decodes the message by shifting each letter backward.',
+    starter: 'encoded = "KHOOR"\nshift = 3\n# build and print the decoded message',
+    hint: 'Loop through encoded, shift each letter backward with ord() and chr(), and join the result.',
+  },
+  commands: {
+    label: 'SHIP COMMAND PROCESSOR', machineName: 'Ship Command Processor',
+    goal: 'Write a program that repeatedly asks the user for a command. The program must respond to commands such as status, scan, power, and quit, and should continue running until the user enters quit.',
+    starter: 'command = input("COMMAND: ")\n# keep handling status, scan, power, and quit',
+    hint: 'Use a while loop, ask for input each time, handle the listed commands, and break on quit.',
+  },
+  computer: {
+    label: 'MAIN SHIP COMPUTER', machineName: 'Main Ship Computer',
+    goal: 'Write a program that monitors the ship’s power, oxygen level, reactor temperature, damaged systems, and crew status. The program must use this information to decide whether the ship should continue normally, enter emergency mode, or evacuate, then print a full ship status report.',
+    starter: 'power = 82\noxygen = 21\ntemperature = 65\ndamaged = []\ncrew = 4\n# choose a ship status and print the report',
+    hint: 'Use all five readings with if/elif/else branches, then print NORMAL, EMERGENCY, or EVACUATE in the report.',
+  },
+});
+
+const LEVEL_PROGRAMS = [
+  ['access', 'battery', 'faults', 'oxygen', 'manifest', 'damage'],
+  ['battery', 'faults', 'oxygen', 'manifest', 'damage', 'scanner'],
+  ['oxygen', 'manifest', 'damage', 'scanner', 'decoder', 'commands'],
+  ['scanner', 'decoder', 'commands', 'computer', 'damage', 'manifest'],
+  ['manifest', 'damage', 'scanner', 'decoder', 'commands', 'computer'],
+];
+
+const normalizeLevel = (level, levelIndex) => ({
+  ...level,
+  requiredMachines: levelIndex + 1,
+  machines: level.machines.map((machine, machineIndex) => {
+    const kind = LEVEL_PROGRAMS[levelIndex][machineIndex];
+    const program = PROGRAMS[kind];
+    return {
+      ...machine,
+      ...program,
+      kind,
+      prompt: program.goal,
+      text: `${program.machineName} is faulty. Walk up to the unit and press E to write its program.`,
+    };
+  }),
+});
+
+export const LEVELS = Object.freeze(RAW_LEVELS.map(normalizeLevel));

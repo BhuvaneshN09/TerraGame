@@ -30,7 +30,7 @@ export function createRenderer(canvas, map, minimap, overviewCanvas) {
     }
     for (const object of state.objects) {
       if (object.kind === 'machine') {
-        mini.fillStyle = state.repairedMachines.has(object.id) ? '#68766a' : palette.amber;
+        mini.fillStyle = !object.faulty ? '#53645f' : state.repairedMachines.has(object.id) ? '#68766a' : palette.amber;
         mini.fillRect(ox + object.x / 16 * scale, oy + object.y / 16 * scale, 3, 3);
       } else {
         mini.fillStyle = '#718681';
@@ -67,7 +67,7 @@ export function createRenderer(canvas, map, minimap, overviewCanvas) {
     }
     overview.strokeStyle = '#b7ca9a'; overview.strokeRect(ox + state.camera.x / 16 * scale, oy + state.camera.y / 16 * scale, VIEW.width / 16 * scale, VIEW.height / 16 * scale);
     for (const object of state.objects) {
-      if (object.kind !== 'machine') continue;
+      if (object.kind !== 'machine' || !object.faulty) continue;
       const repaired = state.repairedMachines.has(object.id);
       overview.fillStyle = repaired ? '#71847a' : '#e2a26a';
       const marker = repaired ? Math.max(4, scale * 0.45) : Math.max(6, scale * 0.65);
