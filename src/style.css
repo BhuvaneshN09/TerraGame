@@ -804,6 +804,8 @@ footer {
   border: 1px solid #9caf7c;
   background: #101d1df7;
   box-shadow: 0 20px 80px #000b;
+  border-radius: 8px;
+  overflow: hidden;
 }
 .map-card .section-heading { margin-bottom: 12px; }
 .map-card .section-heading h2 { color: var(--accent); font-size: 17px !important; }
