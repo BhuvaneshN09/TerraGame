@@ -1,7 +1,7 @@
 const MOVEMENT = new Set(['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight']);
 const ACTIONS = new Map([['KeyE', 'interact'], ['Escape', 'pause'], ['KeyM', 'menu'], ['KeyT', 'map']]);
 
-// input state is seperate from the browser listeners lol ::::::(
+// Held keys and one-shot actions use separate sets.
 export class InputState {
   held = new Set();
   actions = new Set();

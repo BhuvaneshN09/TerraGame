@@ -116,7 +116,6 @@ export function createRenderer(canvas, map, minimap, overviewCanvas) {
       ctx.fillText('E', markerX + 6, markerY + 6);
       ctx.restore();
     }
-    // keep for refff
     ctx.restore();
     drawMap(state);
     drawOverview(state);
