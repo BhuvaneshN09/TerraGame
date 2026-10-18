@@ -5,6 +5,7 @@ import { nearbyObject } from './interactions.js';
 import { LEVELS } from './levels.js';
 
 export const PLAYER_SPEED = 76;
+export const LEVEL_TIME_LIMITS = Object.freeze([60, 120, 180, 180, 180]);
 export const EJECT_ZONE = Object.freeze({ x: 41 * 16, y: 33 * 16, width: 3 * 16, height: 3 * 16 });
 export const CORNER_ZONES = Object.freeze(ROOMS.flatMap(room => [
   { x: room.x * 16, y: room.y * 16 },
@@ -14,12 +15,14 @@ export const CORNER_ZONES = Object.freeze(ROOMS.flatMap(room => [
 ]));
 
 export function createGame(levelIndex = 0) {
-  const level = LEVELS[Math.min(levelIndex, LEVELS.length - 1)];
+  const safeLevelIndex = Math.min(levelIndex, LEVELS.length - 1);
+  const level = LEVELS[safeLevelIndex];
+  const levelTimeLimit = LEVEL_TIME_LIMITS[safeLevelIndex];
   const state = {
     mode: 'title',
     player: { ...SPAWN, facing: 'down', moving: false, walkTime: 0 },
     map: SHIP, objects: OBJECTS, camera: { x: 0, y: 0 },
-    nearby: null, inspection: null, inspected: new Set(), elapsed: 0, runTimeLeft: 300,
+    nearby: null, inspection: null, inspected: new Set(), elapsed: 0, runTimeLeft: levelTimeLimit, levelTimeLimit,
     ejectHold: 0, ejectCooldown: 0, cornerHold: 0, cornerCooldown: 0,
     notice: '', noticeTimer: 0,
     challengeIdleTime: 0, challengeStarted: false, morrowHintShown: false, morrowHint: '',
@@ -147,7 +150,7 @@ export function solveChallenge(state, code) {
   }
   state.challengeSolved = true;
   state.levelPassed = true;
-  state.stars = state.runTimeLeft >= 240 ? 3 : state.runTimeLeft >= 120 ? 2 : 1;
+  state.stars = state.runTimeLeft >= state.levelTimeLimit * 0.8 ? 3 : state.runTimeLeft >= state.levelTimeLimit * 0.4 ? 2 : 1;
   state.inspection = { ...state.inspection, status: 'RESTORED', text: `PATCH ACCEPTED. All ${state.level.machines.length} machines are responding again.` };
   return true;
 }

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { followCamera } from '../../src/game/camera.js';
 import { createClock } from '../../src/game/loop.js';
-import { createGame, updateGame, inspectNearby, closeInspection, EJECT_ZONE, CORNER_ZONES } from '../../src/game/simulation.js';
+import { createGame, updateGame, inspectNearby, closeInspection, EJECT_ZONE, CORNER_ZONES, LEVEL_TIME_LIMITS } from '../../src/game/simulation.js';
 import { LEVELS } from '../../src/game/levels.js';
 
 test('camera follows and clamps at each edge, including worlds smaller than view', () => {
@@ -97,6 +97,15 @@ test('each level has its own repair puzzles and level two does not repeat lights
   assert.equal(new Set(puzzles.map(puzzle => puzzle.id)).size, puzzles.length);
   assert.equal(LEVELS[1].machines.some(puzzle => puzzle.id === 'lights'), false);
   assert.deepEqual(LEVELS.map(level => level.machines.length), [1, 2, 3, 4, 5]);
+});
+
+test('repair runs use one minute, two minutes, then three minutes', () => {
+  assert.deepEqual(LEVEL_TIME_LIMITS, [60, 120, 180, 180, 180]);
+  LEVEL_TIME_LIMITS.forEach((seconds, levelIndex) => {
+    const state = createGame(levelIndex);
+    assert.equal(state.runTimeLeft, seconds);
+    assert.equal(state.levelTimeLimit, seconds);
+  });
 });
 
 test('every repair patch gives a goal and later levels teach varied Python shapes', () => {

@@ -106,6 +106,12 @@ Approximate total active session effort: 37 minutes, including review and verifi
 - Reworked later repairs to introduce `if` blocks, list processing with `sum`, dictionary `.get`, and list membership alongside the earlier comparisons, with difficulty increasing by level.
 - Validation: syntax checks, 25 unit tests, six Chromium browser tests, `git diff --check`, and the production build passed.
 
+## Checkpoint 29 — level-specific repair timers (complete; ~4 minutes)
+
+- Set repair runs to 60 seconds for level 1, 120 seconds for level 2, and 180 seconds for levels 3 through 5.
+- Kept the star rating proportional to each level's own time limit, so shorter early levels can still earn three stars.
+- Validation: syntax checks, 26 unit tests, six Chromium browser tests, `git diff --check`, and the production build passed.
+
 ## Checkpoint 20 — gravity title motion (complete; ~5 minutes)
 
 - Replaced the scripted corner loop with a small title-only physics loop. The player has horizontal velocity, gravity, wall and ceiling collisions, floor rebounds, and impact damping, so it bounces freely inside the menu.
