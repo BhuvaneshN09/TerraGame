@@ -100,6 +100,12 @@ Approximate total active session effort: 37 minutes, including review and verifi
 - Updated the loading animation so the FALLSHIP mark enters from above and settles in the center before the next briefing appears.
 - Validation: syntax checks, 24 unit tests, six Chromium browser tests, `git diff --check`, and the production build passed.
 
+## Checkpoint 28 — contextual progressive repair puzzles (complete; ~10 minutes)
+
+- Added a clear `GOAL:` explanation to every repair machine, including the input reading and the exact ship outcome expected from the patch.
+- Reworked later repairs to introduce `if` blocks, list processing with `sum`, dictionary `.get`, and list membership alongside the earlier comparisons, with difficulty increasing by level.
+- Validation: syntax checks, 25 unit tests, six Chromium browser tests, `git diff --check`, and the production build passed.
+
 ## Checkpoint 20 — gravity title motion (complete; ~5 minutes)
 
 - Replaced the scripted corner loop with a small title-only physics loop. The player has horizontal velocity, gravity, wall and ceiling collisions, floor rebounds, and impact damping, so it bounces freely inside the menu.

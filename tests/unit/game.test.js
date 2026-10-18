@@ -99,6 +99,14 @@ test('each level has its own repair puzzles and level two does not repeat lights
   assert.deepEqual(LEVELS.map(level => level.machines.length), [1, 2, 3, 4, 5]);
 });
 
+test('every repair patch gives a goal and later levels teach varied Python shapes', () => {
+  const puzzles = LEVELS.flatMap(level => level.machines);
+  assert.ok(puzzles.every(puzzle => puzzle.goal.length > 12));
+  assert.ok(puzzles.some(puzzle => puzzle.fixed.includes('sum(')));
+  assert.ok(puzzles.some(puzzle => puzzle.fixed.includes('.get(')));
+  assert.ok(puzzles.some(puzzle => !puzzle.fixed.startsWith('def ')));
+});
+
 test('Morrow offers one repair hint after ten seconds in the junction', () => {
   const state = createGame();
   state.mode = 'playing';

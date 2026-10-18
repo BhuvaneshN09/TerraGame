@@ -116,7 +116,7 @@ export function inspectNearby(state) {
     state.currentChallenge = state.level.machines[state.challengeIndex];
     state.challengeIdleTime = 0;
     state.challengeStarted = false;
-    state.inspection = { ...state.nearby, text: `MACHINE ${state.challengeIndex + 1} / ${state.level.machines.length}: ${state.currentChallenge.label}. Correct the broken Python function.` };
+    state.inspection = { ...state.nearby, text: `MACHINE ${state.challengeIndex + 1} / ${state.level.machines.length}: ${state.currentChallenge.label}. GOAL: ${state.currentChallenge.goal} Fix the broken Python patch below.` };
   }
   state.mode = 'inspecting';
   return true;
