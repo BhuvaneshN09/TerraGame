@@ -112,6 +112,12 @@ Approximate total active session effort: 37 minutes, including review and verifi
 - Kept the star rating proportional to each level's own time limit, so shorter early levels can still earn three stars.
 - Validation: syntax checks, 26 unit tests, six Chromium browser tests, `git diff --check`, and the production build passed.
 
+## Checkpoint 30 — working-tree regression repair (complete; ~5 minutes)
+
+- Fixed the invalid CSS token that stopped Vite builds.
+- Restored the verified retro font stack, readable interaction marker, pixel focus color, and title controls text after auditing uncommitted regressions.
+- Validation: syntax checks, 26 unit tests, six Chromium browser tests, `git diff --check`, and the production build passed.
+
 ## Checkpoint 20 — gravity title motion (complete; ~5 minutes)
 
 - Replaced the scripted corner loop with a small title-only physics loop. The player has horizontal velocity, gravity, wall and ceiling collisions, floor rebounds, and impact damping, so it bounces freely inside the menu.
